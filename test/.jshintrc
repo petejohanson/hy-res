@@ -20,14 +20,11 @@
   "trailing": true,
   "smarttabs": true,
   "predef": [
-    "$",
-    "angular",
     "describe",
     "beforeEach",
     "afterEach",
     "inject",
     "it",
-    "expect",
     "xdescribe",
     "xit"
   ]

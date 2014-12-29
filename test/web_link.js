@@ -1,0 +1,135 @@
+'use strict';
+
+require('es6-promise').polyfill();
+
+var _ = require('lodash');
+var resourceAssertions = require('./resource_assertions');
+
+var expect = require('chai').expect;
+var sinon = require('sinon');
+var WebLink = require('../src/web_link.js');
+var HalExtension = require('../src/hal.js');
+
+describe('WebLink', function () {
+
+  describe('creating a web link', function() {
+    var link;
+    var http;
+
+    beforeEach(function() {
+      http = sinon.stub();
+      var extensions = [new HalExtension()];
+
+      _.forEach(extensions, function(e) { e.initialize(http, extensions); });
+
+      link = new WebLink({
+        href: '/posts/123',
+        title: 'Hypermedia and AngularJS'
+      }, http, extensions);
+    });
+
+    it('had the data properties', function() {
+      expect(link.href).to.equal('/posts/123');
+      expect(link.title).to.equal('Hypermedia and AngularJS');
+    });
+
+    describe('following the link', function() {
+      var resource;
+      var httpResolve;
+      var httpPromise;
+      var context = {};
+
+      beforeEach(function() {
+        httpPromise = new Promise(function(resolve, reject) {
+          httpResolve = resolve;
+        });
+        http.returns(httpPromise);
+
+        resource = link.follow();
+        context.resource = resource;
+      });
+
+      resourceAssertions.unresolvedResourceBehavior(context);
+
+      describe('once the request completes', function() {
+        beforeEach(function() {
+          httpResolve({data: { title: 'Hypermedia and AngularJS' }, headers: { 'Content-Type': 'application/hal+json' } });
+          return httpPromise;
+        });
+
+        resourceAssertions.resolvedResourceBehavior(context);
+
+        it('has the expected properties', function() {
+          expect(resource.title).to.equal('Hypermedia and AngularJS');
+        });
+      });
+    });
+  });
+
+  describe('creating a templated web link', function() {
+    var link;
+
+    beforeEach(function() {
+      link = new WebLink({
+        href: '/posts{/id}',
+        templated: true
+      }, {});
+    });
+
+    it('is templated', function() {
+      expect(link.templated).to.equal(true);
+    });
+
+    describe('following the link without providing data in options', function() {
+      it('should throw an exception', function() {
+        var follow = function() {
+          link.follow();
+        };
+
+        expect(follow).to.throw(Error);
+      });
+    });
+  });
+
+  describe('creating a web link with type expectation provided', function() {
+    var link;
+    var http, httpPromise;
+
+    beforeEach(function() {
+      http = sinon.stub();
+      var extensions = [new HalExtension()];
+
+      _.forEach(extensions, function(e) { e.initialize(http, extensions); });
+      link = new WebLink({
+        href: '/posts?page=2',
+        type: 'application/json'
+      }, http, extensions);
+    });
+
+    it('has the type', function() {
+      expect(link.type).to.equal('application/json');
+    });
+
+    describe('following the link with no options provided', function() {
+      it('sends the type in the Accept header', function() {
+        httpPromise = new Promise(function(resolve, reject) {
+        });
+        http.withArgs(sinon.match.has('headers', { 'Accept': 'application/json' })).returns(httpPromise);
+
+        var res = link.follow();
+        expect(res).to.not.be.null();
+      });
+    });
+
+    describe('following the link with explicit Accept header in options', function() {
+      it('sends the provided Accept header', function() {
+        httpPromise = new Promise(function(resolve, reject) {
+        });
+        http.withArgs(sinon.match.has('headers', { 'Accept': 'text/plain' })).returns(httpPromise);
+
+        var res = link.follow({ headers: { 'Accept': 'text/plain' } });
+        expect(res).to.not.be.null();
+      });
+    });
+  });
+});

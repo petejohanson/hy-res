@@ -3,57 +3,13 @@
 var gulp = require('gulp'),
   lazypipe = require('lazypipe'),
   runSequence = require('run-sequence'),
-  gif = require('gulp-if'),
   bump = require('gulp-bump'),
+  watch = require('gulp-watch'),
+  mocha = require('gulp-mocha'),
   tap = require('gulp-tap'),
   git = require('gulp-git'),
   tagVersion = require('gulp-tag-version'),
-  concat = require('gulp-concat'),
-  header = require('gulp-header'),
-  ngAnnotate = require('gulp-ng-annotate'),
-  gwebpack = require('gulp-webpack'),
-  webpack = require('webpack'),
-  jshint = require('gulp-jshint'),
-  karma = require('gulp-karma'),
-  rename = require('gulp-rename'),
-  uglify = require('gulp-uglify'),
-  util = require('gulp-util'),
-  del = require('del');
-
-var banner = ['/**',
-  ' * <%= pkg.name %> - <%= pkg.description %>',
-  ' * @version v<%= pkg.version %> - <%= now %>',
-  ' * @link <%= pkg.homepage %>',
-  ' * @author <%= pkg.author.name %> <<%= pkg.author.email %>>',
-  ' * @license MIT License, http://www.opensource.org/licenses/MIT',
-  ' */',
-  ''].join('\n');
-
-function webpackPipe() {
-  return lazypipe()
-    .pipe(gif, /angular-hy-res-link-header.js/, gwebpack({
-      output: {
-        library: 'hrLinkHeader',
-        filename: './angular-hy-res-link-header.js',
-        libraryTarget: 'var'
-      }
-    }));
-}
-
-function jsSourcePipe() {
-  return gulp.src('src/**/*.js')
-    /* jshint camelcase: false */
-    .pipe(ngAnnotate({ add: true, single_quotes: true }));
-}
-
-function getOutputPipe(pkg) {
-  return lazypipe()
-    .pipe(header, banner, { pkg: pkg, now: (util.date(new Date(), 'yyyy-mm-dd')) })
-    .pipe(gulp.dest, 'dist')
-    .pipe(rename, { suffix: '.min' })
-    .pipe(uglify, { preserveComments: 'some' })
-    .pipe(gulp.dest, 'dist');
-}
+  jshint = require('gulp-jshint');
 
 
 function getJSHintPipe(rc) {
@@ -63,25 +19,13 @@ function getJSHintPipe(rc) {
     .pipe(jshint.reporter, 'fail');
 }
 
-gulp.task('js-single', ['jshint'], function () {
-  return jsSourcePipe()
-    .pipe(webpackPipe()())
-    .pipe(getOutputPipe(require('./package.json'))());
-});
+function jsSourcePipe() {
+  return gulp.src('src/**/*.js');
+}
 
-gulp.task('js-full', ['jshint'], function () {
-  return jsSourcePipe()
-    .pipe(webpackPipe()())
-    .pipe(concat('angular-hy-res-full.js'))
-    .pipe(getOutputPipe(require('./package.json'))());
-});
-
-gulp.task('clean', function(cb) {
-  del('dist/**', cb);
-});
-
-gulp.task('build', ['clean'], function(cb) {
-  return runSequence(['js-single', 'js-full'], cb);
+gulp.task('test', function() {
+  return gulp.src('test/*.js')
+    .pipe(mocha({reporter: 'spec'}));
 });
 
 gulp.task('jshint', ['jshint:src', 'jshint:test', 'jshint:gulpfile']);
@@ -101,25 +45,8 @@ gulp.task('jshint:gulpfile', function() {
     .pipe(getJSHintPipe()());
 });
 
-function runKarma(action) {
-  return gulp.src('/test/spec/**/*.js')
-    .pipe(karma({
-      configFile: 'karma.conf.js',
-      action: action || 'run'
-    })).on('error', function(err) {
-      throw err;
-    });
-}
-
-gulp.task('karma', function() {
-  return runKarma();
-});
-
-gulp.task('karma:watch', function() {
-  return runKarma('watch');
-});
-
-gulp.task('test', ['jshint', 'karma'], function() {
+gulp.task('test:watch', function() {
+  gulp.watch(['test/*.js', 'src/**/*.js'], ['test']);
 });
 
 gulp.task('bump', ['test'], function() {
@@ -148,4 +75,4 @@ gulp.task('release', function(cb) {
   );
 });
 
-gulp.task('default', ['build']);
+gulp.task('default', ['jshint', 'test']);
