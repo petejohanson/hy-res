@@ -10,31 +10,25 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['mocha'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      'bower_components/angular/angular.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'bower_components/uri.js/src/URI.js',
-      'bower_components/uri.js/src/URITemplate.js',
-      'src/**/*.js',
-      'test/spec/**/*-tests.js'
+      'test/spec/**/*spec.js'
     ],
 
 
     // list of files to exclude
     exclude: [
-
+      'test/spec/server.js'
     ],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/angular-hy-res-link-header.js': ['webpack'],
-      'test/**/*-tests.js': ['webpack']
+      'test/spec/**/*spec.js': ['webpack']
     },
 
 
@@ -62,7 +56,18 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ['PhantomJS_NoWebSecurity'],
+
+    customLaunchers: {
+      'PhantomJS_NoWebSecurity': {
+        base: 'PhantomJS',
+        options: {
+          settings: {
+            webSecurityEnabled: false
+          }
+        }
+      }
+    },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

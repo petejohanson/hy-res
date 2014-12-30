@@ -76,7 +76,7 @@ describe('Resource', function () {
 
     describe('a resolved resource', function() {
       beforeEach(function () {
-        ordersResolve({ data: rawOrder, headers: { 'Content-Type': 'application/hal+json' } });
+        ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' } });
         return ordersPromise;
       });
 
@@ -205,7 +205,7 @@ describe('Resource', function () {
                 },
                 name: 'John Wayne'
               };
-              customerResolve({data: raw, headers: { 'Content-Type': 'application/hal+json' } });
+              customerResolve({data: raw, headers: { 'content-type': 'application/hal+json' } });
               return customerResource.$promise;
             });
 
@@ -320,7 +320,7 @@ describe('Resource', function () {
               name: 'John Wayne'
             };
 
-            customerResolve({data: raw, headers: {'Content-Type': 'application/hal+json' }});
+            customerResolve({data: raw, headers: {'content-type': 'application/hal+json' }});
             return customerResource.$promise;
           });
 
@@ -356,7 +356,7 @@ describe('Resource', function () {
               name: 'Bruce Lee'
             };
 
-            customerResolve({ data: raw, headers: { 'Content-Type': 'application/hal+json' } });
+            customerResolve({ data: raw, headers: { 'content-type': 'application/hal+json' } });
 
             return customerResource.$promise;
           });
@@ -406,9 +406,9 @@ describe('Resource', function () {
             location: 'Anytown, USA'
           };
 
-          ordersResolve({ data: rawOrder, headers: { 'Content-Type': 'application/hal+json' } });
-          customerResolve({ data: rawCustomer, headers: { 'Content-Type': 'application/hal+json' } });
-          profileResolve({ data: rawProfile, headers: { 'Content-Type': 'application/hal+json' } });
+          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' } });
+          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' } });
+          profileResolve({ data: rawProfile, headers: { 'content-type': 'application/hal+json' } });
 
           return profileResource.$promise;
         });
@@ -455,8 +455,8 @@ describe('Resource', function () {
             name: 'John Wayne'
           };
 
-          ordersResolve({ data: rawOrder, headers: { 'Content-Type': 'application/hal+json' } });
-          customerResolve({ data: rawCustomer, headers: { 'Content-Type': 'application/hal+json' } });
+          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' } });
+          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' } });
 
           return profileResource.$promise;
         });
@@ -505,9 +505,9 @@ describe('Resource', function () {
             location: 'Anytown, USA'
           };
 
-          ordersResolve({ data: rawOrder, headers: { 'Content-Type': 'application/hal+json' } });
-          customerResolve({ data: rawCustomer, headers: { 'Content-Type': 'application/hal+json' } });
-          profileResolve({ data: rawProfile, headers: { 'Content-Type': 'application/hal+json' } });
+          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' } });
+          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' } });
+          profileResolve({ data: rawProfile, headers: { 'content-type': 'application/hal+json' } });
 
           return profileResources.$promise;
         });
@@ -552,8 +552,8 @@ describe('Resource', function () {
             },
             name: 'John Wayne'
           };
-          ordersResolve({ data: rawOrder, headers: { 'Content-Type': 'application/hal+json' } });
-          customerResolve({ data: rawCustomer, headers: { 'Content-Type': 'application/hal+json' } });
+          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' } });
+          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' } });
 
           return profileResources.$promise;
         });

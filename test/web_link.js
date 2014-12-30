@@ -53,7 +53,7 @@ describe('WebLink', function () {
 
       describe('once the request completes', function() {
         beforeEach(function() {
-          httpResolve({data: { title: 'Hypermedia and AngularJS' }, headers: { 'Content-Type': 'application/hal+json' } });
+          httpResolve({data: { title: 'Hypermedia and AngularJS' }, headers: { 'content-type': 'application/hal+json' } });
           return httpPromise;
         });
 
