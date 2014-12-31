@@ -14,11 +14,15 @@ describe('SirenExtension', function () {
 
   describe('extension applicability', function() {
     it('should apply to application/vnd.siren+json content type', function() {
-      expect(ext.applies({}, { 'Content-Type':  'application/vnd.siren+json' })).to.be.true();
+      expect(ext.applies({}, { 'content-type':  'application/vnd.siren+json' })).to.be.true();
+    });
+
+    it('should apply to application/vnd.siren+json content type with params', function() {
+      expect(ext.applies({}, { 'content-type': 'application/vnd.siren+json; charset=utf-8' }, 200)).to.be.true();
     });
 
     it('should apply to a custom content type', function() {
-      expect(ext.applies({}, { 'Content-Type':  addlMediaType })).to.be.true();
+      expect(ext.applies({}, { 'content-type':  addlMediaType })).to.be.true();
     });
   });
 

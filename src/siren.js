@@ -19,7 +19,14 @@ var SirenExtension = function(mediaTypes) {
   };
 
   this.applies = function(data, headers) {
-    return mediaTypeSet[headers['Content-Type']] !==  undefined;
+    var h = headers['content-type'];
+    if (!h) {
+      return false;
+    }
+
+    // Handle parameters, e.g. application/hal+json; charset=UTF-8
+    var type = h.split(';')[0];
+    return mediaTypeSet[type] !==  undefined;
   };
 
   this.dataParser = function(data, headers) {

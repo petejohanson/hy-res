@@ -2,7 +2,14 @@
 
 var JsonExtension = function() {
   this.applies = function(data, headers) {
-    return headers['Content-Type'] === 'application/json';
+    var h = headers['content-type'];
+    if (!h) {
+      return false;
+    }
+
+    // Handle parameters, e.g. application/json; charset=UTF-8
+    var type = h.split(';')[0];
+    return type === 'application/json';
   };
 
   this.dataParser = function(data) {

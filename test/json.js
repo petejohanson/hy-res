@@ -13,7 +13,10 @@ describe('JsonExtension', function () {
 
   describe('extension applicability', function() {
     it('should apply when application/json content type', function() {
-      expect(ext.applies({}, { 'Content-Type': 'application/json' })).to.be.true();
+      expect(ext.applies({}, { 'content-type': 'application/json' })).to.be.true();
+    });
+    it('should apply to application/json content type with params', function() {
+      expect(ext.applies({}, { 'content-type': 'application/json; charset=utf-8' }, 200)).to.be.true();
     });
   });
 
