@@ -7,6 +7,7 @@ var gulp = require('gulp'),
   watch = require('gulp-watch'),
   karma = require('gulp-karma'),
   express = require('gulp-express'),
+  exit = require('gulp-exit'),
   mocha = require('gulp-mocha'),
   tap = require('gulp-tap'),
   git = require('gulp-git'),
@@ -25,29 +26,32 @@ function jsSourcePipe() {
   return gulp.src('src/**/*.js');
 }
 
+function karmaPipe(action) {
+  express.run({
+    file: 'test/spec/server.js'
+  });
+
+  return gulp.src('test/spec/**/*.js')
+    .pipe(karma({
+      configFile: 'karma.conf.js',
+      action: action
+    })).on('error', function(err) {
+      throw err;
+    });
+}
+
 gulp.task('test', function() {
   return gulp.src('test/*.js')
     .pipe(mocha({reporter: 'spec'}));
 });
 
-gulp.task('karma:server', function() {
-  return express.run({
-    file: 'test/spec/server.js'
-  });
+gulp.task('karma:watch', function() {
+  return karmaPipe('watch');
 });
 
-gulp.task('karma:test', ['karma:server'], function() {
-  return gulp.src('test/spec/**/*.js')
-    .pipe(karma({
-      configFile: 'karma.conf.js',
-      action: 'run'
-    })).on('error', function(err) {
-      throw err;
-    });
-});
-
-gulp.task('karma', ['karma:server', 'karma:test'], function() {
-  return express.stop();
+gulp.task('karma', function() {
+  return karmaPipe('run')
+    .pipe(exit());
 });
 
 gulp.task('jshint', ['jshint:src', 'jshint:test', 'jshint:gulpfile']);
@@ -97,4 +101,4 @@ gulp.task('release', function(cb) {
   );
 });
 
-gulp.task('default', ['jshint', 'test']);
+gulp.task('default', ['jshint', 'test', 'karma']);
