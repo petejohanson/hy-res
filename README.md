@@ -50,7 +50,7 @@ _Note: We are using the `$promise` property of a resource to keep the route from
 Returns a `hrWebLink` that can be followed to retrieve the root `hrResource`. See `hrResource` for details on the API available
 once once you have retrieved the root.
 
-### hrResource
+### Resource
 
 `angular-hy-res` resources behave like `ngResource`, in that resources are returned directly from calls, and the values
 in the resource will be merged into the object once the background request(s) complete. Doing so allows the view
