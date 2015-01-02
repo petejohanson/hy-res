@@ -1,63 +1,35 @@
-# angular-hy-res [![Build Status](https://travis-ci.org/petejohanson/angular-hy-res.svg?branch=master)](https://travis-ci.org/petejohanson/angular-hy-res)
+# hy-res [![Build Status](https://travis-ci.org/petejohanson/hy-res.svg?branch=master)](https://travis-ci.org/petejohanson/hy-res)
 
 A hypermedia client/library for [AngularJS](http://angularjs.org/). [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06), [Siren](https://github.com/kevinswiber/siren), and [Link header](https://tools.ietf.org/html/rfc5988) extensions are included by default, but support for other media types can be added.
 
 ## Support
 
-For any questions, please post to the [AngularHyRes Google Group](https://groups.google.com/forum/#!forum/angular-hy-res).
+For any questions, please post to the [AngularHyRes Google Group](https://groups.google.com/forum/#!forum/hy-res).
 
 ## Installation
 
-### Bower
+### NPM
 
-angular-hy-res is available via Bower. To install:
+hy-res is available via NPM. To install:
 
-    $ bower install --save angular-hy-res
+    $ npm install --save hy-res
 
 _Note: The API is still evolving, so during the 0.0.x series of releases there are no API stability guarantees Those users needed a stable API should set an explicit version in bower.json_
 
-### Manual
-
-Download the [production version][min] or the [development version][max].
-
-[min]: https://raw.github.com/petejohanson/angular-hy-res/master/dist/angular-hy-res-full.min.js
-[max]: https://raw.github.com/petejohanson/angular-hy-res/master/dist/angular-hy-res-full.js
-
-In your web page:
-
-```html
-<script src="angular.js"></script>
-<script src="dist/angular-hy-res-full.min.js"></script>
-```
-
 ## Documentation
 
-angular-hy-res offers an alternative to the built in AngularJS `$resource` service that focuses on using hypermedia
+hy-res is inspired by AngularJS' `$resource` service that focuses on using hypermedia
 controls, links (and/or embedded resources) discovered by link relation, to traverse a hypermedia enabled API.
+hy-res itself is not dependant on AngularJS, and can be used standalone along w/ the [axios](https://www.npmjs.com/package/axios)
+library. For deep AngularJS, leveraging the `$http` service, use the [angular-hy-res](https://github.com/petejohanson/angular-hy-res)
+library.
 
-The core of angular-hy-res is found in the `angular-hy-res` AngularJs module. To enable it, add that module to your own
-module definition. In addition, if you want to use the HAL, Siren, or Link header integration, you must include the
-`angular-hy-res-hal`, `angular-hy-res-siren`, or `angular-hy-res-link-header` modules:
+The main entrypoint to hy-res is a
 
-```javascript
-angular.module('myApp', [
-    'angular-hy-res',
-    'angular-hy-res-hal',
-    'angular-hy-res-siren',
-    'angular-hy-res-link-header',
-    'angular-hy-res-json'
-  ]);
-```
-
-The `angular-hy-res-json` module handles data for simple `application/json` responses, with no additional
-hypermedia controls present.
-
-_In the future, integration with other hypermedia formats, e.g. Siren, Uber, JSON-LD, will be available in their own modules._
-
-### hrRoot
+### HyRes.Root
 
 Most hypermedia APIs are accessed by fetching the API root from a well known URL, and then following links from there
-to do any further interactions. The main entry point to `angular-hy-res` is the `hrRoot` service, which allows you
+to do any further interactions. The main entry point to `hy-res` is the `hrRoot` service, which allows you
 to fetch a resource for the API root. The easiest way to do this is to inject the root in the `$routeProvider`:
 
 ```javascript
@@ -73,7 +45,7 @@ $routeProvider
 
 _Note: We are using the `$promise` property of a resource to keep the route from resolving until the root is fully fetched._
 
-#### hrRoot(url)
+#### Root(url)
 
 Returns a `hrWebLink` that can be followed to retrieve the root `hrResource`. See `hrResource` for details on the API available
 once once you have retrieved the root.
