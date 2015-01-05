@@ -9,7 +9,6 @@ var gulp = require('gulp'),
   express = require('gulp-express'),
   exit = require('gulp-exit'),
   mocha = require('gulp-mocha'),
-  tap = require('gulp-tap'),
   git = require('gulp-git'),
   tagVersion = require('gulp-tag-version'),
   jshint = require('gulp-jshint');
