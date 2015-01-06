@@ -74,7 +74,7 @@ var Resource = function(extensions) {
     ret.$error = null;
     var myself = this;
     ret.$promise = new Promise(function(resolve, reject) {
-      this.$promise.then(function(r) {
+      myself.$promise.then(function(r) {
         var resources = r.$followAll(rel, options);
         Array.prototype.push.apply(ret, resources);
         return resources.$promise;
@@ -86,7 +86,7 @@ var Resource = function(extensions) {
         ret.$error = err;
         reject(err);
       });
-    }.bind(this));
+    });
 
     return ret;
   };
