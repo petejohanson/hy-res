@@ -21,6 +21,10 @@ describe('LinkHeaderExtension', function () {
     it('should apply when Link header(s) found', function() {
       expect(ext.applies({}, { 'Link': '</posts?page=2>; rel=next' })).to.be.true();
     });
+
+    it('should not apply with no Link headers found', function() {
+      expect(ext.applies({}, { })).to.be.false();
+    });
   });
 
   describe('links parser', function() {

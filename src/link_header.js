@@ -14,7 +14,7 @@ var LinkHeaderExtension = function() {
   };
 
   this.applies = function(data, headers) {
-    return headers.Link !== null;
+    return _.isString(headers.Link);
   };
 
   this.dataParser = function(data) {
