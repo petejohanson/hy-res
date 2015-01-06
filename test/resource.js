@@ -1,7 +1,7 @@
 'use strict';
 
 
-var HyRes = require('../src/hy_res');
+var HyRes = require('../');
 
 var resourceAssertions = require('./resource_assertions');
 var sinon = require('sinon');

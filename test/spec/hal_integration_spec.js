@@ -1,7 +1,6 @@
 'use strict';
 
-var HyRes = require('../../src/hy_res');
-var HyResHal = require('../../src/hal');
+var HyRes = require('../../');
 
 require('es6-promise').polyfill();
 
@@ -12,7 +11,7 @@ describe('HyRes + axios to consume HALTalk', function() {
   var root;
 
   beforeEach(function() {
-    root = new HyRes.Root('http://127.0.0.1:3000/', axios, [new HyResHal()]).follow();
+    root = new HyRes.Root('http://127.0.0.1:3000/', axios, [new HyRes.HalExtension()]).follow();
     return root.$promise;
   });
 
