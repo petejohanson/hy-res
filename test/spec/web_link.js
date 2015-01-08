@@ -3,12 +3,11 @@
 require('es6-promise').polyfill();
 
 var _ = require('lodash');
-var resourceAssertions = require('./resource_assertions');
+var resourceAssertions = require('../resource_assertions');
 
 var expect = require('chai').expect;
-var sinon = require('sinon');
-var WebLink = require('../src/web_link.js');
-var HalExtension = require('../src/hal.js');
+var WebLink = require('../../src/web_link.js');
+var HalExtension = require('../../src/hal.js');
 
 describe('WebLink', function () {
 

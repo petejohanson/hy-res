@@ -39,11 +39,6 @@ function karmaPipe(action) {
     });
 }
 
-gulp.task('test', function() {
-  return gulp.src('test/*.js')
-    .pipe(mocha({reporter: 'spec'}));
-});
-
 gulp.task('karma:watch', function() {
   return karmaPipe('watch');
 });
@@ -100,4 +95,6 @@ gulp.task('release', function(cb) {
   );
 });
 
-gulp.task('default', ['jshint', 'test', 'karma']);
+gulp.task('default', function() {
+  return runSequence('jshint', 'karma');
+});

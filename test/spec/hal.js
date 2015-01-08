@@ -1,6 +1,6 @@
 'use strict';
 
-var HalExtension = require('../src/hal');
+var HalExtension = require('../../src/hal');
 var expect = require('chai').expect;
 
 describe('HalExtension', function () {

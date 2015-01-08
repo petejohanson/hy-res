@@ -1,9 +1,8 @@
 'use strict';
 
 require('es6-promise').polyfill();
-var LinkHeaderExtension = require('../src/link_header.js');
+var LinkHeaderExtension = require('../../src/link_header.js');
 
-var sinon = require('sinon');
 var expect = require('chai').expect;
 
 describe('LinkHeaderExtension', function () {

@@ -1,6 +1,6 @@
 'use strict';
 
-var SirenExtension = require('../src/siren');
+var SirenExtension = require('../../src/siren');
 
 var expect = require('chai').expect;
 

@@ -1,6 +1,6 @@
 'use strict';
 
-var JsonExtension = require('../src/json');
+var JsonExtension = require('../../src/json');
 
 var expect = require('chai').expect;
 

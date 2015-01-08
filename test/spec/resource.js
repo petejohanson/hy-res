@@ -1,10 +1,9 @@
 'use strict';
 
 
-var HyRes = require('../');
+var HyRes = require('../../');
 
-var resourceAssertions = require('./resource_assertions');
-var sinon = require('sinon');
+var resourceAssertions = require('../resource_assertions');
 var expect = require('chai').expect;
 var _ = require('lodash');
 
