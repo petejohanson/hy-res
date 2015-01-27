@@ -77,7 +77,7 @@ gulp.task('bump', function() {
 
 gulp.task('bump-commit', function() {
   var version = require('./package.json').version;
-  return gulp.src(['dist/*.js','./*.json'])
+  return gulp.src(['./*.json'])
     .pipe(git.commit('Release v' + version));
 });
 
