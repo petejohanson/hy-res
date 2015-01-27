@@ -18,7 +18,7 @@ describe('LinkHeaderExtension', function () {
 
   describe('extension applicability', function() {
     it('should apply when Link header(s) found', function() {
-      expect(ext.applies({}, { 'Link': '</posts?page=2>; rel=next' })).to.be.true();
+      expect(ext.applies({}, { 'link': '</posts?page=2>; rel=next' })).to.be.true();
     });
 
     it('should not apply with no Link headers found', function() {
@@ -30,7 +30,7 @@ describe('LinkHeaderExtension', function () {
     var links;
 
     beforeEach(function() {
-      links = ext.linkParser({}, { 'Link': '</posts?page=3>; rel=next, </posts?page=1>; rel="prev"' });
+      links = ext.linkParser({}, { 'link': '</posts?page=3>; rel=next, </posts?page=1>; rel="prev"' });
     });
 
     it('should return the links', function() {
@@ -53,7 +53,7 @@ describe('LinkHeaderExtension', function () {
   describe('parsing multiple links with the same rel', function() {
     var links;
     beforeEach(function() {
-      links = ext.linkParser({}, { 'Link':  '</posts?page=1>; rel="section"; title="Page 1", </posts?page=2>; rel="section"; title="Page 2"' });
+      links = ext.linkParser({}, { 'link':  '</posts?page=1>; rel="section"; title="Page 1", </posts?page=2>; rel="section"; title="Page 2"' });
     });
 
     it('has the first link', function() {

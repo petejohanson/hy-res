@@ -14,7 +14,7 @@ var LinkHeaderExtension = function() {
   };
 
   this.applies = function(data, headers) {
-    return _.isString(headers.Link);
+    return _.isString(headers.link);
   };
 
   this.dataParser = function(data) {
@@ -22,7 +22,7 @@ var LinkHeaderExtension = function() {
   };
 
   this.linkParser = function(data, headers, Resource) {
-    var links = httpLink.parse(headers.Link);
+    var links = httpLink.parse(headers.link);
 
     var ret = {};
     for(var i = 0; i < links.length; i++) {
