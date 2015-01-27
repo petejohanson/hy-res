@@ -1,10 +1,10 @@
 # hy-res [![Build Status](https://travis-ci.org/petejohanson/hy-res.svg?branch=master)](https://travis-ci.org/petejohanson/hy-res)
 
-A hypermedia client/library for [AngularJS](http://angularjs.org/). [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06), [Siren](https://github.com/kevinswiber/siren), and [Link header](https://tools.ietf.org/html/rfc5988) extensions are included by default, but support for other media types can be added.
+A hypermedia client/library for [AngularJS](http://angularjs.org/). [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06), [Siren](https://github.com/kevinswiber/siren), and [Link header](https://tools.ietf.org/html/rfc5988) extensions are included by default, but support for other media types can be added. For the most part, the core library is not normally used directly, instead consumed by way of a small framework integration layer, e.g. [angular-hy-res](http://github.com/petejohanson/angular-hy-res).
 
 ## Support
 
-For any questions, please post to the [AngularHyRes Google Group](https://groups.google.com/forum/#!forum/hy-res).
+For any questions, please post to the [HyRes Google Group](https://groups.google.com/forum/#!forum/hy-res).
 
 ## Installation
 
@@ -14,7 +14,7 @@ hy-res is available via NPM. To install:
 
     $ npm install --save hy-res
 
-_Note: The API is still evolving, so during the 0.0.x series of releases there are no API stability guarantees Those users needed a stable API should set an explicit version in bower.json_
+_Note: The API is still evolving, so during the 0.0.x series of releases there are no API stability guarantees Those users needed a stable API should set an explicit version in package.json_
 
 ## Documentation
 
@@ -33,39 +33,35 @@ to do any further interactions. The main entry point to `hy-res` is the `hrRoot`
 to fetch a resource for the API root. The easiest way to do this is to inject the root in the `$routeProvider`:
 
 ```javascript
-$routeProvider
-  .when('/posts', {
-    resolve: {
-      root: function(hrRoot) {
-        return hrRoot('/api').follow().$promise;
-      }
-    }
-  };
+var root = new HyRes.Root('/api', axios, [new HyRes.HalExtension]).follow();
 ```
 
-_Note: We are using the `$promise` property of a resource to keep the route from resolving until the root is fully fetched._
+#### Root(url, http, extensions)
 
-#### Root(url)
-
-Returns a `hrWebLink` that can be followed to retrieve the root `hrResource`. See `hrResource` for details on the API available
+Returns a `HyRes.WebLink` that can be followed to retrieve the root `HyRes.Resource`. See `HyRes.Resource` for details on the API available
 once once you have retrieved the root.
 
 ### Resource
 
-`angular-hy-res` resources behave like `ngResource`, in that resources are returned directly from calls, and the values
-in the resource will be merged into the object once the background request(s) complete. Doing so allows the view
-layer to directly bind to the resource fields. Should you need to do something once the resource is loaded,
-the `$promise` property of the resource is available.
+`hy-res` resources behave like AngularJS' `ngResource`, in that resources are
+returned directly from calls, and the values in the resource will be merged
+into the object once the background request(s) complete. Doing so allows a
+view layer to directly bind to the resource fields. Should you need to do
+something once the resource is loaded, the `$promise` property of the resource
+is available.
 
-`hrResource offers several functions you can use to interact with links and embedded resources found in
-the resource.
+`HyRes.Resource` offers several functions you can use to interact with links
+and embedded resources found in the resource.
 
 #### $followOne(rel, options)
 
-This function will follow the given link relation and return a resource. It will first attempt to locate the link relation in the embedded resources, and fall
-back to checking for the presence of a link and loading those. Depending on whether an embedded version is found,
-or only a link, will determine whether the resource will already be resolved, or will be so in the future. The optional `options`
-parameter can be used to pass additional options to the underlying `$http` request.
+This function will follow the given link relation and return a resource. It
+will first attempt to locate the link relation in the embedded resources, and
+fall back to checking for the presence of a link and loading those. Depending
+on whether an embedded version is found, or only a link, will determine whether
+the resource will already be resolved, or will be so in the future. The
+optional `options` parameter can be used to pass additional options to the
+underlying http request.
 
 ```javascript
 res.$followOne('next')
@@ -81,7 +77,7 @@ resources, and fall back to checking for the presence of a link and loading
 those. Depending on whether an embedded version is found, or only links, will
 determine whether the resources will already be resolved, or will be so in the
 future. The optional `options` parameter can be used to pass additional options
-to the underlying `$http` request.
+to the underlying http request.
 
 ```javascript
 res.$followAll('item')
@@ -119,8 +115,9 @@ res.$follow(
 
 #### $promise
 
-This property is a `$q` promise that can be used to perform work once the resource is resolved. For resources that were 
-embedded, the promise may already resolved when the resource is initially created.
+This property is a ES6 promise that can be used to perform work once the
+resource is resolved. For resources that were embedded, the promise may already
+resolved when the resource is initially created.
 
 #### $resolved
 
@@ -128,25 +125,25 @@ This property is a simple boolean `true/false` value indicating whether the spec
 
 #### $link(rel)
 
-This function will return a `hrWebLink` if found for the given relation, or null
+This function will return a `HyRes.WebLink` if found for the given relation, or null
 otherwise. If more than one link is found for the given relation, an exception
-will be thrown. See the `hrWebLink` section for more details.
+will be thrown. See the `HyRes.WebLink` section for more details.
 
 ```javascript
 res.$link('next')
-=> hrWebLink { href: '/posts?page=2' }
+=> WebLink { href: '/posts?page=2' }
 ```
 
 #### $links(rel)
 
-This function will return a `hrLinkCollection` for the given relation. If
+This function will return a `HyRes.LinkCollection` for the given relation. If
 the link relation is not found, then an empty collection is returned. `null` is
-never returned from this function. See the `hrLinkCollection` section for more
+never returned from this function. See the `HyRes.LinkCollection` section for more
 details.
 
 ```javascript
 res.$links('posts')
-=> hrLinkCollection [ { href: '/posts/123' }, { href: '/posts/345' } ]
+=> HyRes.LinkCollection [ { href: '/posts/123' }, { href: '/posts/345' } ]
 ```
 
 #### $sub(rel)
@@ -158,7 +155,7 @@ link relation, then an exception will be thrown;
 
 ```javascript
 res.$sub('item')
-=> hrResource { $resolved: true, $promise: resolved $q promise, ... various properties }
+=> HyRes.Resource { $resolved: true, $promise: resolved $q promise, ... various properties }
 ```
 
 #### $embedded(rel)
@@ -173,7 +170,7 @@ an empty array will be returned instead. This function will never return `null`.
 
 ```javascript
 res.$subs('item')
-=> [hrResource { $resolved: true, $promise: resolved $q promise, ... various properties }]
+=> [HyRes.Resource { $resolved: true, $promise: resolved $q promise, ... various properties }]
 ```
 
 #### $embeddeds(rel)
@@ -192,33 +189,33 @@ res.$has('item')
 res.$has('missing')
 => false
 ```
-### hrWebLink
+### HyRes.WebLink
 
-Currently, there is one implementation of the concept of a link, `hrWebLink`, which encapsulates the data and concepts
+Currently, there is one implementation of the concept of a link, `HyRes.WebLink`, which encapsulates the data and concepts
 codified in [RFC5988](http://tools.ietf.org/html/rfc5988). The standard data fields (if defined for the specific link),
 such as `href`, `title`, `type`, etc are all defined on the link. In addition, there just a single function that can be
 invoked for the link, `follow`:
 
 #### follow(options)
 
-The `follow` function of an `hrWebLink` is used to dereference the target URI, and returns an `hrResource` instance.
+The `follow` function of an `HyRes.WebLink` is used to dereference the target URI, and returns an `HyRes.Resource` instance.
 Just like AngularJS' built in `$resource`, a promise is not returned, the resource itself is returned, and it will be
 populated with values in some future time, simplifying binding to resource in templates. Should you need a promise,
-use the `$promise` property of the `hrResource`.
+use the `$promise` property of the `HyRes.Resource`.
 
 The optional `options` parameter will be passed to the underlying [`$http`](https://docs.angularjs.org/api/ng/service/$http) service call.
 Use options if you need to override the HTTP method for the call, provide query parameters, etc.
 
-### hrLinkCollection
+### HyRes.LinkCollection
 
-If a `hrResource` instance contains multiple links for the same link relation, then following that relation will
-return a `hrLinkCollection` resource. All the expected `Array` accessors, such as `[]`, `length` will work as expected.
+If a `HyRes.Resource` instance contains multiple links for the same link relation, then following that relation will
+return a `HyRes.LinkCollection` resource. All the expected `Array` accessors, such as `[]`, `length` will work as expected.
 In addition, a `follow` function can be used to dereference all the links contained in the collection:
 
 #### `follow(options)`
 
-Returns an `Array` of `hrResource` instances. In addition, the array has a `$promise` property that will resolve
-when all of the `hrResource` instances resolve, allowing you to perform some logic once everything has been fetched.
+Returns an `Array` of `HyRes.Resource` instances. In addition, the array has a `$promise` property that will resolve
+when all of the `HyRes.Resource` instances resolve, allowing you to perform some logic once everything has been fetched.
 
 ### HAL Extension
 
