@@ -69,7 +69,7 @@ gulp.task('test:watch', function() {
   gulp.watch(['test/*.js', 'src/**/*.js'], ['test']);
 });
 
-gulp.task('bump', ['test'], function() {
+gulp.task('bump', function() {
   return gulp.src('./*.json')
     .pipe(bump({ type: gulp.env.type || 'patch' }))
     .pipe(gulp.dest('./'));
