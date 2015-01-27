@@ -29,8 +29,8 @@ The main entrypoint to hy-res is a
 ### HyRes.Root
 
 Most hypermedia APIs are accessed by fetching the API root from a well known URL, and then following links from there
-to do any further interactions. The main entry point to `hy-res` is the `hrRoot` service, which allows you
-to fetch a resource for the API root. The easiest way to do this is to inject the root in the `$routeProvider`:
+to do any further interactions. The main entry point to `hy-res` is `HyRes.Root`, which allows you
+to fetch a resource for the API root:
 
 ```javascript
 var root = new HyRes.Root('/api', axios, [new HyRes.HalExtension]).follow();
@@ -244,7 +244,7 @@ angular.module('myModule', ['angular-hy-res-siren'])
 ```
 
 At this point, the Siren extension includes both the Siren `links` and the sub-entity embedded links in the set
- queried by the `$link` function of `hrResource`.
+ queried by the `$link` function of `HyRes.Resource`.
 
 _Note: At this point, Siren actions are not supported._ 
 
