@@ -41,6 +41,10 @@ var root = new HyRes.Root('/api', axios, [new HyRes.HalExtension]).follow();
 Returns a `HyRes.WebLink` that can be followed to retrieve the root `HyRes.Resource`. See `HyRes.Resource` for details on the API available
 once once you have retrieved the root.
 
+`http` needs to be a function that performs an HTTP request and returns a promise for the response. [axios](https://www.npmjs.com/package/axios) will work out of the box. The `angular-hy-res` projects provides a wrapper for the `$http` service that provides the same functionality.
+
+`extensions` should be an array of extensions you would like to use to process responses.
+
 ### Resource
 
 `hy-res` resources behave like AngularJS' `ngResource`, in that resources are
