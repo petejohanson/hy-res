@@ -11,7 +11,7 @@ describe('HyRes + axios to consume HALTalk', function() {
   var root;
 
   beforeEach(function() {
-    root = new HyRes.Root('http://127.0.0.1:3000/', axios, [new HyRes.HalExtension()]).follow();
+    root = new HyRes.Root('http://127.0.0.1:10000/', axios, [new HyRes.HalExtension()]).follow();
     return root.$promise;
   });
 
