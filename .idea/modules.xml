@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/angular-hy-res.iml" filepath="$PROJECT_DIR$/.idea/angular-hy-res.iml" />
+      <module fileurl="file:///usr/home/peter/git/hy-res/.idea/hy-res.iml" filepath="/usr/home/peter/git/hy-res/.idea/hy-res.iml" />
     </modules>
   </component>
 </project>

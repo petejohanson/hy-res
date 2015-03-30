@@ -353,3 +353,9 @@ And the view:
 * Differentiate between embedded link vs embedded representation (See Siren spec)
 * Correct relative URI resolution for following links.
 * Sane error handling
+* Store resource's own URL somewhere accessible, perhaps `res.$href`?
+* Change "options" to be nested under { transportOptions: opts } to allow
+  hy-res options to exist as a distinct set of options. (e.g. data for URI
+  template resolution)
+* Store raw http response data in resource property, e.g. `res.$raw`
+* Support for PUT of modified resource to replace server state?
