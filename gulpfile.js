@@ -6,7 +6,7 @@ var gulp = require('gulp'),
   bump = require('gulp-bump'),
   watch = require('gulp-watch'),
   karma = require('gulp-karma'),
-  express = require('gulp-express'),
+  gls = require('gulp-live-server'),
   exit = require('gulp-exit'),
   mocha = require('gulp-mocha'),
   git = require('gulp-git'),
@@ -25,11 +25,15 @@ function jsSourcePipe() {
   return gulp.src('src/**/*.js');
 }
 
-function karmaPipe(action) {
-  express.run({
-    file: 'test/spec/server.js'
+gulp.task('server:karma', function(cb) {
+  gls.new('test/spec/server.js').start().then(function(s) {
+    cb();
+  }, function(err) {
+    cb(err);
   });
+});
 
+function karmaPipe(action) {
   return gulp.src('test/spec/**/*.js')
     .pipe(karma({
       configFile: 'karma.conf.js',
@@ -39,11 +43,11 @@ function karmaPipe(action) {
     });
 }
 
-gulp.task('karma:watch', function() {
+gulp.task('karma:watch', ['server:karma'], function() {
   return karmaPipe('watch');
 });
 
-gulp.task('karma', function() {
+gulp.task('karma', ['server:karma'], function() {
   return karmaPipe('run')
     .pipe(exit());
 });
