@@ -11,11 +11,7 @@ var Root = function(url, http, extensions) {
 
     e.initialize(http, extensions);
   });
-  var link = new WebLink({ href: url }, http, extensions);
-
-  this.follow = function(options) {
-    return link.follow(options);
-  };
+  return new WebLink({ href: url }, http, extensions);
 };
 
 module.exports = Root;
