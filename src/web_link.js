@@ -16,8 +16,15 @@ WebLink.prototype.follow = function(options) {
   options = (options || {});
   options.headers = (options.headers || {});
 
-  if(this.type && !options.headers.Accept) {
-    options.headers.Accept = this.type;
+  if(!options.headers.Accept) {
+    if (this.type) {
+      options.headers.Accept = this.type;
+    } else {
+      var accept = _.reduce(_.flatten(_.compact(_.pluck(this.$$extensions, 'mediaTypes'))), function(acc, s) { return acc + ',' + s; });
+      if (accept) {
+        options.headers.Accept = accept;
+      }
+    }
   }
 
   var requestOptions = _.extend(options, { url: this.resolvedUrl(options.data) });

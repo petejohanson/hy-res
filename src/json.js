@@ -1,6 +1,8 @@
 'use strict';
 
 var JsonExtension = function() {
+  this.mediaTypes = ['application/json'];
+
   this.applies = function(data, headers) {
     var h = headers['content-type'];
     if (!h) {

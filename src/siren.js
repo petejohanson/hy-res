@@ -13,6 +13,8 @@ var SirenExtension = function(mediaTypes) {
     mediaTypeSet[mediaTypes[i]] = true;
   }
 
+  this.mediaTypes = _.keys(mediaTypeSet);
+
   this.initialize = function(_http, _extensions) {
     http = _http;
     extensions = _extensions;

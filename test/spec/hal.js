@@ -42,4 +42,8 @@ describe('HalExtension', function () {
       expect(data).to.eql({ name: 'John Doe' });
     });
   });
+
+  it('should have standard and custom media types', function() {
+    expect(extension.mediaTypes).to.eql(['application/hal+json', addlMediaType]);
+  });
 });

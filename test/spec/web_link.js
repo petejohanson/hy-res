@@ -8,6 +8,8 @@ var resourceAssertions = require('../resource_assertions');
 var expect = require('chai').expect;
 var WebLink = require('../../src/web_link.js');
 var HalExtension = require('../../src/hal.js');
+var JsonExtension = require('../../src/json.js');
+var LinkHeaderExtension = require('../../src/link_header.js');
 
 describe('WebLink', function () {
 
@@ -17,9 +19,13 @@ describe('WebLink', function () {
 
     beforeEach(function() {
       http = sinon.stub();
-      var extensions = [new HalExtension()];
+      var extensions = [new HalExtension(), new JsonExtension(), new LinkHeaderExtension()];
 
-      _.forEach(extensions, function(e) { e.initialize(http, extensions); });
+      _.forEach(extensions, function(e) {
+        if (e.initialize) {
+          e.initialize(http, extensions);
+        }
+      });
 
       link = new WebLink({
         href: '/posts/123',
@@ -55,6 +61,10 @@ describe('WebLink', function () {
       });
 
       resourceAssertions.unresolvedResourceBehavior(context);
+
+      it('passes an Accept header with extension content types', function() {
+        expect(http.calledWith(sinon.match.has('headers', { 'Accept': 'application/hal+json,application/json' }))).to.be.true();
+      });
 
       describe('once the request completes', function() {
         beforeEach(function() {

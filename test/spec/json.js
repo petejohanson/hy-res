@@ -26,4 +26,8 @@ describe('JsonExtension', function () {
       expect(data).to.eql({ name: 'John Doe' });
     });
   });
+
+  it('should have application/json media types', function() {
+    expect(ext.mediaTypes).to.eql(['application/json']);
+  });
 });

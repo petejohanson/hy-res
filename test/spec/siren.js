@@ -112,4 +112,8 @@ describe('SirenExtension', function () {
       });
     });
   });
+
+  it('should have standard and custom media types', function() {
+    expect(ext.mediaTypes).to.eql(['application/vnd.siren+json', addlMediaType]);
+  });
 });
