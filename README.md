@@ -210,6 +210,13 @@ use the `$promise` property of the `HyRes.Resource`.
 The optional `options` parameter will be passed to the underlying [`$http`](https://docs.angularjs.org/api/ng/service/$http) service call.
 Use options if you need to override the HTTP method for the call, provide query parameters, etc.
 
+#### resolvedUrl(data)
+
+The `resolvedUrl` function of a `HyRes.WebLink` can be used to see what the final resolved URL will be for the link once processing:
+
+* URI Template parameters passed in the `data` argument.
+* Converting any relative URLs to absolute ones given the context of the web link, i.e. the URL of the response that contained the link.
+
 ### HyRes.LinkCollection
 
 If a `HyRes.Resource` instance contains multiple links for the same link relation, then following that relation will
