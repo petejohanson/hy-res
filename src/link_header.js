@@ -21,13 +21,13 @@ var LinkHeaderExtension = function() {
     return {};
   };
 
-  this.linkParser = function(data, headers, Resource) {
+  this.linkParser = function(data, headers, context) {
     var links = httpLink.parse(headers.link);
 
     var ret = {};
     for(var i = 0; i < links.length; i++) {
       var l = links[i];
-      var wl = new WebLink(l, http, extensions);
+      var wl = new WebLink(l, context, http, extensions);
       if (!_.isUndefined(ret[l.rel])) {
         ret[l.rel].push(wl);
       } else {

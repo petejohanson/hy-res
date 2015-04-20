@@ -351,7 +351,6 @@ And the view:
 * Let extensions only implement the functions they need.
 * Mixins for resources based on... profile? link relation that was followed?
 * Differentiate between embedded link vs embedded representation (See Siren spec)
-* Correct relative URI resolution for following links.
 * Sane error handling
 * Store resource's own URL somewhere accessible, perhaps `res.$href`?
 * Change "options" to be nested under { transportOptions: opts } to allow

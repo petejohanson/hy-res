@@ -11,7 +11,11 @@ var Root = function(url, http, extensions) {
 
     e.initialize(http, extensions);
   });
-  return new WebLink({ href: url }, http, extensions);
+  WebLink.call(this, { href: url }, { url: url }, http, extensions)
 };
+
+Root.prototype = _.create(WebLink.prototype, {
+  'constructor': Root
+});
 
 module.exports = Root;

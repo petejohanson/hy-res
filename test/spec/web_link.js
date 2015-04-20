@@ -24,12 +24,16 @@ describe('WebLink', function () {
       link = new WebLink({
         href: '/posts/123',
         title: 'Hypermedia and AngularJS'
-      }, http, extensions);
+      }, { url: 'http://api.server.com/' }, http, extensions);
     });
 
     it('had the data properties', function() {
       expect(link.href).to.equal('/posts/123');
       expect(link.title).to.equal('Hypermedia and AngularJS');
+    });
+
+    it('has a proper resolved URL', function() {
+      expect(link.resolvedUrl()).to.equal('http://api.server.com/posts/123');
     });
 
     describe('following the link', function() {
@@ -42,7 +46,9 @@ describe('WebLink', function () {
         httpPromise = new Promise(function(resolve, reject) {
           httpResolve = resolve;
         });
-        http.returns(httpPromise);
+        http
+          .withArgs(sinon.match({ url: 'http://api.server.com/posts/123' }))
+          .returns(httpPromise);
 
         resource = link.follow();
         context.resource = resource;
@@ -52,7 +58,7 @@ describe('WebLink', function () {
 
       describe('once the request completes', function() {
         beforeEach(function() {
-          httpResolve({data: { title: 'Hypermedia and AngularJS' }, headers: { 'content-type': 'application/hal+json' } });
+          httpResolve({data: { title: 'Hypermedia and AngularJS' }, headers: { 'content-type': 'application/hal+json' }, config: { url: 'http://api.server.com/posts/123' }});
           return httpPromise;
         });
 
@@ -72,11 +78,15 @@ describe('WebLink', function () {
       link = new WebLink({
         href: '/posts{/id}',
         templated: true
-      }, {});
+      }, {}, {}, []);
     });
 
     it('is templated', function() {
       expect(link.templated).to.equal(true);
+    });
+
+    it('processes the URI template for the resolved URL', function() {
+      expect(link.resolvedUrl({ id: '123' })).to.equal('/posts/123');
     });
 
     describe('following the link without providing data in options', function() {
@@ -102,7 +112,7 @@ describe('WebLink', function () {
       link = new WebLink({
         href: '/posts?page=2',
         type: 'application/json'
-      }, http, extensions);
+      }, {}, http, extensions);
     });
 
     it('has the type', function() {

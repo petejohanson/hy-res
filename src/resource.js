@@ -120,24 +120,24 @@ Resource.prototype.$has = function(rel) {
   return this.$links(rel).length > 0 || this.$subs(rel).length > 0;
 };
 
-Resource.prototype.$$resolve = function(data, headers) {
+Resource.prototype.$$resolve = function(data, headers, context) {
   _.forEach(this.$$extensions, function(e) {
-    if (!e.applies(data, headers)) {
+    if (!e.applies(data, headers, context)) {
       return;
     }
 
-    _.assign(this, e.dataParser(data, headers));
+    _.assign(this, e.dataParser(data, headers, context));
 
-    _.assign(this.$$links, e.linkParser(data, headers));
-    _.forEach(e.embeddedParser(data, headers), function(raw, rel) {
+    _.assign(this.$$links, e.linkParser(data, headers, context));
+    _.forEach(e.embeddedParser(data, headers, context), function(raw, rel) {
       if (_.isArray(raw)) {
-        var embeds = raw.map(function(e) { return Resource.embedded(e, headers, this.$$extensions); }, this);
+        var embeds = raw.map(function(e) { return Resource.embedded(e, headers, this.$$extensions, context); }, this);
 
         embeds.$promise = Promise.resolve(embeds);
         embeds.$resolved = true;
         this.$$embedded[rel] = embeds;
       } else {
-        this.$$embedded[rel] = Resource.embedded(raw, headers, this.$$extensions);
+        this.$$embedded[rel] = Resource.embedded(raw, headers, this.$$extensions, context);
       }
     }, this);
   }, this);
@@ -145,9 +145,14 @@ Resource.prototype.$$resolve = function(data, headers) {
   this.$resolved = true;
 };
 
-Resource.embedded = function(raw, headers, extensions) {
+Resource.prototype.$$reject = function(error) {
+  this.$error = error;
+  this.$resolved = true;
+};
+
+Resource.embedded = function(raw, headers, extensions, context) {
   var ret = new Resource(extensions);
-  ret.$$resolve(raw, headers);
+  ret.$$resolve(raw, headers, context);
   ret.$promise = Promise.resolve(ret);
   return ret;
 };
@@ -156,10 +161,14 @@ Resource.fromRequest = function(request, extensions) {
   var res = new Resource(extensions);
   res.$promise =
     request.then(function(response) {
-        res.$$resolve(response.data, response.headers);
+        var context = {};
+        if (response.config && response.config.url) {
+          context.url = response.config.url;
+        }
+        res.$$resolve(response.data, response.headers, context);
         return res;
       }, function(response) {
-        // TODO: What to do for failure case?
+        res.$$reject(response);
       });
 
   return res;

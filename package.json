@@ -61,8 +61,8 @@
     "webpack-dev-server": "^1.7.0"
   },
   "dependencies": {
+    "URIjs": "^1.15.0",
     "http-link": "~0.3.0",
-    "lodash": "^2.4.1",
-    "uritemplate": "^0.3.4"
+    "lodash": "^2.4.1"
   }
 }

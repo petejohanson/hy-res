@@ -8,12 +8,31 @@ app.use(hal.middleware);
 
 app.route('/')
   .options(function(req, res) {
-    res.header('Access-Control-Allow-Origin', '*').sendStatus(204);
+    res.header('Access-Control-Allow-Origin', '*')
+       .header('Access-Control-Allow-Methods', 'GET,OPTIONS')
+       .header('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type')
+       .sendStatus(204);
   })
   .get(function (req, res) {
     res.header('Access-Control-Allow-Origin', '*').type('application/hal+json').hal({
       links: {
-        self: '/'
+        self: '/',
+        'thing-template': { href: '/things{/id}', templated: true }
+      }
+    });
+  });
+
+app.route('/things/:id')
+  .options(function(req, res) {
+    res.header('Access-Control-Allow-Origin', '*')
+       .header('Access-Control-Allow-Methods', 'GET,OPTIONS')
+       .header('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type')
+       .sendStatus(204);
+  })
+ .get(function(req, res) {
+    res.header('Access-Control-Allow-Origin', '*').type('application/hal+json').hal({
+      links: {
+        self: req.url
       }
     });
   });

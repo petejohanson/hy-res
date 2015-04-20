@@ -37,7 +37,7 @@ var HalExtension = function(mediaTypes) {
     return ret;
   };
 
-  this.linkParser = function(data, headers) {
+  this.linkParser = function(data, headers, context) {
     if (!_.isObject(data._links)) {
       return null;
     }
@@ -50,7 +50,7 @@ var HalExtension = function(mediaTypes) {
 
       var linkArray = [];
       _.forEach(val, function(l) {
-        linkArray.push(new WebLink(l, http, extensions));
+        linkArray.push(new WebLink(l, context, http, extensions));
       }, this);
 
       ret[key] = LinkCollection.fromArray(linkArray);

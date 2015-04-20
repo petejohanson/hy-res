@@ -75,7 +75,11 @@ describe('Resource', function () {
 
     describe('a resolved resource', function() {
       beforeEach(function () {
-        ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' } });
+        ordersResolve({
+          data: rawOrder,
+          headers: { 'content-type': 'application/hal+json' },
+          config: { url: '/orders/123' }
+        });
         return ordersPromise;
       });
 
@@ -204,7 +208,11 @@ describe('Resource', function () {
                 },
                 name: 'John Wayne'
               };
-              customerResolve({data: raw, headers: { 'content-type': 'application/hal+json' } });
+              customerResolve({
+                data: raw,
+                headers: { 'content-type': 'application/hal+json' },
+                config: { url: '/customers/321' }
+              });
               return customerResource.$promise;
             });
 
@@ -271,8 +279,8 @@ describe('Resource', function () {
 
           describe('when the background requests complete', function() {
             beforeEach(function() {
-              firstStoreResolved({data: {}, headers: {}});
-              secondStoreResolved({data: {}, headers: {}});
+              firstStoreResolved({data: {}, headers: {}, config: {url: '/stores/123'}});
+              secondStoreResolved({data: {}, headers: {}, config: {url: '/stores/456'}});
 
               return stores.$promise;
             });
@@ -319,7 +327,7 @@ describe('Resource', function () {
               name: 'John Wayne'
             };
 
-            customerResolve({data: raw, headers: {'content-type': 'application/hal+json' }});
+            customerResolve({data: raw, headers: {'content-type': 'application/hal+json' }, config: { url: '/customers/321' } });
             return customerResource.$promise;
           });
 
@@ -355,7 +363,7 @@ describe('Resource', function () {
               name: 'Bruce Lee'
             };
 
-            customerResolve({ data: raw, headers: { 'content-type': 'application/hal+json' } });
+            customerResolve({ data: raw, headers: { 'content-type': 'application/hal+json' }, config: { url: '/orders/123' } });
 
             return customerResource.$promise;
           });
@@ -405,9 +413,9 @@ describe('Resource', function () {
             location: 'Anytown, USA'
           };
 
-          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' } });
-          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' } });
-          profileResolve({ data: rawProfile, headers: { 'content-type': 'application/hal+json' } });
+          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' }, config: { url: '/orders/123' } });
+          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' }, config: { url: '/customers/321' } });
+          profileResolve({ data: rawProfile, headers: { 'content-type': 'application/hal+json' }, config: { url: '/customers/321/profile' } });
 
           return profileResource.$promise;
         });
@@ -454,8 +462,8 @@ describe('Resource', function () {
             name: 'John Wayne'
           };
 
-          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' } });
-          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' } });
+          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' }, config: { url: '/orders/123' } });
+          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' }, config: { url: '/customers/321' } });
 
           return profileResource.$promise;
         });
@@ -504,9 +512,9 @@ describe('Resource', function () {
             location: 'Anytown, USA'
           };
 
-          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' } });
-          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' } });
-          profileResolve({ data: rawProfile, headers: { 'content-type': 'application/hal+json' } });
+          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' }, config: { url: '/orders/123' } });
+          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' }, config: { url: '/customers/321' } });
+          profileResolve({ data: rawProfile, headers: { 'content-type': 'application/hal+json' }, config: { url: '/customers/321/profile' } });
 
           return profileResources.$promise;
         });
@@ -551,8 +559,8 @@ describe('Resource', function () {
             },
             name: 'John Wayne'
           };
-          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' } });
-          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' } });
+          ordersResolve({ data: rawOrder, headers: { 'content-type': 'application/hal+json' }, config: { url: '/orders/123' } });
+          customerResolve({ data: rawCustomer, headers: { 'content-type': 'application/hal+json' }, config: { url: '/customers/321' } });
 
           return profileResources.$promise;
         });

@@ -38,12 +38,12 @@ var SirenExtension = function(mediaTypes) {
     return ret;
   };
 
-  this.linkParser = function(data, headers) {
+  this.linkParser = function(data, headers, context) {
     var ret = {};
 
     if (_.isObject(data.links)) {
       _.forEach(data.links, function (val) {
-        var link = new WebLink(val, http, extensions);
+        var link = new WebLink(val, context, http, extensions);
         for (var li = 0; li < val.rel.length; li++) {
           var r = val.rel[li];
           if (ret.hasOwnProperty(r)) {
