@@ -92,6 +92,7 @@ gulp.task('tag', function() {
 
 gulp.task('release', function(cb) {
   runSequence(
+    'default',
     'bump',
     'bump-commit',
     'tag',
