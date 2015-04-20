@@ -30,8 +30,7 @@ describe('HyRes + axios to consume HALTalk', function() {
     var id = '123';
 
     beforeEach(function() {
-console.log(root.$link('thing-template').resolvedUrl({id: id }));
-      thing = root.$followOne('thing-template', { data: { id: id } })
+      thing = root.$followOne('thing-template', { data: { id: id } });
       return thing.$promise;
     });
 

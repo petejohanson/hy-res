@@ -11,7 +11,7 @@ var Root = function(url, http, extensions) {
 
     e.initialize(http, extensions);
   });
-  WebLink.call(this, { href: url }, { url: url }, http, extensions)
+  WebLink.call(this, { href: url }, { url: url }, http, extensions);
 };
 
 Root.prototype = _.create(WebLink.prototype, {
