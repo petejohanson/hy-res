@@ -105,14 +105,15 @@ var SirenExtension = function(mediaTypes) {
     return ret;
   };
 
-  var formFactory = function(f) {
-    return new Form(_.defaults(f, formDefaults), context, http);
-  };
 
   this.formParser = function(data, headers, context) {
     if (!_.isArray(data.actions)) {
       return {};
     }
+
+    var formFactory = function(f) {
+      return new Form(_.defaults(f, formDefaults), context, http);
+    };
 
     return _.groupBy(_.map(data.actions, formFactory), 'name');
   };

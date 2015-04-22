@@ -131,7 +131,7 @@ describe('SirenExtension', function () {
     });
 
     it('should return the actions keyed by name', function() {
-      expect(forms['create-form'][0]).to.exist;
+      expect(forms['create-form'][0]).to.exist();
     });
 
     describe('the parsed form', function() {
@@ -140,7 +140,6 @@ describe('SirenExtension', function () {
       beforeEach(function() { f = forms['create-form'][0]; });
 
       it('should have the title', function() {
-console.log(f);
         expect(f.title).to.equal('New Post');
       });
 
@@ -153,7 +152,7 @@ console.log(f);
       });
 
       it('should have form fields', function() {
-        expect(f.field('title')).to.exist;
+        expect(f.field('title')).to.exist();
       });
     });
   });
