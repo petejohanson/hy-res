@@ -113,6 +113,51 @@ describe('SirenExtension', function () {
     });
   });
 
+  describe('form parser', function() {
+    var forms;
+
+    beforeEach(function() {
+      forms = ext.formParser({
+        actions: [
+          {
+            name: 'create-form',
+            title: 'New Post',
+            fields: [
+              { name: 'title', type: 'text' }
+            ]
+          }
+        ]
+      });
+    });
+
+    it('should return the actions keyed by name', function() {
+      expect(forms['create-form'][0]).to.exist;
+    });
+
+    describe('the parsed form', function() {
+      var f;
+
+      beforeEach(function() { f = forms['create-form'][0]; });
+
+      it('should have the title', function() {
+console.log(f);
+        expect(f.title).to.equal('New Post');
+      });
+
+      it('should default the type', function() {
+        expect(f.type).to.equal('application/x-www-form-urlencoded');
+      });
+
+      it('should default the method', function() {
+        expect(f.method).to.equal('GET');
+      });
+
+      it('should have form fields', function() {
+        expect(f.field('title')).to.exist;
+      });
+    });
+  });
+
   it('should have standard and custom media types', function() {
     expect(ext.mediaTypes).to.eql(['application/vnd.siren+json', addlMediaType]);
   });

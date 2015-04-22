@@ -1,10 +1,16 @@
 'use strict';
 
 var _ = require('lodash');
+var Form = require('./form');
 var WebLink = require('./web_link');
 var LinkCollection = require('./link_collection');
 
 var SirenExtension = function(mediaTypes) {
+  var formDefaults = {
+    method: 'GET',
+    type: 'application/x-www-form-urlencoded'
+  };
+
   var http, extensions;
   var mediaTypeSet = { 'application/vnd.siren+json': true };
 
@@ -97,6 +103,18 @@ var SirenExtension = function(mediaTypes) {
       }
     });
     return ret;
+  };
+
+  var formFactory = function(f) {
+    return new Form(_.defaults(f, formDefaults), context, http);
+  };
+
+  this.formParser = function(data, headers, context) {
+    if (!_.isArray(data.actions)) {
+      return {};
+    }
+
+    return _.groupBy(_.map(data.actions, formFactory), 'name');
   };
 };
 
