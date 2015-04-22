@@ -11,7 +11,69 @@ describe('Resource', function () {
   var extensions;
 
   beforeEach(function() {
-    extensions = [new HyRes.HalExtension()];
+    extensions = [new HyRes.HalExtension(), new HyRes.SirenExtension()];
+  });
+
+  describe('forms', function() {
+    var resource;
+    var http;
+    var promise;
+    var raw = {
+      actions: [
+        {
+          name: 'create-form',
+          href: '/posts',
+          method: 'POST',
+          title: 'New Post',
+          fields: [
+            { name: 'title', title: 'Title', value: 'First Post!' }
+          ]
+        }
+      ]
+    };
+
+    beforeEach(function() {
+      http = sinon.stub();
+      promise = new Promise(function(res,rej) {
+        res({
+          data: raw,
+          headers: { 'content-type': 'application/vnd.siren+json' },
+          config: { url: 'http://api.bloggityblog.com/' }
+        });
+      });
+      http.withArgs(sinon.match({ url: 'http://api.bloggityblog.com/' })).returns(promise);
+      resource = new HyRes.Root('http://api.bloggityblog.com/', http, extensions).follow();
+
+      return promise;
+    });
+
+    describe('$form', function() {
+      it('returns the form based on the name', function() {
+        expect(resource.$form('create-form')).to.be.an.instanceof(HyRes.Form);
+      });
+
+      it('returns cloned forms', function() {
+        expect(resource.$form('create-form')).not.to.equal(resource.$form('create-form'));
+      });
+    });
+
+    describe('$forms', function() {
+      var forms;
+
+      beforeEach(function() {
+        forms = resource.$forms('create-form');
+      });
+
+      it('returns the forms based on the name', function() {
+        expect(forms.length).to.equal(1);
+        expect(forms[0]).to.be.an.instanceof(HyRes.Form);
+      });
+
+      it('returns cloned forms', function() {
+        expect(forms).not.to.equal(resource.$forms('create-form'));
+      });
+    });
+
   });
 
   describe('an unresolved root resource', function() {

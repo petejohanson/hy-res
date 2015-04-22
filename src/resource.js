@@ -9,6 +9,7 @@ var Resource = function(extensions) {
   this.$error = null;
   this.$$links = {};
   this.$$embedded = {};
+  this.$$forms = {};
   this.$$extensions = extensions;
 
   this.$link = function(rel) {
@@ -24,11 +25,25 @@ var Resource = function(extensions) {
   };
 
   this.$links = function(rel) {
-    if (!this.$$links.hasOwnProperty(rel)) {
-      return [];
+    return _.get(this.$$links, rel, []);
+  };
+
+  this.$form = function(rel) {
+    var ret = _.get(this.$$forms, rel, []);
+
+    if (ret.length === 0) {
+      return null;
     }
 
-    return this.$$links[rel];
+    if (ret.length > 1) {
+      throw 'Multiple forms present';
+    }
+
+    return ret[0].clone();
+  };
+
+  this.$forms = function(rel) {
+    return _.invoke(_.get(this.$$forms, rel, []), 'clone');
   };
 
   this.$followOne = function(rel, options) {
@@ -130,6 +145,11 @@ Resource.prototype.$$resolve = function(data, headers, context) {
     _.assign(this, e.dataParser(data, headers, context));
 
     _.assign(this.$$links, e.linkParser(data, headers, context));
+
+    if (e.formParser) {
+      _.assign(this.$$forms, e.formParser(data, headers, context));
+    }
+
     _.forEach(e.embeddedParser(data, headers, context), function(raw, rel) {
       if (_.isArray(raw)) {
         var embeds = raw.map(function(e) { return Resource.embedded(e, headers, this.$$extensions, context); }, this);

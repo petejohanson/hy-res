@@ -64,6 +64,6 @@
   "dependencies": {
     "URIjs": "^1.15.0",
     "http-link": "~0.3.0",
-    "lodash": "^2.4.1"
+    "lodash": "^3.7.0"
   }
 }
