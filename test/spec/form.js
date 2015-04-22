@@ -88,4 +88,29 @@ describe('Form', function () {
       });
     });
   });
+
+  describe('form w/ GET method', function() {
+    var form, http, data;
+
+    beforeEach(function() {
+      http = sinon.stub();
+
+      data = {
+        name: 'create-form',
+        title: 'New Post',
+        href: '/posts',
+        method: 'GET',
+        fields: [
+          { name: 'q', type: 'text', title: 'Search', value: 'First Query!' },
+        ]
+      };
+
+      form = new Form(data, Context.empty, http);
+    });
+
+    it('sends field values as query parameters', function() {
+      form.submit();
+      expect(http).to.have.been.calledWith(sinon.match({ method: 'GET', params: { q: 'First Query!' } }));
+    });
+  });
 });

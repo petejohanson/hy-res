@@ -25,8 +25,10 @@ Form.prototype.submit = function() { // TODO: options parameter?
 
   if (this.fields) {
     var fieldValues = _.map(this.fields, function(f) { var ret = {}; ret[f.name] = f.value; return ret; });
+    var vals = _.assign.apply(this,_.flatten([{}, fieldValues]));
 
-    config.data = _.assign.apply(this,_.flatten([{}, fieldValues]));
+    var prop = this.method === 'GET' ? 'params' : 'data';
+    config[prop] = vals;
   }
 
   // TODO: Better return value? Return a resource? Something else?
@@ -34,7 +36,6 @@ Form.prototype.submit = function() { // TODO: options parameter?
 };
 
 Form.prototype.clone = function() {
-console.log('new form');
   return new Form(this.$$data, this.$http);
 };
 
