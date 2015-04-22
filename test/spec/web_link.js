@@ -6,6 +6,7 @@ var _ = require('lodash');
 var resourceAssertions = require('../resource_assertions');
 
 var expect = require('chai').expect;
+var Context = require('../../src/context.js');
 var WebLink = require('../../src/web_link.js');
 var HalExtension = require('../../src/hal.js');
 var JsonExtension = require('../../src/json.js');
@@ -30,7 +31,7 @@ describe('WebLink', function () {
       link = new WebLink({
         href: '/posts/123',
         title: 'Hypermedia and AngularJS'
-      }, { url: 'http://api.server.com/' }, http, extensions);
+      }, new Context('http://api.server.com/'), http, extensions);
     });
 
     it('had the data properties', function() {
@@ -88,7 +89,7 @@ describe('WebLink', function () {
       link = new WebLink({
         href: '/posts{/id}',
         templated: true
-      }, {}, {}, []);
+      }, Context.empty, {}, []);
     });
 
     it('is templated', function() {
@@ -122,7 +123,7 @@ describe('WebLink', function () {
       link = new WebLink({
         href: '/posts?page=2',
         type: 'application/json'
-      }, {}, http, extensions);
+      }, Context.empty, http, extensions);
     });
 
     it('has the type', function() {

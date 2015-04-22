@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var Context = require('./context');
 var LinkCollection = require('./link_collection');
 
 var Resource = function(extensions) {
@@ -161,9 +162,9 @@ Resource.fromRequest = function(request, extensions) {
   var res = new Resource(extensions);
   res.$promise =
     request.then(function(response) {
-        var context = {};
+        var context = Context.empty;
         if (response.config && response.config.url) {
-          context.url = response.config.url;
+          context = new Context(response.config.url);
         }
         res.$$resolve(response.data, response.headers, context);
         return res;

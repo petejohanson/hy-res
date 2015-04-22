@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var Resource = require('./resource');
-var URI = require('URIjs');
 var UriTemplate = require('URIjs/src/URITemplate');
 
 var WebLink = function(data, context, http, extensions) {
@@ -38,8 +37,8 @@ WebLink.prototype.resolvedUrl = function(data) {
     url = new UriTemplate(url).expand(data);
   }
 
-  if (this.$$context && this.$$context.url) {
-    url = new URI(url).absoluteTo(this.$$context.url).toString();
+  if (this.$$context) {
+    url = this.$$context.resolveUrl(url);
   }
 
   return url;

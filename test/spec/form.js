@@ -8,6 +8,7 @@ var chai = require('chai');
 var expect = chai.expect;
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
+var Context = require('../../src/context.js');
 var Form = require('../../src/form.js');
 
 describe('Form', function () {
@@ -21,13 +22,19 @@ describe('Form', function () {
       http = sinon.stub();
 
       data = {
+        name: 'create-form',
         title: 'New Post',
+        method: 'POST',
+        href: '/posts',
+        type: 'application/x-www-form-urlencoded',
         fields: [
-          { name: 'title', type: 'text', title: 'Title', value: '' },
+          { name: 'title', type: 'text', title: 'Title', value: 'First Post!' },
           { name: 'parent', type: 'hidden', value: '123' }
         ]
       };
-      form = new Form(data, http);
+
+      // TODO: Need context to handle making relative -> absolute URL.
+      form = new Form(data, Context.empty, http);
     });
 
     it('has the data properties', function() {
@@ -40,37 +47,39 @@ describe('Form', function () {
      expect(titleField).to.have.property('title', 'Title');
     });
 
-    describe('form submission', function() {
-      var form, http, data, result;
+    describe('cloning the form', function() {
+      var copy;
 
       beforeEach(function() {
-        http = sinon.stub();
+        copy = form.clone();
+      });
 
-        data = {
-          name: 'create-form',
-          method: 'POST',
-          href: '/posts',
-          fields: [
-            { name: 'title', type: 'text', title: 'Title', value: 'First Post!' },
-            { name: 'parent', type: 'hidden', value: '123' }
-          ]
-        };
+      it('is not the original form', function() {
+        expect(copy).not.to.be.eql(form);
+      });
 
-        // TODO: Need context to handle making relative -> absolute URL.
-        form = new Form(data, http);
+      it('has cloned fields', function() {
+        expect(copy.field('title')).to.eql(form.field('title'));
+        expect(copy.field('title')).not.to.equal(form.field('title'));
+      });
+    });
 
+    describe('form submission', function() {
+      var result;
+
+      beforeEach(function() {
         result = form.submit();
       });
 
-      it('should request the correct URL', function() {
+      it('should request the form URL', function() {
         expect(http).to.have.been.calledWith(sinon.match({ url: '/posts' }));
       });
 
-      it('should use the correct method', function() {
+      it('should use the form method', function() {
         expect(http).to.have.been.calledWith(sinon.match({ method: 'POST' }));
       });
 
-      it('should default the content tye', function() {
+      it('should use the content type', function() {
         expect(http).to.have.been.calledWith(sinon.match({ headers: { 'Content-Type': 'application/x-www-form-urlencoded' }}));
       });
 
