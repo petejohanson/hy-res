@@ -115,5 +115,6 @@ describe('Form', function () {
       form.submit();
       expect(http).to.have.been.calledWith(sinon.match({ method: 'GET', params: { q: 'First Query!' } }));
     });
+
   });
 });

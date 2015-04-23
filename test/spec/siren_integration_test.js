@@ -43,8 +43,12 @@ describe('Siren + axios to perform an action', function() {
       return response;
     });
 
-    it('is resolved', function() {
-      expect(response).to.eventually.have.property('status', 204);
+    it('is succeeds', function() {
+      return expect(response).to.eventually.have.property('status', 200);
+    });
+
+    it('has the response values', function() {
+      return expect(response).to.eventually.have.deep.property('data.title', 'First Post!');
     });
   });
 });

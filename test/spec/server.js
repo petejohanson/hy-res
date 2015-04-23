@@ -58,7 +58,7 @@ app.route('/posts')
   })
   .post(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
-       .sendStatus(204);
+       .json(req.body);
   });
 
 app.route('/things/:id')
