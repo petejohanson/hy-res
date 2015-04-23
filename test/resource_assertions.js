@@ -12,15 +12,15 @@ module.exports.unresolvedResourceBehavior = function(context) {
     });
 
     it('should not be $resolved', function() {
-      expect(this.resource.$resolved).to.be.false();
+      expect(this.resource.$resolved).to.be.false;
     });
 
     it('should have a $promise', function() {
-      expect(this.resource.$promise).not.to.be.null();
+      expect(this.resource.$promise).not.to.be.null;
     });
 
     it('should not have an $error', function() {
-      expect(this.resource.$error).to.be.null();
+      expect(this.resource.$error).to.be.null;
     });
   });
 };
@@ -32,11 +32,11 @@ module.exports.resolvedResourceBehavior = function(context) {
     });
 
     it('should be $resolved', function() {
-      expect(this.resource.$resolved).to.be.true();
+      expect(this.resource.$resolved).to.be.true;
     });
 
     it('should not have an $error', function() {
-      expect(this.resource.$error).to.be.null();
+      expect(this.resource.$error).to.be.null;
     });
 
     it('should have a completed promise', function() {

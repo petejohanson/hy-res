@@ -18,11 +18,11 @@ describe('HyRes + axios to consume HALTalk', function() {
   });
 
   it('is resolved', function() {
-    expect(root.$resolved).to.be.true();
+    expect(root.$resolved).to.be.true;
   });
 
   it('has a self link', function() {
-    expect(root.$has('self')).to.be.true();
+    expect(root.$has('self')).to.be.true;
   });
 
   describe('following a templated link relation', function() {
@@ -35,11 +35,11 @@ describe('HyRes + axios to consume HALTalk', function() {
     });
 
     it('is resolved', function() {
-      expect(thing.$resolved).to.be.true();
+      expect(thing.$resolved).to.be.true;
     });
 
     it('has a self link', function() {
-      expect(thing.$has('self')).to.be.true();
+      expect(thing.$has('self')).to.be.true;
     });
   });
 });

@@ -3,7 +3,10 @@
 var _ = require('lodash');
 
 var Form = function(data, context, http) {
+  // Cloning is required to keep cloned Form
+  // instances separate.
   _.merge(this, _.cloneDeep(data));
+
   this.$$data = data;
   this.$$context = context;
   this.$$http = http;
@@ -13,7 +16,7 @@ Form.prototype.field = function(name) {
   if (!this.fields)
     return undefined;
   
-  return _.find(this.fields, _.property('name', name));
+  return _.find(this.fields, 'name', name);
 };
 
 Form.prototype.submit = function() { // TODO: options parameter?
@@ -36,7 +39,7 @@ Form.prototype.submit = function() { // TODO: options parameter?
 };
 
 Form.prototype.clone = function() {
-  return new Form(this.$$data, this.$http);
+  return new Form(this.$$data, this.$$context, this.$$http);
 };
 
 module.exports = Form;

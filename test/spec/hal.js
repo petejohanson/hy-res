@@ -14,14 +14,14 @@ describe('HalExtension', function () {
 
   describe('extension applicability', function() {
     it('should apply to application/hal+json content type', function() {
-      expect(extension.applies({}, { 'content-type': 'application/hal+json' }, 200)).to.be.true();
+      expect(extension.applies({}, { 'content-type': 'application/hal+json' }, 200)).to.be.true;
     });
 
     it('should apply to application/hal+json content type with params', function() {
-      expect(extension.applies({}, { 'content-type': 'application/hal+json; charset=utf-8' }, 200)).to.be.true();
+      expect(extension.applies({}, { 'content-type': 'application/hal+json; charset=utf-8' }, 200)).to.be.true;
     });
     it('should apply to additional media type', function() {
-      expect(extension.applies({}, { 'content-type': addlMediaType }, 200)).to.be.true();
+      expect(extension.applies({}, { 'content-type': addlMediaType }, 200)).to.be.true;
     });
   });
 

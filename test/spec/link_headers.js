@@ -18,11 +18,11 @@ describe('LinkHeaderExtension', function () {
 
   describe('extension applicability', function() {
     it('should apply when Link header(s) found', function() {
-      expect(ext.applies({}, { 'link': '</posts?page=2>; rel=next' })).to.be.true();
+      expect(ext.applies({}, { 'link': '</posts?page=2>; rel=next' })).to.be.true;
     });
 
     it('should not apply with no Link headers found', function() {
-      expect(ext.applies({}, { })).to.be.false();
+      expect(ext.applies({}, { })).to.be.false;
     });
   });
 

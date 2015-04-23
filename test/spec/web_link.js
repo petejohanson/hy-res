@@ -64,7 +64,7 @@ describe('WebLink', function () {
       resourceAssertions.unresolvedResourceBehavior(context);
 
       it('passes an Accept header with extension content types', function() {
-        expect(http.calledWith(sinon.match.has('headers', { 'Accept': 'application/hal+json,application/json' }))).to.be.true();
+        expect(http.calledWith(sinon.match.has('headers', { 'Accept': 'application/hal+json,application/json' }))).to.be.true;
       });
 
       describe('once the request completes', function() {
@@ -137,7 +137,7 @@ describe('WebLink', function () {
         http.withArgs(sinon.match.has('headers', { 'Accept': 'application/json' })).returns(httpPromise);
 
         var res = link.follow();
-        expect(res).to.not.be.null();
+        expect(res).to.not.be.null;
       });
     });
 
@@ -148,7 +148,7 @@ describe('WebLink', function () {
         http.withArgs(sinon.match.has('headers', { 'Accept': 'text/plain' })).returns(httpPromise);
 
         var res = link.follow({ headers: { 'Accept': 'text/plain' } });
-        expect(res).to.not.be.null();
+        expect(res).to.not.be.null;
       });
     });
   });

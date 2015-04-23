@@ -27,7 +27,9 @@
   ],
   "devDependencies": {
     "axios": "^0.4.2",
-    "chai": "^1.10.0",
+    "body-parser": "^1.12.3",
+    "chai": "~2.1.0",
+    "chai-as-promised": "^5.0.0",
     "es6-promise": "^2.0.1",
     "express": "^4.10.6",
     "express-hal": "0.0.1",

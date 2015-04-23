@@ -153,15 +153,15 @@ describe('Resource', function () {
 
       describe('$has', function() {
         it('should return false if not embedded or linked', function() {
-          expect(resource.$has('nada')).to.be.false();
+          expect(resource.$has('nada')).to.be.false;
         });
 
         it('should return true if a link is present', function() {
-          expect(resource.$has('self')).to.be.true();
+          expect(resource.$has('self')).to.be.true;
         });
 
         it('should return true if an embedded resource is present', function() {
-          expect(resource.$has('payment')).to.be.true();
+          expect(resource.$has('payment')).to.be.true;
         });
       });
 
@@ -171,7 +171,7 @@ describe('Resource', function () {
         });
 
         it('should return null for a rel not present', function() {
-          expect(resource.$link('blah')).to.be.null();
+          expect(resource.$link('blah')).to.be.null;
         });
 
         it('should throw an exception for a multiple valued rel', function() {
@@ -206,7 +206,7 @@ describe('Resource', function () {
         resourceAssertions.resolvedResourceBehavior(context);
 
         it('should not be null', function () {
-          expect(payment).to.not.be.null();
+          expect(payment).to.not.be.null;
         });
 
         it('should have the basic properties', function () {
@@ -239,7 +239,7 @@ describe('Resource', function () {
         });
 
         it('should have a true $resolved property', function () {
-          expect(discounts.$resolved).to.be.true();
+          expect(discounts.$resolved).to.be.true;
         });
       });
 
@@ -325,7 +325,7 @@ describe('Resource', function () {
           });
 
           it('has a false $resolved', function() {
-            expect(stores.$resolved).to.be.false();
+            expect(stores.$resolved).to.be.false;
           });
 
           it('has a length of 2', function() {
@@ -334,8 +334,8 @@ describe('Resource', function () {
 
           it('is an array of unresolved resources', function() {
             _.forEach(stores, function(s) {
-              expect(s.$resolved).to.be.false();
-              expect(s.$error).to.be.null();
+              expect(s.$resolved).to.be.false;
+              expect(s.$error).to.be.null;
             });
           });
 
@@ -348,7 +348,7 @@ describe('Resource', function () {
             });
 
             it('has a true $resolved property', function() {
-              expect(stores.$resolved).to.be.true();
+              expect(stores.$resolved).to.be.true;
             });
 
             it('has a $promise that returns the array that completes', function() {

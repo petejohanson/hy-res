@@ -45,6 +45,9 @@ describe('Form', function () {
      var titleField = form.field('title');
      expect(titleField).to.have.property('type', 'text');
      expect(titleField).to.have.property('title', 'Title');
+     var parentField = form.field('parent');
+     expect(parentField).to.have.property('type', 'hidden');
+     expect(parentField).to.have.property('value', '123');
     });
 
     describe('cloning the form', function() {
@@ -55,7 +58,7 @@ describe('Form', function () {
       });
 
       it('is not the original form', function() {
-        expect(copy).not.to.be.eql(form);
+        expect(copy).not.to.be.equal(form);
       });
 
       it('has cloned fields', function() {

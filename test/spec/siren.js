@@ -14,15 +14,15 @@ describe('SirenExtension', function () {
 
   describe('extension applicability', function() {
     it('should apply to application/vnd.siren+json content type', function() {
-      expect(ext.applies({}, { 'content-type':  'application/vnd.siren+json' })).to.be.true();
+      expect(ext.applies({}, { 'content-type':  'application/vnd.siren+json' })).to.be.true;
     });
 
     it('should apply to application/vnd.siren+json content type with params', function() {
-      expect(ext.applies({}, { 'content-type': 'application/vnd.siren+json; charset=utf-8' }, 200)).to.be.true();
+      expect(ext.applies({}, { 'content-type': 'application/vnd.siren+json; charset=utf-8' }, 200)).to.be.true;
     });
 
     it('should apply to a custom content type', function() {
-      expect(ext.applies({}, { 'content-type':  addlMediaType })).to.be.true();
+      expect(ext.applies({}, { 'content-type':  addlMediaType })).to.be.true;
     });
   });
 
@@ -131,7 +131,7 @@ describe('SirenExtension', function () {
     });
 
     it('should return the actions keyed by name', function() {
-      expect(forms['create-form'][0]).to.exist();
+      expect(forms['create-form'][0]).to.exist;
     });
 
     describe('the parsed form', function() {
@@ -152,7 +152,7 @@ describe('SirenExtension', function () {
       });
 
       it('should have form fields', function() {
-        expect(f.field('title')).to.exist();
+        expect(f.field('title')).to.exist;
       });
     });
   });

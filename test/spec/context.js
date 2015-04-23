@@ -6,8 +6,8 @@ var _ = require('lodash');
 
 var chai = require('chai');
 var expect = chai.expect;
-var sinonChai = require('sinon-chai');
-chai.use(sinonChai);
+//var sinonChai = require('sinon-chai');
+//chai.use(sinonChai);
 var Context = require('../../src/context.js');
 
 describe('Context', function () {
