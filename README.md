@@ -1,4 +1,4 @@
-# hy-res [![Build Status](https://travis-ci.org/petejohanson/hy-res.svg?branch=master)](https://travis-ci.org/petejohanson/hy-res)
+# hy-res [![Build Status](https://travis-ci.org/petejohanson/hy-res.svg?branch=master)](https://travis-ci.org/petejohanson/hy-res) [![Coverage Status](https://coveralls.io/repos/petejohanson/hy-res/badge.svg)](https://coveralls.io/r/petejohanson/hy-res)
 
 A hypermedia client/library for [AngularJS](http://angularjs.org/). [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06), [Siren](https://github.com/kevinswiber/siren), and [Link header](https://tools.ietf.org/html/rfc5988) extensions are included by default, but support for other media types can be added. For the most part, the core library is not normally used directly, instead consumed by way of a small framework integration layer, e.g. [angular-hy-res](http://github.com/petejohanson/angular-hy-res).
 
