@@ -6,6 +6,7 @@ var gulp = require('gulp'),
   bump = require('gulp-bump'),
   watch = require('gulp-watch'),
   karma = require('gulp-karma'),
+  coveralls = require('gulp-coveralls'),
   gls = require('gulp-live-server'),
   exit = require('gulp-exit'),
   mocha = require('gulp-mocha'),
@@ -13,6 +14,7 @@ var gulp = require('gulp'),
   tagVersion = require('gulp-tag-version'),
   jshint = require('gulp-jshint');
 
+var testServer = undefined;
 
 function getJSHintPipe(rc) {
   return lazypipe()
@@ -25,12 +27,28 @@ function jsSourcePipe() {
   return gulp.src('src/**/*.js');
 }
 
-gulp.task('server:karma', function(cb) {
-  gls.new('test/spec/server.js').start().then(function(s) {
+gulp.task('karma:server-start', function(cb) {
+  testServer = gls.new('test/spec/server.js');
+
+  testServer.start().then(function(s) {
     cb();
   }, function(err) {
     cb(err);
   });
+});
+
+gulp.task('karma:server-stop', function(cb) {
+  if (!testServer) {
+    cb('Server not started');
+  }
+
+  testServer.stop().then(function() {
+    cb();
+  }, function(err) {
+    cb(err);
+  });
+
+  testServer = undefined;
 });
 
 function karmaPipe(action) {
@@ -43,13 +61,20 @@ function karmaPipe(action) {
     });
 }
 
-gulp.task('karma:watch', ['server:karma'], function() {
+gulp.task('karma:watch', ['karma:server-start'], function() {
   return karmaPipe('watch');
 });
 
-gulp.task('karma', ['server:karma'], function() {
-  return karmaPipe('run')
-    .pipe(exit());
+gulp.task('karma:run', function() {
+  return karmaPipe('run');
+});
+
+gulp.task('karma', function() {
+  return runSequence(
+    'karma:server-start',
+    'karma:run',
+    'karma:server-stop'
+  );
 });
 
 gulp.task('jshint', ['jshint:src', 'jshint:test', 'jshint:gulpfile']);
@@ -102,4 +127,13 @@ gulp.task('release', function(cb) {
 
 gulp.task('default', function() {
   return runSequence('jshint', 'karma');
+});
+
+gulp.task('coverage', function() {
+  gulp.src('coverage/**/lcov.info')
+    .pipe(coveralls());
+});
+
+gulp.task('ci', function() {
+  return runSequence('default', 'coverage');
 });
