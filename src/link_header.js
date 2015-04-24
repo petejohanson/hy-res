@@ -17,10 +17,6 @@ var LinkHeaderExtension = function() {
     return _.isString(headers.link);
   };
 
-  this.dataParser = function(data) {
-    return {};
-  };
-
   this.linkParser = function(data, headers, context) {
     var links = httpLink.parse(headers.link);
 
@@ -37,10 +33,6 @@ var LinkHeaderExtension = function() {
       delete l.rel;
     }
     return ret;
-  };
-
-  this.embeddedParser = function(data, headers) {
-    return [];
   };
 };
 

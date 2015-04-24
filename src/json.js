@@ -1,5 +1,7 @@
 'use strict';
 
+var _ = require('lodash');
+
 var JsonExtension = function() {
   this.mediaTypes = ['application/json'];
 
@@ -14,17 +16,7 @@ var JsonExtension = function() {
     return type === 'application/json';
   };
 
-  this.dataParser = function(data) {
-    return data;
-  };
-
-  this.linkParser = function(data, headers, Resource) {
-    return {};
-  };
-
-  this.embeddedParser = function(data, headers) {
-    return [];
-  };
+  this.dataParser = _.identity;
 };
 
 module.exports = JsonExtension;

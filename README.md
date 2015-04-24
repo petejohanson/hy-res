@@ -355,7 +355,6 @@ And the view:
 * Support URI schemes other than http/https (extension mechanism?)
 * Hypermedia Actions/Forms? (Not present in HAL)
 * Ability to follow link relation w/ 'name' disambiguation parameter (HAL field)
-* Let extensions only implement the functions they need.
 * Mixins for resources based on... profile? link relation that was followed?
 * Differentiate between embedded link vs embedded representation (See Siren spec)
 * Sane error handling

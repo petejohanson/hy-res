@@ -136,21 +136,19 @@ Resource.prototype.$has = function(rel) {
   return this.$links(rel).length > 0 || this.$subs(rel).length > 0;
 };
 
+var defaultParser = _.constant({});
+
 Resource.prototype.$$resolve = function(data, headers, context) {
   _.forEach(this.$$extensions, function(e) {
     if (!e.applies(data, headers, context)) {
       return;
     }
 
-    _.assign(this, e.dataParser(data, headers, context));
+    _.assign(this, (e.dataParser || defaultParser)(data, headers, context));
+    _.assign(this.$$links, (e.linkParser || defaultParser)(data, headers, context));
+    _.assign(this.$$forms, (e.formParser || defaultParser)(data, headers, context));
 
-    _.assign(this.$$links, e.linkParser(data, headers, context));
-
-    if (e.formParser) {
-      _.assign(this.$$forms, e.formParser(data, headers, context));
-    }
-
-    _.forEach(e.embeddedParser(data, headers, context), function(raw, rel) {
+    _.forEach((e.embeddedParser || _.constant([]))(data, headers, context), function(raw, rel) {
       if (_.isArray(raw)) {
         var embeds = raw.map(function(e) { return Resource.embedded(e, headers, this.$$extensions, context); }, this);
 
