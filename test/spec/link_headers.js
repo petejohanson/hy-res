@@ -66,18 +66,4 @@ describe('LinkHeaderExtension', function () {
       expect(links.section[1].title).to.eql('Page 2');
     });
   });
-
-  describe('embedded parser', function() {
-    it('should return an empty array', function() {
-      var embedded = ext.embeddedParser({}, {});
-      expect(embedded).to.eql([]);
-    });
-  });
-
-  describe('data parser', function() {
-    it('should return an empty object', function() {
-      var data = ext.dataParser({ name: 'John Doe' }, {});
-      expect(data).to.eql({});
-    });
-  });
 });
