@@ -70,7 +70,7 @@ gulp.task('karma:run', function() {
 });
 
 gulp.task('karma', function() {
-  return runSequence(
+  runSequence(
     'karma:server-start',
     'karma:run',
     'karma:server-stop'
@@ -126,7 +126,7 @@ gulp.task('release', function(cb) {
 });
 
 gulp.task('default', function() {
-  return runSequence('jshint', 'karma');
+  runSequence('jshint', 'karma');
 });
 
 gulp.task('coverage', function() {
@@ -135,5 +135,5 @@ gulp.task('coverage', function() {
 });
 
 gulp.task('ci', function() {
-  return runSequence('default', 'coverage');
+  runSequence('default', 'coverage');
 });
