@@ -69,11 +69,12 @@ gulp.task('karma:run', function() {
   return karmaPipe('run');
 });
 
-gulp.task('karma', function() {
+gulp.task('karma', function(cb) {
   runSequence(
     'karma:server-start',
     'karma:run',
-    'karma:server-stop'
+    'karma:server-stop',
+    cb
   );
 });
 
@@ -125,8 +126,8 @@ gulp.task('release', function(cb) {
   );
 });
 
-gulp.task('default', function() {
-  runSequence('jshint', 'karma');
+gulp.task('default', function(cb) {
+  runSequence('jshint', 'karma', cb);
 });
 
 gulp.task('coverage', function() {
@@ -134,6 +135,6 @@ gulp.task('coverage', function() {
     .pipe(coveralls());
 });
 
-gulp.task('ci', function() {
-  runSequence('default', 'coverage');
+gulp.task('ci', function(cb) {
+  runSequence('default', 'coverage', cb);
 });
