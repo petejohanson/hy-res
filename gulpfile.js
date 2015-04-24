@@ -14,7 +14,7 @@ var gulp = require('gulp'),
   tagVersion = require('gulp-tag-version'),
   jshint = require('gulp-jshint');
 
-var testServer = undefined;
+var testServer;
 
 function getJSHintPipe(rc) {
   return lazypipe()
