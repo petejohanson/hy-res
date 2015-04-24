@@ -60,6 +60,7 @@
     "lazypipe": "~0.2.2",
     "matchdep": "~0.1.2",
     "mocha": "^2.1.0",
+    "multer": "^0.1.8",
     "run-sequence": "~0.3.6",
     "sinon": "^1.12.2",
     "sinon-chai": "^2.7.0",
@@ -68,6 +69,7 @@
   },
   "dependencies": {
     "URIjs": "^1.15.0",
+    "form-urlencoded": "0.0.7",
     "http-link": "~0.3.0",
     "lodash": "^3.7.0"
   }

@@ -30,13 +30,34 @@ describe('Siren + axios to perform an action', function() {
     expect(root.$has('self')).to.be.true;
   });
 
-  describe('Submitting a form', function() {
+  describe('Submitting a application/x-www-form-urlencoded form', function() {
     var form, response;
 
     beforeEach(function() {
       form = root.$form('create-form');
       form.field('title').value = 'First Post!';
       form.field('post').value = 'hy-res rocks!';
+
+      response = form.submit();
+
+      return response;
+    });
+
+    it('is succeeds', function() {
+      return expect(response).to.eventually.have.property('status', 200);
+    });
+
+    it('has the response values', function() {
+      return expect(response).to.eventually.have.deep.property('data.title', 'First Post!');
+    });
+  });
+
+  describe('Submitting a multipart/form-data form', function() {
+    var form, response;
+
+    beforeEach(function() {
+      form = root.$form('edit-form');
+      form.field('post').value = 'hy-res really rocks!';
 
       response = form.submit();
 
