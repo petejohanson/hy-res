@@ -28,6 +28,24 @@ describe('Resource', function () {
           fields: [
             { name: 'title', title: 'Title', value: 'First Post!' }
           ]
+        },
+        {
+          name: 'edit-form',
+          href: '/posts',
+          method: 'POST',
+          title: 'New Post',
+          fields: [
+            { name: 'title', title: 'Title', value: 'First Post!' }
+          ]
+        },
+        {
+          name: 'edit-form',
+          href: '/posts',
+          method: 'POST',
+          title: 'New Post',
+          fields: [
+            { name: 'title', title: 'Title', value: 'First Post!' }
+          ]
         }
       ]
     };
@@ -48,12 +66,26 @@ describe('Resource', function () {
     });
 
     describe('$form', function() {
-      it('returns the form based on the name', function() {
-        expect(resource.$form('create-form')).to.be.an.instanceof(HyRes.Form);
+      describe('for missing name', function() {
+        it('does not exist', function() {
+          expect(resource.$form('blah')).to.not.exist;
+        });
       });
 
-      it('returns cloned forms', function() {
-        expect(resource.$form('create-form')).not.to.equal(resource.$form('create-form'));
+      describe('for valid name', function() {
+        it('returns the form based on the name', function() {
+          expect(resource.$form('create-form')).to.be.an.instanceof(HyRes.Form);
+        });
+
+        it('returns cloned forms', function() {
+          expect(resource.$form('create-form')).not.to.equal(resource.$form('create-form'));
+        });
+      });
+
+      describe('for duplicate named forms', function() {
+        it('throws', function() {
+          expect(function() { resource.$form('edit-form'); }).to.throw;
+        });
       });
     });
 
