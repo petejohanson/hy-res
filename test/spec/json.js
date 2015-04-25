@@ -18,6 +18,10 @@ describe('JsonExtension', function () {
     it('should apply to application/json content type with params', function() {
       expect(ext.applies({}, { 'content-type': 'application/json; charset=utf-8' }, 200)).to.be.true;
     });
+
+    it('should not apply when no content type at all (e.g. 204 response)', function() {
+      expect(ext.applies({}, {}, 204)).to.be.false;
+    });
   });
 
   describe('data parser', function() {
