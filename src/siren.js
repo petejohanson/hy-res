@@ -107,10 +107,6 @@ var SirenExtension = function(mediaTypes) {
 
 
   this.formParser = function(data, headers, context) {
-    if (!_.isArray(data.actions)) {
-      return {};
-    }
-
     var formFactory = function(f) {
       return new Form(_.defaults(f, formDefaults), context, http);
     };

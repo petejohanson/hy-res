@@ -154,45 +154,53 @@ describe('SirenExtension', function () {
   });
 
   describe('form parser', function() {
-    var forms;
-
-    beforeEach(function() {
-      forms = ext.formParser({
-        actions: [
-          {
-            name: 'create-form',
-            title: 'New Post',
-            fields: [
-              { name: 'title', type: 'text' }
-            ]
-          }
-        ]
+    describe('parsing an entity w/o actions', function() {
+      it('should return an empty object', function() {
+        expect(ext.formParser({}, {})).to.eql({});
       });
     });
 
-    it('should return the actions keyed by name', function() {
-      expect(forms['create-form'][0]).to.exist;
-    });
+    describe('parsing an entity w/ actions', function() {
+      var forms;
 
-    describe('the parsed form', function() {
-      var f;
-
-      beforeEach(function() { f = forms['create-form'][0]; });
-
-      it('should have the title', function() {
-        expect(f.title).to.equal('New Post');
+      beforeEach(function() {
+        forms = ext.formParser({
+          actions: [
+            {
+              name: 'create-form',
+              title: 'New Post',
+              fields: [
+                { name: 'title', type: 'text' }
+              ]
+            }
+          ]
+        });
       });
 
-      it('should default the type', function() {
-        expect(f.type).to.equal('application/x-www-form-urlencoded');
+      it('should return the actions keyed by name', function() {
+        expect(forms['create-form'][0]).to.exist;
       });
 
-      it('should default the method', function() {
-        expect(f.method).to.equal('GET');
-      });
+      describe('the parsed form', function() {
+        var f;
 
-      it('should have form fields', function() {
-        expect(f.field('title')).to.exist;
+        beforeEach(function() { f = forms['create-form'][0]; });
+
+        it('should have the title', function() {
+          expect(f.title).to.equal('New Post');
+        });
+
+        it('should default the type', function() {
+          expect(f.type).to.equal('application/x-www-form-urlencoded');
+        });
+
+        it('should default the method', function() {
+          expect(f.method).to.equal('GET');
+        });
+
+        it('should have form fields', function() {
+          expect(f.field('title')).to.exist;
+        });
       });
     });
   });
