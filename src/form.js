@@ -22,7 +22,7 @@ var ContentTypeDataTransformers = {
     return JSON.stringify(data);
   },
   'application/x-www-form-urlencoded': function(data) {
-    return FormUrlEncoded.encode(data);
+    return data ? FormUrlEncoded.encode(data) : undefined;
   },
   'multipart/form-data': function(data) {
     var fd = new FormData();

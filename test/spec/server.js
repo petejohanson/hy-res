@@ -37,6 +37,14 @@ app.route('/')
           ],
           actions: [
             {
+              name: 'search',
+              title: 'Search Posts',
+              href: '/posts',
+              fields: [
+                { name: 'q', title: 'Search' }
+              ]
+            },
+            {
               name: 'create-form',
               title: 'New Post',
               href: '/posts',
@@ -80,6 +88,10 @@ app.route('/posts')
        .header('Access-Control-Allow-Methods', 'GET,OPTIONS,POST')
        .header('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type')
        .sendStatus(204);
+  })
+  .get(function(req, res) {
+    res.header('Access-Control-Allow-Origin', '*')
+       .json(req.query);
   })
   .post(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
