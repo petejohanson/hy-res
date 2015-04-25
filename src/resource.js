@@ -149,15 +149,11 @@ Resource.prototype.$$resolve = function(data, headers, context) {
     _.assign(this.$$forms, (e.formParser || defaultParser)(data, headers, context));
 
     _.forEach((e.embeddedParser || _.constant([]))(data, headers, context), function(raw, rel) {
-      if (_.isArray(raw)) {
-        var embeds = raw.map(function(e) { return Resource.embedded(e, headers, this.$$extensions, context); }, this);
+      var embeds = raw.map(function(e) { return Resource.embedded(e, headers, this.$$extensions, context); }, this);
 
-        embeds.$promise = Promise.resolve(embeds);
-        embeds.$resolved = true;
-        this.$$embedded[rel] = embeds;
-      } else {
-        this.$$embedded[rel] = Resource.embedded(raw, headers, this.$$extensions, context);
-      }
+      embeds.$promise = Promise.resolve(embeds);
+      embeds.$resolved = true;
+      this.$$embedded[rel] = embeds;
     }, this);
   }, this);
 
