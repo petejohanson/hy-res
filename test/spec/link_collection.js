@@ -1,6 +1,7 @@
 'use strict';
 
 require('es6-promise').polyfill();
+var _ = require('lodash');
 var LinkCollection = require('../../src/link_collection.js');
 
 var chai = require('chai');
