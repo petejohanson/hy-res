@@ -74,7 +74,7 @@ describe('SirenExtension', function () {
         entities: [
           {
             rel: ['order'],
-            properties: { "status": "completed" }
+            properties: { status: 'completed' }
           }
         ]
       }, {});
