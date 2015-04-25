@@ -110,6 +110,19 @@ describe('SirenExtension', function () {
 
       expect(embedded.order[0].title).to.eql('My Order #123');
     });
+
+    it('should ignore embedded links', function() {
+      var embedded = ext.embeddedParser({
+        entities: [
+          {
+            rel: ['order'],
+            href: '/orders/123'
+          }
+        ]
+      }, {});
+
+      expect(embedded.order).to.not.exist;
+    });
   });
 
   describe('data parser', function() {
