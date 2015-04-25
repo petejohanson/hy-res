@@ -14,9 +14,6 @@ var Form = function(data, context, http) {
 };
 
 Form.prototype.field = function(name) {
-  if (!this.fields)
-    return undefined;
-  
   return _.find(this.fields, 'name', name);
 };
 
