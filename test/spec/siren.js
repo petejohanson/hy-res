@@ -65,6 +65,22 @@ describe('SirenExtension', function () {
 
       expect(links.order[0].href).to.eql('/orders/123');
     });
+
+    it('should ignore full embedded entities', function() {
+      var links = ext.linkParser({
+        links: [
+          { rel: ['self'], href: '/orders/123' }
+        ],
+        entities: [
+          {
+            rel: ['order'],
+            properties: { "status": "completed" }
+          }
+        ]
+      }, {});
+
+      expect(links.order).to.not.exist;
+    });
   });
 
   describe('the embedded parser', function() {
