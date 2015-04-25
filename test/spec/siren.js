@@ -50,6 +50,17 @@ describe('SirenExtension', function () {
       expect(links.section[0].href).to.eql('/orders?page=2');
     });
 
+    it('should return a link array for duplicate embedded rels', function() {
+      var links = ext.linkParser({
+        entities: [
+          { rel: ['section'], href: '/orders?page=2' },
+          { rel: ['section'], href: '/orders?page=3' }
+        ]
+      }, {});
+      expect(links.section.length).to.eql(2);
+      expect(links.section[0].href).to.eql('/orders?page=2');
+    });
+
     it('should include sub-entity links', function() {
       var links = ext.linkParser({
         links: [
