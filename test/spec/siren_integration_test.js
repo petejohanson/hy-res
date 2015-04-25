@@ -52,6 +52,27 @@ describe('Siren + axios to perform an action', function() {
     });
   });
 
+  describe('Submitting an application/json form', function() {
+    var form, response;
+
+    beforeEach(function() {
+      form = root.$form('edit-form-json');
+      form.field('post').value = 'hy-res really rocks!';
+
+      response = form.submit();
+
+      return response;
+    });
+
+    it('is succeeds', function() {
+      return expect(response).to.eventually.have.property('status', 200);
+    });
+
+    it('has the response values', function() {
+      return expect(response).to.eventually.have.deep.property('data.post', 'hy-res really rocks!');
+    });
+  });
+
   describe('Submitting a multipart/form-data form', function() {
     var form, response;
 

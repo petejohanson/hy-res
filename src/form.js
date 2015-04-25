@@ -18,6 +18,9 @@ Form.prototype.field = function(name) {
 };
 
 var ContentTypeDataTransformers = {
+  'application/json': function(data) {
+    return JSON.stringify(data);
+  },
   'application/x-www-form-urlencoded': function(data) {
     return FormUrlEncoded.encode(data);
   },

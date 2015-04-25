@@ -8,6 +8,7 @@ var app = express();
 
 app.use(hal.middleware);
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(multer());
 
 app.route('/')
@@ -51,6 +52,17 @@ app.route('/')
               href: '/posts/1',
               method: 'PUT',
               type: 'multipart/form-data',
+              fields: [
+                { name: 'title', title: 'Title', value: 'First Post!' },
+                { name: 'post', title: 'Post', value: 'hy-res rocks!' },
+              ]
+            },
+            {
+              name: 'edit-form-json',
+              title: 'Edit Post',
+              href: '/posts/1',
+              method: 'PUT',
+              type: 'application/json',
               fields: [
                 { name: 'title', title: 'Title', value: 'First Post!' },
                 { name: 'post', title: 'Post', value: 'hy-res rocks!' },
