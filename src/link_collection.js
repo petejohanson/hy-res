@@ -1,5 +1,7 @@
 'use strict';
 
+var _ = require('lodash');
+
 var LinkCollection = function() {
   var coll = Object.create(Array.prototype);
   coll = (Array.apply(coll, arguments) || coll);
@@ -22,23 +24,19 @@ LinkCollection.fromArray = function(links) {
   return LinkCollection.apply(null, links);
 };
 
-LinkCollection.prototype = {
-  follow:  function(options) {
-    var res = this.map(function(l) {
-      return l.follow(options);
-    });
-    res.$promise = Promise.all(res.map(function(r) { return r.$promise; }));
-    res.$resolved = false;
-    res.$error = null;
-    res.$promise.then(function(r) {
-      res.$resolved = true;
-    }, function(err) {
-      res.$resolved = true;
-      res.$error = err;
-    });
+LinkCollection.prototype.follow = function(options) {
+  var res = _.invoke(this, 'follow', options);
+  res.$promise = Promise.all(_.pluck(res, '$promise'));
+  res.$resolved = false;
+  res.$error = null;
+  res.$promise.then(function(r) {
+    res.$resolved = true;
+  }, function(err) {
+    res.$resolved = true;
+    res.$error = err;
+  });
 
-    return res;
-  }
+  return res;
 };
 
 module.exports = LinkCollection;
