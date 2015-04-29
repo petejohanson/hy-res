@@ -5,6 +5,30 @@ var Form = require('./form');
 var WebLink = require('./web_link');
 var LinkCollection = require('./link_collection');
 
+/**
+ * Create the Siren extension
+ *
+ * @constructor
+ * @arg {Array} mediaTypes Media types in addition to `application/vnd.siren+json`
+ * that should be handled by this extensions. This allows for custom media
+ * types based on Siren to be handled properly.
+ *
+ * @classdesc
+ * Extension for processing
+ * [Siren](https://github.com/kevinswiber/siren) responses.  By default,
+ * the extension will only process links and embedded resources in
+ * responses if the HTTP response `Content-Type` header equals
+ * `application/vnd.siren+json`. If you have a custom media type that
+ * extends SIren, you can register it by passing it in the `mediaTypes`
+ * parameter.
+ *
+ * At this point, the Siren extension includes both the Siren `links` and
+ * the sub-entity embedded links in the set queried by the {@link
+ * Resource#$link}/{@link Resource#$links} functions.
+ *
+ * Siren's [actions](https://github.com/kevinswiber/siren#actions-1) are
+ * exposed through {@link Resource#$form} and {@link Resource#$forms}.
+ */
 var SirenExtension = function(mediaTypes) {
   var formDefaults = {
     method: 'GET',

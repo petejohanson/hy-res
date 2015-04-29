@@ -3,6 +3,16 @@
 var _ = require('lodash');
 var FormUrlEncoded = require('form-urlencoded');
 
+/**
+ * Forms should not be created on their own, they are normally
+ * accessed from a containing {@link Resource}.
+ * @constructor
+ *
+ * @classdesc
+ * The {@link Form} class encapsulates a hypermedia form that can be
+ * updated with values at runtime and then submitted.
+ * TODO: More details on field values, etc.
+ */
 var Form = function(data, context, http) {
   // Cloning is required to keep cloned Form
   // instances separate.
@@ -13,6 +23,11 @@ var Form = function(data, context, http) {
   this.$$http = http;
 };
 
+/**
+ * Lookup the field by the given name.
+ * @arg {string} name The name of the field to look up.
+ * @returns {Object} Object containing the field values.
+ */
 Form.prototype.field = function(name) {
   return _.find(this.fields, 'name', name);
 };
@@ -32,6 +47,11 @@ var ContentTypeDataTransformers = {
   }
 };
 
+/**
+ * Perform an HTTP request to submit the form. The request itself
+ * is created based on the URL, method, type, and field values.
+ * @returns {Promise} A HTTP request/response promise.
+ */
 Form.prototype.submit = function() { // TODO: options parameter?
   var config = {
     url: this.$$context.resolveUrl(this.href),
@@ -55,6 +75,11 @@ Form.prototype.submit = function() { // TODO: options parameter?
   return this.$$http(config);
 };
 
+/**
+ * Clone the current {@link Form} so that fields can be updated
+ * and not impact/change the original form field values.
+ * @returns {Form} the cloned form.
+ */
 Form.prototype.clone = function() {
   return new Form(this.$$data, this.$$context, this.$$http);
 };

@@ -7,6 +7,7 @@ var gulp = require('gulp'),
   watch = require('gulp-watch'),
   karma = require('gulp-karma'),
   coveralls = require('gulp-coveralls'),
+  shell = require('gulp-shell'),
   gls = require('gulp-live-server'),
   exit = require('gulp-exit'),
   mocha = require('gulp-mocha'),
@@ -96,8 +97,14 @@ gulp.task('jshint:gulpfile', function() {
 });
 
 gulp.task('test:watch', function() {
-  gulp.watch(['test/*.js', 'src/**/*.js'], ['test']);
+  return gulp.watch(['test/*.js', 'src/**/*.js'], ['test']);
 });
+
+gulp.task('jsdoc:watch', function() {
+  return gulp.watch(['src/**/*.js', 'tutorials/*'], ['jsdoc']);
+});
+
+gulp.task('jsdoc', shell.task(['./node_modules/jsdoc/jsdoc.js . -c ./conf.json']));
 
 gulp.task('bump', function() {
   return gulp.src('./*.json')

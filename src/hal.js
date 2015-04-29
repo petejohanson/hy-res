@@ -4,6 +4,23 @@ var _ = require('lodash');
 var WebLink = require('./web_link');
 var LinkCollection = require('./link_collection');
 
+/**
+ * Create the HAL extension
+ *
+ * @constructor
+ * @arg {Array} mediaTypes Media types in addition to `application/hal+json`
+ * that should be handled by this extensions. This allows for custom media
+ * types based on HAL to be handled properly.
+ *
+ * @classdesc
+ * Extension for processing
+ * [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06) responses.
+ * By default, the extension will only process links and embedded
+ * resources in responses if the HTTP response `Content-Type` header
+ * equals `application/hal+json`. If you have a custom media type that
+ * extends HAL, you can register it by passing it in the `mediaTypes`
+ * parameter.
+ */
 var HalExtension = function(mediaTypes) {
   var http, extensions;
   var mediaTypeSet = { 'application/hal+json': true };
