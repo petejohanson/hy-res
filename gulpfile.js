@@ -8,6 +8,7 @@ var gulp = require('gulp'),
   karma = require('gulp-karma'),
   coveralls = require('gulp-coveralls'),
   shell = require('gulp-shell'),
+  ghpages = require('gulp-gh-pages'),
   gls = require('gulp-live-server'),
   exit = require('gulp-exit'),
   mocha = require('gulp-mocha'),
@@ -131,6 +132,13 @@ gulp.task('release', function(cb) {
     'tag',
     cb
   );
+});
+
+gulp.task('gh-pages', ['jsdoc'], function() {
+  return gulp.src('doc/**/*')
+    .pipe(ghpages({
+      push: false
+    }));
 });
 
 gulp.task('default', function(cb) {
