@@ -136,9 +136,7 @@ gulp.task('release', function(cb) {
 
 gulp.task('gh-pages', ['jsdoc'], function() {
   return gulp.src('doc/**/*')
-    .pipe(ghpages({
-      push: false
-    }));
+    .pipe(ghpages());
 });
 
 gulp.task('default', function(cb) {
