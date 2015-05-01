@@ -108,14 +108,14 @@ gulp.task('jsdoc:watch', function() {
 gulp.task('jsdoc', shell.task(['./node_modules/jsdoc/jsdoc.js . -c ./conf.json']));
 
 gulp.task('bump', function() {
-  return gulp.src('./*.json')
+  return gulp.src('package.json')
     .pipe(bump({ type: gulp.env.type || 'patch' }))
     .pipe(gulp.dest('./'));
 });
 
 gulp.task('bump-commit', function() {
   var version = require('./package.json').version;
-  return gulp.src(['./*.json'])
+  return gulp.src(['package.json'])
     .pipe(git.commit('Release v' + version));
 });
 
