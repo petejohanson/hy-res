@@ -9,6 +9,7 @@ var expect = chai.expect;
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 var Context = require('../../src/context.js');
+var Resource = require('../../src/resource.js');
 var Form = require('../../src/form.js');
 
 describe('Form', function () {
@@ -71,11 +72,16 @@ describe('Form', function () {
       var result;
 
       beforeEach(function() {
+        http.returns(Promise.resolve({data: {}, headers: {}, status: 200 }));
         result = form.submit();
       });
 
       it('should request the form URL', function() {
         expect(http).to.have.been.calledWith(sinon.match({ url: '/posts' }));
+      });
+
+      it('should return a Resource', function() {
+        expect(result).to.be.an.instanceof(Resource);
       });
 
       it('should use the form method', function() {
@@ -112,6 +118,7 @@ describe('Form', function () {
     });
 
     it('sends field values as query parameters', function() {
+      http.returns(Promise.resolve({data: {}, headers: {}, status: 200 }));
       form.submit();
       expect(http).to.have.been.calledWith(sinon.match({ method: 'GET', params: { q: 'First Query!' } }));
     });

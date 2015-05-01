@@ -95,6 +95,7 @@ app.route('/posts')
   })
   .post(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
+       .type('json')
        .json(req.body);
   });
 

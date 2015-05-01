@@ -16,7 +16,7 @@ describe('Siren + axios to perform an action', function() {
   var root;
 
   beforeEach(function() {
-    var rootLink = new HyRes.Root('http://127.0.0.1:10000/', axios, [new HyRes.SirenExtension()]);
+    var rootLink = new HyRes.Root('http://127.0.0.1:10000/', axios, [new HyRes.SirenExtension(), new HyRes.JsonExtension()]);
 
     root = rootLink.follow();
     return root.$promise;
@@ -43,11 +43,11 @@ describe('Siren + axios to perform an action', function() {
     });
 
     it('is succeeds', function() {
-      return expect(response).to.eventually.have.property('status', 200);
+      return expect(response.$promise).to.eventually.have.property('$resolved', true);
     });
 
     it('has the response values', function() {
-      return expect(response).to.eventually.have.deep.property('data.q', 'hy-res');
+      return expect(response.$promise).to.eventually.have.deep.property('q', 'hy-res');
     });
   });
 
@@ -65,11 +65,11 @@ describe('Siren + axios to perform an action', function() {
     });
 
     it('is succeeds', function() {
-      return expect(response).to.eventually.have.property('status', 200);
+      return expect(response.$promise).to.eventually.have.property('$resolved', true);
     });
 
     it('has the response values', function() {
-      return expect(response).to.eventually.have.deep.property('data.title', 'First Post!');
+      return expect(response.$promise).to.eventually.have.deep.property('title', 'First Post!');
     });
   });
 
@@ -86,11 +86,11 @@ describe('Siren + axios to perform an action', function() {
     });
 
     it('is succeeds', function() {
-      return expect(response).to.eventually.have.property('status', 200);
+      return expect(response.$promise).to.eventually.have.property('$resolved', true);
     });
 
     it('has the response values', function() {
-      return expect(response).to.eventually.have.deep.property('data.post', 'hy-res really rocks!');
+      return expect(response.$promise).to.eventually.have.deep.property('post', 'hy-res really rocks!');
     });
   });
 
@@ -107,11 +107,11 @@ describe('Siren + axios to perform an action', function() {
     });
 
     it('is succeeds', function() {
-      return expect(response).to.eventually.have.property('status', 200);
+      return expect(response.$promise).to.eventually.have.property('$resolved', true);
     });
 
     it('has the response values', function() {
-      return expect(response).to.eventually.have.deep.property('data.title', 'First Post!');
+      return expect(response.$promise).to.eventually.have.property('title', 'First Post!');
     });
   });
 });

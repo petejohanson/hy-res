@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var FormUrlEncoded = require('form-urlencoded');
+var Resouce = require('./resource');
 
 /**
  * Forms should not be created on their own, they are normally
@@ -13,7 +14,7 @@ var FormUrlEncoded = require('form-urlencoded');
  * updated with values at runtime and then submitted.
  * TODO: More details on field values, etc.
  */
-var Form = function(data, context, http) {
+var Form = function(data, context, http, extensions) {
   // Cloning is required to keep cloned Form
   // instances separate.
   _.merge(this, _.cloneDeep(data));
@@ -21,6 +22,7 @@ var Form = function(data, context, http) {
   this.$$data = data;
   this.$$context = context;
   this.$$http = http;
+  this.$$extensions = extensions;
 };
 
 /**
@@ -50,7 +52,7 @@ var ContentTypeDataTransformers = {
 /**
  * Perform an HTTP request to submit the form. The request itself
  * is created based on the URL, method, type, and field values.
- * @returns {Promise} A HTTP request/response promise.
+ * @returns {Resource} A resource that will eventually be resolved with response details.
  */
 Form.prototype.submit = function() { // TODO: options parameter?
   var config = {
@@ -71,8 +73,7 @@ Form.prototype.submit = function() { // TODO: options parameter?
     config[prop] = vals;
   }
 
-  // TODO: Better return value? Return a resource? Something else?
-  return this.$$http(config);
+  return Resouce.fromRequest(this.$$http(config), this.$$extensions);
 };
 
 /**
@@ -81,7 +82,10 @@ Form.prototype.submit = function() { // TODO: options parameter?
  * @returns {Form} the cloned form.
  */
 Form.prototype.clone = function() {
-  return new Form(this.$$data, this.$$context, this.$$http);
+  return new Form(this.$$data,
+                  this.$$context,
+                  this.$$http,
+                  this.$$extensions);
 };
 
 module.exports = Form;
