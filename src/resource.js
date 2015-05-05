@@ -6,7 +6,6 @@ var LinkCollection = require('./link_collection');
 
 /**
  * @constructor
- * @arg {Array} extensions The response processing extensions to be used.
  *
  * @classdesc
  * {@link Resource} instaces behave like AngularJS' `ngResource`, in that
@@ -19,7 +18,7 @@ var LinkCollection = require('./link_collection');
  * {@link Resource} offers several functions you can use to interact with links,
  * embedded resources, and forms included in the resource.
  */
-var Resource = function(extensions) {
+var Resource = function() {
   /**
    * This property is a ES6 promise that can be used to perform work once the
    * resource is resolved. For resources that were embedded, the promise may already
@@ -44,7 +43,6 @@ var Resource = function(extensions) {
   this.$$links = {};
   this.$$embedded = {};
   this.$$forms = {};
-  this.$$extensions = extensions;
 
   /**
    * Get the single {@link WebLink} for the given relation.
@@ -158,7 +156,7 @@ var Resource = function(extensions) {
       return l.follow(options);
     }
 
-    var ret = new Resource(this.$$extensions);
+    var ret = new Resource();
     ret.$promise =
         this.$promise.then(function(r) {
           return r.$followOne(rel, options).$promise;
@@ -288,7 +286,7 @@ Resource.prototype.$has = function(rel) {
 var defaultParser = _.constant({});
 
 Resource.prototype.$$resolve = function(data, headers, context) {
-  _.forEach(this.$$extensions, function(e) {
+  _.forEach(context.extensions, function(e) {
     if (!e.applies(data, headers, context)) {
       return;
     }
@@ -298,7 +296,7 @@ Resource.prototype.$$resolve = function(data, headers, context) {
     _.assign(this.$$forms, (e.formParser || defaultParser)(data, headers, context));
 
     _.forEach((e.embeddedParser || _.constant([]))(data, headers, context), function(raw, rel) {
-      var embeds = raw.map(function(e) { return Resource.embedded(e, headers, this.$$extensions, context); }, this);
+      var embeds = raw.map(function(e) { return Resource.embedded(e, headers, context); }, this);
 
       embeds.$promise = Promise.resolve(embeds);
       embeds.$resolved = true;
@@ -314,20 +312,20 @@ Resource.prototype.$$reject = function(error) {
   this.$resolved = true;
 };
 
-Resource.embedded = function(raw, headers, extensions, context) {
-  var ret = new Resource(extensions);
+Resource.embedded = function(raw, headers, context) {
+  var ret = new Resource();
   ret.$$resolve(raw, headers, context);
   ret.$promise = Promise.resolve(ret);
   return ret;
 };
 
-Resource.fromRequest = function(request, extensions) {
-  var res = new Resource(extensions);
+Resource.fromRequest = function(request, context) {
+  var res = new Resource();
   res.$promise =
     request.then(function(response) {
-        var context = Context.empty;
+        context = context.withoutUrl();
         if (response.config && response.config.url) {
-          context = new Context(response.config.url);
+          context = context.withUrl(response.config.url);
         }
         res.$$resolve(response.data, response.headers, context);
         return res;

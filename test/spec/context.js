@@ -11,11 +11,15 @@ var expect = chai.expect;
 var Context = require('../../src/context.js');
 
 describe('Context', function () {
-  var context;
+  var context, http, extensions;
+  beforeEach(function() {
+    http = sinon.spy();
+    extensions = [sinon.spy()];
+  });
 
   describe('with a URL', function() {
     beforeEach(function() {
-      context = new Context('http://localhost:8080');
+      context = new Context(http, extensions).withUrl('http://localhost:8080');
     });
 
     it('resolves relative URLs', function() {
@@ -29,7 +33,9 @@ describe('Context', function () {
   });
 
   describe('the empty context', function() {
-    beforeEach(function() { context = Context.empty; });
+    beforeEach(function() {
+      context = new Context(http, extensions);
+    });
 
     it('leaves all URLs alone', function() {
       expect(context.resolveUrl('/posts')).to.eql('/posts');

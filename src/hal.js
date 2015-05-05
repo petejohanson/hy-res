@@ -22,7 +22,6 @@ var LinkCollection = require('./link_collection');
  * parameter.
  */
 var HalExtension = function(mediaTypes) {
-  var http, extensions;
   var mediaTypeSet = { 'application/hal+json': true };
 
   mediaTypes = mediaTypes || [];
@@ -31,11 +30,6 @@ var HalExtension = function(mediaTypes) {
   }
 
   this.mediaTypes = _.keys(mediaTypeSet);
-
-  this.initialize = function(_http, _extensions) {
-    http = _http;
-    extensions = _extensions;
-  };
 
   this.applies = function(data, headers) {
     var h = headers['content-type'];
@@ -69,7 +63,7 @@ var HalExtension = function(mediaTypes) {
 
       var linkArray = [];
       _.forEach(val, function(l) {
-        linkArray.push(new WebLink(l, context, http, extensions));
+        linkArray.push(new WebLink(l, context));
       }, this);
 
       ret[key] = LinkCollection.fromArray(linkArray);

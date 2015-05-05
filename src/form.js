@@ -8,21 +8,21 @@ var Resouce = require('./resource');
  * Forms should not be created on their own, they are normally
  * accessed from a containing {@link Resource}.
  * @constructor
+ * @arg {Object} data The form data, including field information
+ * @arg {Context} context The context of the form.
  *
  * @classdesc
  * The {@link Form} class encapsulates a hypermedia form that can be
  * updated with values at runtime and then submitted.
  * TODO: More details on field values, etc.
  */
-var Form = function(data, context, http, extensions) {
+var Form = function(data, context) {
   // Cloning is required to keep cloned Form
   // instances separate.
   _.merge(this, _.cloneDeep(data));
 
   this.$$data = data;
   this.$$context = context;
-  this.$$http = http;
-  this.$$extensions = extensions;
 };
 
 /**
@@ -73,7 +73,7 @@ Form.prototype.submit = function() { // TODO: options parameter?
     config[prop] = vals;
   }
 
-  return Resouce.fromRequest(this.$$http(config), this.$$extensions);
+  return Resouce.fromRequest(this.$$context.http(config), this.$$context);
 };
 
 /**
@@ -83,9 +83,7 @@ Form.prototype.submit = function() { // TODO: options parameter?
  */
 Form.prototype.clone = function() {
   return new Form(this.$$data,
-                  this.$$context,
-                  this.$$http,
-                  this.$$extensions);
+                  this.$$context);
 };
 
 module.exports = Form;

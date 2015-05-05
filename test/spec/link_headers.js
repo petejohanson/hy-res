@@ -2,6 +2,7 @@
 
 require('es6-promise').polyfill();
 var LinkHeaderExtension = require('../../src/link_header.js');
+var Context = require('../../src/context.js');
 
 var expect = require('chai').expect;
 
@@ -12,8 +13,6 @@ describe('LinkHeaderExtension', function () {
   beforeEach(function() {
     http = sinon.mock();
     ext = new LinkHeaderExtension();
-    
-    ext.initialize(http, [ext]);
   });
 
   describe('extension applicability', function() {
@@ -30,7 +29,7 @@ describe('LinkHeaderExtension', function () {
     var links;
 
     beforeEach(function() {
-      links = ext.linkParser({}, { 'link': '</posts?page=3>; rel=next, </posts?page=1>; rel="prev"' });
+      links = ext.linkParser({}, { 'link': '</posts?page=3>; rel=next, </posts?page=1>; rel="prev"' }, new Context(http));
     });
 
     it('should return the links', function() {
@@ -53,7 +52,7 @@ describe('LinkHeaderExtension', function () {
   describe('parsing multiple links with the same rel', function() {
     var links;
     beforeEach(function() {
-      links = ext.linkParser({}, { 'link':  '</posts?page=1>; rel="section"; title="Page 1", </posts?page=2>; rel="section"; title="Page 2"' });
+      links = ext.linkParser({}, { 'link':  '</posts?page=1>; rel="section"; title="Page 1", </posts?page=2>; rel="section"; title="Page 2"' }, new Context(http));
     });
 
     it('has the first link', function() {

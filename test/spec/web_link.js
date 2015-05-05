@@ -22,16 +22,10 @@ describe('WebLink', function () {
       http = sinon.stub();
       var extensions = [new HalExtension(), new JsonExtension(), new LinkHeaderExtension()];
 
-      _.forEach(extensions, function(e) {
-        if (e.initialize) {
-          e.initialize(http, extensions);
-        }
-      });
-
       link = new WebLink({
         href: '/posts/123',
         title: 'Hypermedia and AngularJS'
-      }, new Context('http://api.server.com/'), http, extensions);
+      }, new Context(http, extensions).withUrl('http://api.server.com/'));
     });
 
     it('had the data properties', function() {
@@ -89,7 +83,7 @@ describe('WebLink', function () {
       link = new WebLink({
         href: '/posts{/id}',
         templated: true
-      }, Context.empty, {}, []);
+      }, new Context(), {}, []);
     });
 
     it('is templated', function() {
@@ -119,11 +113,10 @@ describe('WebLink', function () {
       http = sinon.stub();
       var extensions = [new HalExtension()];
 
-      _.forEach(extensions, function(e) { e.initialize(http, extensions); });
       link = new WebLink({
         href: '/posts?page=2',
         type: 'application/json'
-      }, Context.empty, http, extensions);
+      }, new Context(http, extensions));
     });
 
     it('has the type', function() {

@@ -35,7 +35,6 @@ var SirenExtension = function(mediaTypes) {
     type: 'application/x-www-form-urlencoded'
   };
 
-  var http, extensions;
   var mediaTypeSet = { 'application/vnd.siren+json': true };
 
   mediaTypes = mediaTypes || [];
@@ -44,11 +43,6 @@ var SirenExtension = function(mediaTypes) {
   }
 
   this.mediaTypes = _.keys(mediaTypeSet);
-
-  this.initialize = function(_http, _extensions) {
-    http = _http;
-    extensions = _extensions;
-  };
 
   this.applies = function(data, headers) {
     var h = headers['content-type'];
@@ -75,7 +69,7 @@ var SirenExtension = function(mediaTypes) {
 
     if (_.isObject(data.links)) {
       _.forEach(data.links, function (val) {
-        var link = new WebLink(val, context, http, extensions);
+        var link = new WebLink(val, context);
         for (var li = 0; li < val.rel.length; li++) {
           var r = val.rel[li];
           if (ret.hasOwnProperty(r)) {
@@ -93,7 +87,7 @@ var SirenExtension = function(mediaTypes) {
           return;
         }
 
-        var link = new WebLink(val, context, http, extensions);
+        var link = new WebLink(val, context);
         for (var li = 0; li < val.rel.length; li++) {
           var r = val.rel[li];
           if (ret.hasOwnProperty(r)) {
@@ -132,7 +126,7 @@ var SirenExtension = function(mediaTypes) {
 
   this.formParser = function(data, headers, context) {
     var formFactory = function(f) {
-      return new Form(_.defaults(f, formDefaults), context, http, extensions);
+      return new Form(_.defaults(f, formDefaults), context);
     };
 
     return _.groupBy(_.map(data.actions, formFactory), 'name');

@@ -13,9 +13,9 @@ var WebLink = require('./web_link');
  * @arg {Array} extensions The extensions to use for processing responses
  */
 var Root = function(url, http, extensions) {
-  _.invoke(extensions, 'initialize', http, extensions);
+  var ctx = new Context(http, extensions);
 
-  WebLink.call(this, { href: url }, new Context(url), http, extensions);
+  WebLink.call(this, { href: url }, ctx.withUrl(url));
 };
 
 Root.prototype = _.create(WebLink.prototype, {

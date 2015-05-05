@@ -35,7 +35,7 @@ describe('Form', function () {
       };
 
       // TODO: Need context to handle making relative -> absolute URL.
-      form = new Form(data, Context.empty, http);
+      form = new Form(data, new Context(http));
     });
 
     it('has the data properties', function() {
@@ -114,7 +114,7 @@ describe('Form', function () {
         ]
       };
 
-      form = new Form(data, Context.empty, http);
+      form = new Form(data, new Context(http));
     });
 
     it('sends field values as query parameters', function() {

@@ -6,13 +6,6 @@ var _ = require('lodash');
 var WebLink = require('./web_link');
 
 var LinkHeaderExtension = function() {
-  var http, extensions;
-
-  this.initialize = function(_http, _extensions) {
-    http = _http;
-    extensions = _extensions;
-  };
-
   this.applies = function(data, headers) {
     return _.isString(headers.link);
   };
@@ -23,7 +16,7 @@ var LinkHeaderExtension = function() {
     var ret = {};
     for(var i = 0; i < links.length; i++) {
       var l = links[i];
-      var wl = new WebLink(l, context, http, extensions);
+      var wl = new WebLink(l, context);
       if (!_.isUndefined(ret[l.rel])) {
         ret[l.rel].push(wl);
       } else {

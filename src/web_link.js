@@ -9,7 +9,6 @@ var UriTemplate = require('URIjs/src/URITemplate');
  * @constructor
  * @arg {Object} data the field values for the link
  * @arg {Context} context The resource context containing the link
- * @arg {Array} extensions The extensions
  *
  * @classdesc
  * Currently, there is one implementation of the concept of a link,
@@ -18,11 +17,9 @@ var UriTemplate = require('URIjs/src/URITemplate');
  * defined for the specific link), such as `href`, `title`, `type`, etc are all
  * defined on the link.
  */
-var WebLink = function(data, context, http, extensions) {
+var WebLink = function(data, context) {
   _.extend(this, data);
   this.$$context = context;
-  this.$$http = http;
-  this.$$extensions = extensions;
 };
 
 /**
@@ -39,7 +36,7 @@ WebLink.prototype.follow = function(options) {
     if (this.type) {
       options.headers.Accept = this.type;
     } else {
-      var accept = _.reduce(_.flatten(_.compact(_.pluck(this.$$extensions, 'mediaTypes'))), function(acc, s) { return acc + ',' + s; });
+      var accept = _.reduce(_.flatten(_.compact(_.pluck(this.$$context.extensions, 'mediaTypes'))), function(acc, s) { return acc + ',' + s; });
       if (accept) {
         options.headers.Accept = accept;
       }
@@ -47,7 +44,7 @@ WebLink.prototype.follow = function(options) {
   }
 
   var requestOptions = _.extend(options, { url: this.resolvedUrl(options.data) });
-  return Resource.fromRequest(this.$$http(requestOptions), this.$$extensions);
+  return Resource.fromRequest(this.$$context.http(requestOptions), this.$$context);
 };
 
 /**
@@ -64,11 +61,7 @@ WebLink.prototype.resolvedUrl = function(data) {
     url = new UriTemplate(url).expand(data);
   }
 
-  if (this.$$context) {
-    url = this.$$context.resolveUrl(url);
-  }
-
-  return url;
+  return this.$$context.resolveUrl(url);
 };
 
 module.exports = WebLink;
