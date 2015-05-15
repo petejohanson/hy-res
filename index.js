@@ -1,6 +1,7 @@
 
 module.exports = {
   Root: require('./src/root'),
+  Resource: require('./src/resource'),
   Form: require('./src/form'),
   HalExtension: require('./src/hal'),
   JsonExtension: require('./src/json'),
