@@ -145,7 +145,10 @@ gulp.task('default', function(cb) {
 
 gulp.task('coverage', function() {
   gulp.src('coverage/**/lcov.info')
-    .pipe(coveralls());
+    .pipe(shell([
+      'cat <%= file.path %> | ./node_modules/codecov.io/.bin/codecov'
+    ]));
+    //.pipe(coveralls());
 });
 
 gulp.task('ci', function(cb) {
