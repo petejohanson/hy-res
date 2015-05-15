@@ -146,7 +146,7 @@ gulp.task('default', function(cb) {
 gulp.task('coverage', function() {
   gulp.src('coverage/**/lcov.info')
     .pipe(shell([
-      'cat <%= file.path %> | ./node_modules/codecov.io/.bin/codecov'
+      'cat "<%= file.path %>" | ./node_modules/codecov.io/.bin/codecov'
     ]));
     //.pipe(coveralls());
 });
