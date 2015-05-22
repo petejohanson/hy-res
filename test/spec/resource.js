@@ -4,7 +4,9 @@
 var HyRes = require('../../');
 
 var resourceAssertions = require('../resource_assertions');
-var expect = require('chai').expect;
+var chai = require('chai');
+chai.use(require('chai-things'));
+var expect = chai.expect;
 var _ = require('lodash');
 
 describe('Resource', function () {
@@ -92,17 +94,38 @@ describe('Resource', function () {
     describe('$forms', function() {
       var forms;
 
-      beforeEach(function() {
-        forms = resource.$forms('create-form');
+      describe('when invoking with a form name', function() {
+        beforeEach(function() {
+          forms = resource.$forms('create-form');
+        });
+
+        it('returns the forms based on the name', function() {
+          expect(forms.length).to.equal(1);
+          expect(forms[0]).to.be.an.instanceof(HyRes.Form);
+        });
+
+        it('returns cloned forms', function() {
+          expect(forms[0]).not.to.equal(resource.$forms('create-form')[0]);
+        });
       });
 
-      it('returns the forms based on the name', function() {
-        expect(forms.length).to.equal(1);
-        expect(forms[0]).to.be.an.instanceof(HyRes.Form);
-      });
+      describe('when invoking with no arguments', function() {
+        beforeEach(function() {
+          forms = resource.$forms();
+        });
 
-      it('returns cloned forms', function() {
-        expect(forms).not.to.equal(resource.$forms('create-form'));
+        it('returns all the forms in the resource', function() {
+          expect(forms.length).to.equal(3);
+          expect(forms).to.all.be.instanceof(HyRes.Form);
+        });
+
+        it('returns forms with the same name', function() {
+          expect(_.filter(forms, 'name', 'edit-form').length).to.equal(2);
+        });
+
+        it('returns cloned forms', function() {
+          expect(forms[0]).not.to.equal(resource.$forms()[0]);
+        });
       });
     });
 

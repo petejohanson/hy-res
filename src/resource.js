@@ -114,13 +114,20 @@ var Resource = function() {
    * created, modified, and submitted without reloading the containing
    * {@link Resource}.
    *
-   * @arg {string} rel The link relation to look up.
-   * @returns {Array} An array of cloned forms with the given link relation, or an empty array if not found.
+   * @arg {string} [rel] The link relation to look up. If omitted, returns all forms in the resource.
+   * @returns {Array} An array of cloned forms, or an empty array if not found.
    * @example
    * res.$forms('create-form')
    * => [Form { href: '/posts?page=2', method: 'POST', ... }]
+   * @example
+   * res.$forms()
+   * => [Form { href: '/posts?page=2, 'method: 'POST", ... }]
    */
   this.$forms = function(rel) {
+    if (!rel) {
+      return _.invoke(_.flatten(_.values(this.$$forms)), 'clone');
+    }
+
     return _.invoke(_.get(this.$$forms, rel, []), 'clone');
   };
 
