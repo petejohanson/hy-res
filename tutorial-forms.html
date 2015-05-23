@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>hy-res Class: LinkCollection</title>
+	<title>hy-res tutorialForms</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -48,296 +48,59 @@
 <div class="row">
 
 	
-	<div class="col-md-8">
+	<div class="col-md-12">
 	
 		<div id="main">
-    		<h1 class="page-title">Class: LinkCollection</h1>
-			
-
-	<h1 class="page-title">Class: LinkCollection</h1>
-<section>
+    		<h1 class="page-title">tutorialForms</h1>
+			<section class="tutorial-section">
 
 <header>
     
-        <h2>
-        LinkCollection
-        </h2>
-        
-    
+
+    <h2>Forms</h2>
 </header>
 
-
 <article>
-    <div class="container-overview">
-    
-        
-<dt>
-    <h4 class="name" id="LinkCollection"><span class="type-signature"></span>new LinkCollection<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>A collection of <a href="WebLink.html">WebLink</a> instances.</p>
-    </div>
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-    
-    
-
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
-            
-<dt>
-    <h4 class="name" id="follow"><span class="type-signature"></span>follow<span class="signature">(options)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Returns an array of <a href="Resource.html">Resource</a> instances. In addition, the array has a
-<code>$promise</code> property that will resolve when all of the <a href="Resource.html">Resource</a>
-instances resolve, allowing you to perform some logic once everything has
-been fetched.</p>
-    </div>
-    
-
-    
-
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The options to pass to <a href="WebLink.html#follow">WebLink#follow</a> for each link.</p></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-    
-    
-
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>the resources that result from following the contained links.</p>
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Array</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        </dl>
-    
-
-    
-
-    
+    <p>Hypermedia forms come in many varieties/flavors, but fundamentally, they consiste of two core set of information: the metadata about the form itself, e.g. URL/URI Template to use for completing the form request, or the content type, if any to encode the request in, and the set of field metadata fo the various inputs for th form.</p>
+<p>For tue most part, the only high level metadata tyat consumers may need is a title for display. Otherwise, the primary piece that consumers need do is manipulate the field valuea before submitting the form.</p>
+<h2>Example</h2><p>The following Siren example demonstrates using a hypermedia form to perform a request.</p>
+<h3>Form Resource</h3><p>Imagine a ToDo list API. The resource for loading the liat items might also include the form for adding a new item:</p>
+<pre class="prettyprint source lang-http"><code>HTTP/1.1 GET /items
+Host: http://todo.io/
+
+{
+  &quot;entities&quot;: [
+    // The ToDo liat items
+  ]
+  &quot;actions&quot;: [
+    {
+      &quot;name&quot;: &quot;create-item&quot;,
+      &quot;href&quot;: &quot;/items&quot;,
+      &quot;method&quot;: &quot;POST&quot;,
+      &quot;title&quot;: &quot;Add Item&quot;,
+      &quot;fields&quot;: [
+        { &quot;name&quot;: &quot;item&quot;, &quot;type&quot;: &quot;text&quot; }
+      ]
+    } 
+  ]
+}</code></pre><p>Assuming that <code>res</code> is a <a href="Resource.html">Resource</a> instance for <code>/itens</code>, we can do the following:</p>
+<pre class="prettyprint source lang-javascript"><code>var form = res.$form('create-item'); // Get a copy of the form
+form.field('item').value = 'Wash the dishes'; // Update field values.
+var newItemRes = form.submit(); // Make the HTTP request</code></pre><p>The call to <a href="Form.html#submit">Form#submit</a> will perform a request like the following:</p>
+<pre class="prettyprint source lang-http"><code>HTTP/1.1 POST /items
+Host: http://todo.io/
+Content-Type: application/x-www-form-urlencoded
+
+item=Wash%20the%20dishes</code></pre>
 </article>
 
 </section>
-
-
-
 
 		</div>
 	</div>
 
 	<div class="clearfix"></div>
 
-	
-		<div class="col-md-3">
-			<div id="toc" class="col-md-3"></div>
-		</div>
 	
 
 </div>
