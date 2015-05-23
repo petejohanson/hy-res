@@ -114,7 +114,6 @@ And the view:
 
 ## To Do
 
-* Document $form/$forms support.
 * Submit form file uploads? Maybe allow consumers to provide populated FormData
   instance in `submit` parameters?
 * Handle scenario where subset of links for a given link relation is embedded.
@@ -123,7 +122,6 @@ And the view:
   links.
 * Extensions for other media types (e.g. Collection+Json, Uber)
 * Support URI schemes other than http/https (extension mechanism?)
-* Ability to follow link relation w/ 'name' disambiguation parameter (HAL field)
 * Mixins for resources based on... profile? link relation that was followed?
 * Differentiate between embedded link vs embedded representation (See Siren spec)
 * Sane error handling
