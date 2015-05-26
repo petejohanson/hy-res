@@ -125,10 +125,7 @@ And the view:
 * Mixins for resources based on... profile? link relation that was followed?
 * Differentiate between embedded link vs embedded representation (See Siren spec)
 * Sane error handling
-* Handling or error tyoes, e.g. application/problem+json
+* Handling or error types, e.g. application/problem+json
 * Store resource's own URL somewhere accessible, perhaps `res.$href`?
-* Change "options" to be nested under { transportOptions: opts } to allow
-  hy-res options to exist as a distinct set of options. (e.g. data for URI
-  template resolution)
 * Store raw http response data in resource property, e.g. `res.$raw`
 * Support for PUT of modified resource to replace server state?

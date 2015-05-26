@@ -25,25 +25,30 @@ var WebLink = function(data, context) {
 /**
  * Dereference the link, returning an asynchronously
  * populated {@link Resource}.
- * @arg options The options for the request.
+ * @arg {Object} [options] The options for the request.
+ * @arg {Object} [options.protocol] Options to pass to the underlying protocol,
+ * e.g. http/https.
+ * @arg {Object} [options.data] When following a link that is a URI Template,
+ * this object will used as variables when resolving the template into the
+ * final URI.
  * @tutorial uri-templates
  */
 WebLink.prototype.follow = function(options) {
-  options = (options || {});
-  options.headers = (options.headers || {});
+  var opts = _.get(options, 'protocol', {});
+  opts.headers = (opts.headers || {});
 
-  if(!options.headers.Accept) {
+  if(!opts.headers.Accept) {
     if (this.type) {
-      options.headers.Accept = this.type;
+      opts.headers.Accept = this.type;
     } else {
       var accept = _.reduce(_.flatten(_.compact(_.pluck(this.$$context.extensions, 'mediaTypes'))), function(acc, s) { return acc + ',' + s; });
       if (accept) {
-        options.headers.Accept = accept;
+        opts.headers.Accept = accept;
       }
     }
   }
 
-  var requestOptions = _.extend(options, { url: this.resolvedUrl(options.data) });
+  var requestOptions = _.extend(opts, { url: this.resolvedUrl(_.get(options, 'data')) });
   return Resource.fromRequest(this.$$context.http(requestOptions), this.$$context);
 };
 

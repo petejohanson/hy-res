@@ -141,7 +141,7 @@ var Resource = function() {
    * request.
    *
    * @arg {string} rel The link relation to follow.
-   * @arg {Object} options Options to control any http requests, URI template resolution, etc.
+   * @arg {Object} [options] Options for following the link. For details, see {@link WebLink#follow}.
    * @returns {Resource} The linked/embedded resource, or null if the link relation is not found.
    * @throws Will throw an error if multiple instances of the relation are present.
    * @example
@@ -187,7 +187,7 @@ var Resource = function() {
    * will be so in the future.
    *
    * @arg {string} rel The link relation to follow.
-   * @arg {Object} options Options to control any http requests, URI template resolution, etc.
+   * @arg {Object} [options] Options for following the link. For details, see {@link WebLink#follow}.
    * @returns {Array} The linked/embedded resources, or an enmpty array if the link relation is not found.
    * @example
    * res.$followAll('item')

@@ -5,7 +5,10 @@ require('es6-promise').polyfill();
 var _ = require('lodash');
 var resourceAssertions = require('../resource_assertions');
 
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
+var sinonChai = require('sinon-chai');
+chai.use(sinonChai);
 var Context = require('../../src/context.js');
 var WebLink = require('../../src/web_link.js');
 var HalExtension = require('../../src/hal.js');
@@ -140,7 +143,8 @@ describe('WebLink', function () {
         });
         http.withArgs(sinon.match.has('headers', { 'Accept': 'text/plain' })).returns(httpPromise);
 
-        var res = link.follow({ headers: { 'Accept': 'text/plain' } });
+        var res = link.follow({ protocol: { headers: { 'Accept': 'text/plain' } }});
+        expect(http).to.be.calledWith(sinon.match.has('headers', { 'Accept': 'text/plain' }));
         expect(res).to.not.be.null;
       });
     });
