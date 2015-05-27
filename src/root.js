@@ -9,11 +9,14 @@ var WebLink = require('./web_link');
  * @constructor
  * @extends WebLink
  * @arg {string} url The URL of the root of the API
- * @arg http The ES6 promise based HTTP abstraction (e.g. AngularJS $http, or [axios](https://www.npmjs.com/package/axios)
+ * @arg http The ES6 promise based HTTP abstraction (e.g. AngularJS $http, or
+ * [axios](https://www.npmjs.com/package/axios)
  * @arg {Array} extensions The extensions to use for processing responses
+ * @arg {Object} [defaultOptions] Default options used when following links.
+ * See {@link Context#withDefaults} and {@link WebLink#follow}
  */
-var Root = function(url, http, extensions) {
-  var ctx = new Context(http, extensions);
+var Root = function(url, http, extensions, defaultOptions) {
+  var ctx = new Context(http, extensions, defaultOptions);
 
   WebLink.call(this, { href: url }, ctx.withUrl(url));
 };

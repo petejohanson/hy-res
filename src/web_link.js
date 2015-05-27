@@ -34,6 +34,7 @@ var WebLink = function(data, context) {
  * @tutorial uri-templates
  */
 WebLink.prototype.follow = function(options) {
+  options = this.$$context.withDefaults(options);
   var opts = _.get(options, 'protocol', {});
   opts.headers = (opts.headers || {});
 

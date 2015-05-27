@@ -20,15 +20,17 @@ describe('WebLink', function () {
   describe('creating a web link', function() {
     var link;
     var http;
+    var defaultOptions;
 
     beforeEach(function() {
       http = sinon.stub();
+      defaultOptions = {};
       var extensions = [new HalExtension(), new JsonExtension(), new LinkHeaderExtension()];
 
       link = new WebLink({
         href: '/posts/123',
         title: 'Hypermedia and AngularJS'
-      }, new Context(http, extensions).withUrl('http://api.server.com/'));
+      }, new Context(http, extensions, defaultOptions).withUrl('http://api.server.com/'));
     });
 
     it('had the data properties', function() {
@@ -75,6 +77,18 @@ describe('WebLink', function () {
         it('has the expected properties', function() {
           expect(resource.title).to.equal('Hypermedia and AngularJS');
         });
+      });
+    });
+
+    xdescribe('following the link when there are default options ', function() {
+      beforeEach(function() {
+        defaultOptions.protocol = { headers: { 'Prefer': 'return=representation' } };
+
+        link.follow({ protocol: { headers: { 'Accept': 'text/plain' } } });
+      });
+
+      it('invokes the http request with the merged options', function() {
+        expect(http).to.be.calledWith(sinon.match.has('headers', { 'Accept': 'text/plain', 'Prefer': 'return=representation' }));
       });
     });
   });

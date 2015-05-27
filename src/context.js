@@ -1,6 +1,7 @@
 'use strict';
 
 var URI = require('URIjs');
+var _ = require('lodash');
 
 /**
  * Create a new context with the given http abstraction and set of
@@ -12,9 +13,10 @@ var URI = require('URIjs');
  * or request, including extensions available, the http mechanism for
  * dereferencing URLs, etc.
  */
-var Context = function(http, extensions) {
+var Context = function(http, extensions, defaultOptions) {
   this.http = http;
   this.extensions = extensions;
+  this.defaultOptions = defaultOptions || {};
 };
 
 /**
@@ -45,9 +47,21 @@ Context.prototype.withoutUrl = function() {
  * @returns {Context} The new context with the base URL.
  */
 Context.prototype.withUrl = function(url) {
-  var c = new Context(this.http, this.extensions);
+  var c = new Context(this.http, this.extensions, this.defaultOptions);
   c.url = url;
   return c;
+};
+
+/**
+ * Merge the default options with the provided ones to produce the final
+ * options for a follow operation.
+ * @arg {Object} [options] The request specific options.
+ * @returns {Object} The merged options.
+ */
+Context.prototype.withDefaults = function(options) {
+  var ret = {};
+
+  return _.merge({}, this.defaultOptions, options || {});
 };
 
 module.exports = Context;
