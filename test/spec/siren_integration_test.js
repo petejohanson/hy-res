@@ -5,8 +5,8 @@ var HyRes = require('../../');
 require('es6-promise').polyfill();
 
 var chai = require('chai');
-var chaiAsPromised= require('chai-as-promised');
-chai.use(chaiAsPromised);
+chai.use(require('chai-as-promised'));
+chai.use(require('chai-hy-res'));
 
 var expect = chai.expect;
 
@@ -27,7 +27,7 @@ describe('Siren + axios to perform an action', function() {
   });
 
   it('has a self link', function() {
-    expect(root.$has('self')).to.be.true;
+    expect(root).to.have.link('self');
   });
 
   describe('Submitting a GET query form', function() {

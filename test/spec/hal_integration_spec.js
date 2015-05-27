@@ -4,7 +4,9 @@ var HyRes = require('../../');
 
 require('es6-promise').polyfill();
 
-var expect = require('chai').expect;
+var chai = require('chai');
+chai.use(require('chai-hy-res'));
+var expect = chai.expect;
 var axios = require('axios');
 
 describe('HyRes + axios to consume HALTalk', function() {
@@ -22,7 +24,7 @@ describe('HyRes + axios to consume HALTalk', function() {
   });
 
   it('has a self link', function() {
-    expect(root.$has('self')).to.be.true;
+    expect(root).to.have.link('self');
   });
 
   describe('following a templated link relation', function() {
@@ -39,7 +41,7 @@ describe('HyRes + axios to consume HALTalk', function() {
     });
 
     it('has a self link', function() {
-      expect(thing.$has('self')).to.be.true;
+      expect(thing).to.have.link('self');
     });
   });
 });
