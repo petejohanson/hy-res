@@ -81,8 +81,9 @@ describe('WebLink', function () {
       });
     });
 
-    xdescribe('following the link when there are default options ', function() {
+    describe('following the link when there are default options ', function() {
       beforeEach(function() {
+        http.returns(Promise.resolve({}));
         defaultOptions.protocol = { headers: { 'Prefer': 'return=representation' } };
 
         link.follow({ protocol: { headers: { 'Accept': 'text/plain' } } });
