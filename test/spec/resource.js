@@ -1,11 +1,13 @@
 'use strict';
 
+require('es6-promise').polyfill();
 
 var HyRes = require('../../');
 
-var resourceAssertions = require('../resource_assertions');
 var chai = require('chai');
 chai.use(require('chai-things'));
+chai.use(require('chai-hy-res'));
+chai.use(require('chai-as-promised'));
 var expect = chai.expect;
 var _ = require('lodash');
 
@@ -132,7 +134,6 @@ describe('Resource', function () {
   });
 
   describe('an unresolved root resource', function() {
-    var context = {};
     var resource;
     var http;
     var ordersPromise, ordersResolve;
@@ -185,10 +186,11 @@ describe('Resource', function () {
       });
       http.withArgs(sinon.match({ url: '/orders/123' })).returns(ordersPromise);
       resource = new HyRes.Root('/orders/123', http, extensions).follow();
-      context.resource = resource;
     });
 
-    resourceAssertions.unresolvedResourceBehavior(context);
+    it('is an unresolved resource', function() {
+      expect(resource).to.be.an.unresolved.resource;
+    });
 
     describe('a resolved resource', function() {
       beforeEach(function () {
@@ -200,7 +202,9 @@ describe('Resource', function () {
         return ordersPromise;
       });
 
-      resourceAssertions.resolvedResourceBehavior(context);
+      it('is a resolved resource', function() {
+        expect(resource).to.be.a.resolved.resource;
+      });
 
       it('should contain the parsed properties', function () {
         expect(resource.type).to.eql('promo');
@@ -255,10 +259,11 @@ describe('Resource', function () {
         var payment;
         beforeEach(function () {
           payment = resource.$sub('payment');
-          context.resource = payment;
         });
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('is a resolved resource', function() {
+          expect(payment).to.be.a.resolved.resource;
+        });
 
         it('should not be null', function () {
           expect(payment).to.not.be.null;
@@ -280,17 +285,11 @@ describe('Resource', function () {
         });
 
         it('should contain resolved resources', function () {
-          for (var r in discounts) {
-            context.resource = r;
-            resourceAssertions.resolvedResourceBehavior(context);
-          }
+          return expect(discounts).to.all.have.property('$resolved', true);
         });
 
         it('should have a resolved $promise on the array', function () {
-          return discounts.$promise.then(function (a) {
-            expect(a).to.eql(discounts);
-            return a;
-          });
+          return expect(discounts.$promise).to.become(discounts);
         });
 
         it('should have a true $resolved property', function () {
@@ -312,10 +311,11 @@ describe('Resource', function () {
             http.withArgs(sinon.match({url: '/customers/321' })).returns(customerPromise);
 
             customerResource = resource.$followOne('customer');
-            context.resource = customerResource;
           });
 
-          resourceAssertions.unresolvedResourceBehavior(context);
+          it('is an unresolved resource', function() {
+            expect(customerResource).to.be.an.unresolved.resource;
+          });
 
           describe('and then resolved', function () {
             beforeEach(function () {
@@ -333,7 +333,9 @@ describe('Resource', function () {
               return customerResource.$promise;
             });
 
-            resourceAssertions.resolvedResourceBehavior(context);
+            it('is a resolved resource', function() {
+              expect(resource).to.be.a.resolved.resource;
+            });
 
             it('should have the raw properties', function () {
               expect(customerResource.name).to.eql('John Wayne');
@@ -346,10 +348,11 @@ describe('Resource', function () {
 
           beforeEach(function() {
             shippingResource = resource.$followOne('shipping-address');
-            context.resource = shippingResource;
           });
 
-          resourceAssertions.resolvedResourceBehavior(context);
+          it('is a resolved resource', function() {
+            expect(shippingResource).to.be.a.resolved.resource;
+          });
 
           it ('should have the embedded resource properties', function() {
             expect(shippingResource.street1).to.eql('123 Wilkes Lane');
@@ -388,10 +391,7 @@ describe('Resource', function () {
           });
 
           it('is an array of unresolved resources', function() {
-            _.forEach(stores, function(s) {
-              expect(s.$resolved).to.be.false;
-              expect(s.$error).to.be.null;
-            });
+            return expect(stores).to.all.have.property('$resolved', false);
           });
 
           describe('when the background requests complete', function() {
@@ -430,10 +430,11 @@ describe('Resource', function () {
 
           var link = resource.$link('customer');
           customerResource = link.follow();
-          context.resource = customerResource;
         });
 
-        resourceAssertions.unresolvedResourceBehavior(context);
+        it('is an unresolved resource', function() {
+          expect(customerResource).to.be.an.unresolved.resource;
+        });
 
         describe('and then resolved', function() {
           beforeEach(function() {
@@ -448,7 +449,9 @@ describe('Resource', function () {
             return customerResource.$promise;
           });
 
-          resourceAssertions.resolvedResourceBehavior(context);
+          it('is a resolved resource', function() {
+            expect(customerResource).to.be.a.resolved.resource;
+          });
 
           it('should have the raw properties', function() {
             expect(customerResource.name).to.eql('John Wayne');
@@ -466,10 +469,11 @@ describe('Resource', function () {
           }));
 
           customerResource = resource.$followOne('customer-search', { data: { id: '666' } });
-          context.resource = customerResource;
         });
 
-        resourceAssertions.unresolvedResourceBehavior(context);
+        it('is an unresolved resource', function() {
+          expect(customerResource).to.be.an.unresolved.resource;
+        });
 
         describe('and then resolved', function() {
           beforeEach(function() {
@@ -485,7 +489,9 @@ describe('Resource', function () {
             return customerResource.$promise;
           });
 
-          resourceAssertions.resolvedResourceBehavior(context);
+          it('is a resolved resource', function() {
+            expect(customerResource).to.be.a.resolved.resource;
+          });
 
           it('should have the raw properties', function() {
             expect(customerResource.name).to.eql('Bruce Lee');
@@ -508,10 +514,11 @@ describe('Resource', function () {
         }));
 
         profileResource = resource.$followOne('customer').$followOne('profile');
-        context.resource = profileResource;
       });
 
-      resourceAssertions.unresolvedResourceBehavior(context);
+      it('is an unresolved resource', function() {
+        expect(profileResource).to.be.an.unresolved.resource;
+      });
 
       describe('when the chain resolves', function() {
         beforeEach(function() {
@@ -538,7 +545,9 @@ describe('Resource', function () {
         });
 
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('is a resolved resource', function() {
+          expect(profileResource).to.be.a.resolved.resource;
+        });
 
         it('should have the profile location', function() {
           expect(profileResource.location).to.eql('Anytown, USA');
@@ -556,10 +565,11 @@ describe('Resource', function () {
         }));
 
         profileResource = resource.$followOne('customer').$followOne('profile');
-        context.resource = profileResource;
       });
 
-      resourceAssertions.unresolvedResourceBehavior(context);
+      it('is an unresolved resource', function() {
+        expect(profileResource).to.be.an.unresolved.resource;
+      });
 
       describe('when the chain resolves', function() {
         beforeEach(function() {
@@ -585,7 +595,9 @@ describe('Resource', function () {
           return profileResource.$promise;
         });
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('is a resolved resource', function() {
+          expect(profileResource).to.be.a.resolved.resource;
+        });
 
         it('should have the profile location', function() {
           expect(profileResource.location).to.eql('Anytown, USA');
@@ -607,10 +619,11 @@ describe('Resource', function () {
         }));
 
         profileResources = resource.$followOne('customer').$followAll('profile');
-        context.resource = profileResources;
       });
 
-      resourceAssertions.unresolvedResourceBehavior(context);
+      it('is an unresolved resource', function() {
+        expect(profileResources).to.be.an.unresolved.resource;
+      });
 
       describe('when the chain resolves', function() {
         beforeEach(function() {
@@ -636,7 +649,9 @@ describe('Resource', function () {
           return profileResources.$promise;
         });
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('is a resolved resource', function() {
+          expect(profileResources).to.be.a.resolved.resource;
+        });
 
         it('should have the profile location', function() {
           expect(profileResources[0].location).to.eql('Anytown, USA');
@@ -654,10 +669,11 @@ describe('Resource', function () {
         }));
 
         profileResources = resource.$followOne('customer').$followAll('profile');
-        context.resource = profileResources;
       });
 
-      resourceAssertions.unresolvedResourceBehavior(context);
+      it('is an unresolved resource', function() {
+        expect(profileResources).to.be.an.unresolved.resource;
+      });
 
       describe('when the chain resolves', function() {
         beforeEach(function() {
@@ -682,7 +698,9 @@ describe('Resource', function () {
           return profileResources.$promise;
         });
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('is a resolved resource', function() {
+          expect(profileResources).to.be.a.resolved.resource;
+        });
 
         it('should have the profile location', function() {
           expect(profileResources[0].location).to.eql('Anytown, USA');

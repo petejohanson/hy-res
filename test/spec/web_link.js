@@ -3,12 +3,11 @@
 require('es6-promise').polyfill();
 
 var _ = require('lodash');
-var resourceAssertions = require('../resource_assertions');
 
 var chai = require('chai');
 var expect = chai.expect;
-var sinonChai = require('sinon-chai');
-chai.use(sinonChai);
+chai.use(require('sinon-chai'));
+chai.use(require('chai-hy-res'));
 var Context = require('../../src/context.js');
 var WebLink = require('../../src/web_link.js');
 var HalExtension = require('../../src/hal.js');
@@ -46,7 +45,6 @@ describe('WebLink', function () {
       var resource;
       var httpResolve;
       var httpPromise;
-      var context = {};
 
       beforeEach(function() {
         httpPromise = new Promise(function(resolve, reject) {
@@ -57,10 +55,11 @@ describe('WebLink', function () {
           .returns(httpPromise);
 
         resource = link.follow();
-        context.resource = resource;
       });
 
-      resourceAssertions.unresolvedResourceBehavior(context);
+      it('is an unresolved resource', function() {
+        expect(resource).to.be.an.unresolved.resource;
+      });
 
       it('passes an Accept header with extension content types', function() {
         expect(http.calledWith(sinon.match.has('headers', { 'Accept': 'application/hal+json,application/json' }))).to.be.true;
@@ -72,7 +71,9 @@ describe('WebLink', function () {
           return httpPromise;
         });
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('is a resolved resource', function() {
+          expect(resource).to.be.a.resolved.resource;
+        });
 
         it('has the expected properties', function() {
           expect(resource.title).to.equal('Hypermedia and AngularJS');
