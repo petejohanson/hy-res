@@ -253,6 +253,14 @@ describe('Resource', function () {
           var links = resource.$links('stores');
           expect(links.length).to.eql(2);
         });
+
+        it('should return all links when no rel is provided', function() {
+          var links = resource.$links();
+          expect(links.length).to.be.equal(6);
+          expect(links).to.all.be.instanceof(HyRes.WebLink);
+          expect(_.find(links, 'rel', 'self')).to.have.property('href', '/orders/123');
+          expect(_.filter(links, 'rel', 'stores').length).to.equal(2);
+        });
       });
 
       describe('embedded resources', function () {

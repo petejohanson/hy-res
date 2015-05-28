@@ -69,13 +69,19 @@ var Resource = function() {
   /**
    * Return a {@link LinkCollection} for the given link relation.
    *
-   * @arg {string} rel The link relation to look up.
-   * @returns {LinkCollection} The links with the given link relation.
+   * @arg {string} [rel] The link relation to look up. If not provided, all
+   * links in the resource will be return.
+   * @returns {LinkCollection} The links with the given link relation, or
+   * all the links in the resource if a rel is not provided.
    * @example
    * res.$links('posts')
    * => LinkCollection [ WebLink { href: '/posts/123' }, WebLink { href: '/posts/345' } ]
    */
   this.$links = function(rel) {
+    if (!rel) {
+      return LinkCollection.fromArray(_.flatten(_.values(this.$$links)));
+    }
+
     return _.get(this.$$links, rel, []);
   };
 

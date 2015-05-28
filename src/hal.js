@@ -63,6 +63,10 @@ var HalExtension = function(mediaTypes) {
 
       var linkArray = [];
       _.forEach(val, function(l) {
+        // Because HAL uses link relations as object keys, we populate
+        // the rel field on the link manually so the link is self
+        // contained from this point onward.
+        l.rel = key;
         linkArray.push(new WebLink(l, context));
       }, this);
 
