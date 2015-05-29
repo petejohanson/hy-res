@@ -26,8 +26,12 @@ describe('JsonExtension', function () {
 
   describe('data parser', function() {
     it('should return the data', function() {
-      var data = ext.dataParser({ name: 'John Doe' }, {});
-      expect(data).to.eql({ name: 'John Doe' });
+      var data = ext.dataParser({ name: 'John Doe', id: '123' }, {});
+
+      expect(data).to.deep.include.members([
+        {name: 'name', value: 'John Doe' },
+        {name: 'id', value: '123' }
+      ]);
     });
   });
 

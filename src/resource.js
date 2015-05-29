@@ -304,7 +304,12 @@ Resource.prototype.$$resolve = function(data, headers, context) {
       return;
     }
 
-    _.assign(this, (e.dataParser || defaultParser)(data, headers, context));
+    var fields = (e.dataParser || _.constant([]))(data, headers, context);
+
+    _.assign(this, _.reduce(fields, function(result, val) {
+        result[val.name] = val.value;
+        return result;
+      }, {}));
     _.assign(this.$$links, (e.linkParser || defaultParser)(data, headers, context));
     _.assign(this.$$forms, (e.formParser || defaultParser)(data, headers, context));
 

@@ -43,11 +43,11 @@ var HalExtension = function(mediaTypes) {
   };
 
   this.dataParser = function(data, headers) {
-    var ret = {};
-    _.assign(ret, data);
-    delete ret._links;
-    delete ret._embedded;
-    return ret;
+    return _.transform(data, function(res, val, key) {
+      if (key === '_links' || key === '_embedded')
+        return;
+      res.unshift({ name: key, value: val });
+    }, []);
   };
 
   this.linkParser = function(data, headers, context) {

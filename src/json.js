@@ -16,7 +16,9 @@ var JsonExtension = function() {
     return type === 'application/json';
   };
 
-  this.dataParser = _.identity;
+  this.dataParser = _.ary(_.partialRight(_.transform, function(res, val, key) {
+      res.unshift({ name: key, value: val });
+  }, []), 1);
 };
 
 module.exports = JsonExtension;

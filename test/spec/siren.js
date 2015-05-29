@@ -130,26 +130,32 @@ describe('SirenExtension', function () {
       var data = ext.dataParser({
         links: [ { rel: ['self'], href: '/orders/123' } ],
         properties: {
-          name: 'John Doe'
+          name: 'John Doe',
+          id: '123'
         }
       }, {});
 
-      expect(data).to.eql({ name: 'John Doe' });
+      expect(data).to.deep.include.members([
+        {name: 'name', value: 'John Doe' },
+        {name: 'id', value: '123' }
+      ]);
     });
 
     it('should include the title, if present', function() {
       var data = ext.dataParser({
         links: [ { rel: ['self'], href: '/orders/123' } ],
         properties: {
-          name: 'John Doe'
+          name: 'John Doe',
+          id: '123'
         },
         title: 'My Order #123'
       }, {});
 
-      expect(data).to.eql({
-        name: 'John Doe',
-        title: 'My Order #123'
-      });
+      expect(data).to.deep.include.members([
+        {name: 'name', value: 'John Doe' },
+        {name: 'id', value: '123' },
+        {name: 'title', value: 'My Order #123' }
+      ]);
     });
   });
 

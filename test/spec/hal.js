@@ -1,7 +1,8 @@
 'use strict';
 
 var HalExtension = require('../../src/hal');
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
 
 describe('HalExtension', function () {
   var addlMediaType = 'application/vnd.co.format+json';
@@ -36,10 +37,14 @@ describe('HalExtension', function () {
     it('should return the properties without _links or _embedded', function() {
       var data = extension.dataParser({
         _links: { self: { href: '/orders/123' } },
-        name: 'John Doe'
+        name: 'John Doe',
+        id: '123'
       }, {});
 
-      expect(data).to.eql({ name: 'John Doe' });
+      expect(data).to.deep.include.members([
+        {name: 'name', value: 'John Doe' },
+        {name: 'id', value: '123' }
+      ]);
     });
   });
 
