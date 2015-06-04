@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var WebLink = require('./web_link');
 var LinkCollection = require('./link_collection');
+var Resource = require('./resource');
 
 /**
  * Create the HAL extension
@@ -75,14 +76,14 @@ var HalExtension = function(mediaTypes) {
     return ret;
   };
 
-  this.embeddedParser = function(data, headers) {
+  this.embeddedParser = function(data, headers, context) {
     var ret = {};
     _.forEach(data._embedded || {}, function(val, key) {
       if (!_.isArray(val)) {
         val = [val];
       }
 
-      ret[key] = val;
+      ret[key] = Resource.embeddedCollection(val, headers, context);
     });
 
     return ret;

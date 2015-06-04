@@ -280,6 +280,10 @@ describe('Resource', function () {
         it('should have the basic properties', function () {
           expect(payment.amount).to.eql('$10.50');
         });
+
+        it('should have the included links', function() {
+          expect(payment).to.have.link('self').with.property('href','/orders/123/payment');
+        });
       });
 
       describe('an array of embedded resources', function () {

@@ -54,6 +54,9 @@ var CollectionJsonExtension = function(mediaTypes) {
 
   this.linkParser = function(data, headers, context) {
     var coll = data.collection;
+    if (!coll) {
+      return undefined;
+    }
 
     var links = (coll.links || []).concat([{ rel: 'self', href: coll.href }]);
 
@@ -70,6 +73,9 @@ var CollectionJsonExtension = function(mediaTypes) {
 
   this.formParser = function(data, headers, context) {
     var coll = data.collection;
+    if (!coll) {
+      return undefined;
+    }
 
     var formFactory = function(q) {
       var q2 = _.clone(q);
@@ -83,6 +89,9 @@ var CollectionJsonExtension = function(mediaTypes) {
 
   this.embeddedParser = function(data) {
     var coll = data.collection;
+    if (!coll) {
+      return undefined;
+    }
 
     return { item: _.cloneDeep(coll.items) };
   };

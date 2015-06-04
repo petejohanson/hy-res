@@ -310,16 +310,10 @@ Resource.prototype.$$resolve = function(data, headers, context) {
         result[val.name] = val.value;
         return result;
       }, {}));
+
     _.assign(this.$$links, (e.linkParser || defaultParser)(data, headers, context));
     _.assign(this.$$forms, (e.formParser || defaultParser)(data, headers, context));
-
-    _.forEach((e.embeddedParser || _.constant([]))(data, headers, context), function(raw, rel) {
-      var embeds = raw.map(function(e) { return Resource.embedded(e, headers, context); }, this);
-
-      embeds.$promise = Promise.resolve(embeds);
-      embeds.$resolved = true;
-      this.$$embedded[rel] = embeds;
-    }, this);
+    _.assign(this.$$embedded, (e.embeddedParser || defaultParser)(data, headers, context));
   }, this);
 
   this.$resolved = true;
@@ -335,6 +329,15 @@ Resource.embedded = function(raw, headers, context) {
   ret.$$resolve(raw, headers, context);
   ret.$promise = Promise.resolve(ret);
   return ret;
+};
+
+Resource.embeddedCollection = function(items, headers, context) {
+  var embeds = items.map(function(e) { return Resource.embedded(e, headers, context); }, this);
+
+  embeds.$promise = Promise.resolve(embeds);
+  embeds.$resolved = true;
+
+  return embeds;
 };
 
 Resource.fromRequest = function(request, context) {

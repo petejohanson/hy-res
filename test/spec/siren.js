@@ -1,8 +1,12 @@
 'use strict';
 
 var SirenExtension = require('../../src/siren');
+var Resource = require('../../src/resource');
+var Context = require('../../src/context');
 
-var expect = require('chai').expect;
+var chai = require('chai');
+chai.use(require('chai-things'));
+var expect = chai.expect;
 
 describe('SirenExtension', function () {
   var addlMediaType = 'application/vnd.co.sirenformat+json';
@@ -106,8 +110,9 @@ describe('SirenExtension', function () {
             title: 'My Order #123'
           }
         ]
-      }, {});
+      }, { 'content-type': 'application/vnd.siren+json' }, new Context({}, [ext]));
 
+      expect(embedded.order).to.all.be.instanceof(Resource);
       expect(embedded.order[0].title).to.eql('My Order #123');
     });
 

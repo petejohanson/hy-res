@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Form = require('./form');
+var Resource = require('./resource');
 var WebLink = require('./web_link');
 var LinkCollection = require('./link_collection');
 
@@ -103,7 +104,7 @@ var SirenExtension = function(mediaTypes) {
     return ret;
   };
 
-  this.embeddedParser = function(data, headers) {
+  this.embeddedParser = function(data, headers, context) {
     var ret = {};
     if (!_.isArray(data.entities)) {
       return ret;
@@ -122,7 +123,7 @@ var SirenExtension = function(mediaTypes) {
         ret[r].unshift(val);
       }
     });
-    return ret;
+    return _.mapValues(ret, function(items) { return Resource.embeddedCollection(items, headers, context); });
   };
 
 

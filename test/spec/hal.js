@@ -1,7 +1,11 @@
 'use strict';
 
 var HalExtension = require('../../src/hal');
+var Resource = require('../../src/resource');
+var Context = require('../../src/context');
 var chai = require('chai');
+chai.use(require('chai-things'));
+chai.use(require('chai-hy-res'));
 var expect = chai.expect;
 
 describe('HalExtension', function () {
@@ -45,6 +49,40 @@ describe('HalExtension', function () {
         {name: 'name', value: 'John Doe' },
         {name: 'id', value: '123' }
       ]);
+    });
+  });
+
+  describe('embedded parser', function() {
+    var subs;
+    beforeEach(function() {
+      subs = extension.embeddedParser({
+        _embedded: {
+          'item': [
+            {
+              _links: {
+                self: { href: '/posts/123' }
+              },
+              name: 'Welcome to hy-res'
+            },
+            {
+              _links: {
+                self: { href: '/posts/124' }
+              },
+              name: 'angular-hy-res integration'
+            }
+          ]
+        }
+      }, { 'content-type': 'application/hal+json' }, new Context({}, [extension]));
+    });
+
+    it('returns the items keyed by relation', function() {
+      expect(subs.item).to.have.property('length', 2);
+      expect(subs.item).to.all.be.instanceof(Resource);
+    });
+
+    it('parses the links of the embedded resources', function() {
+      expect(subs.item[0]).to.have.link('self').with.property('href', '/posts/123');
+      expect(subs.item[1]).to.have.link('self').with.property('href', '/posts/124');
     });
   });
 
