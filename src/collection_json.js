@@ -93,7 +93,19 @@ var CollectionJsonExtension = function(mediaTypes) {
       return new Form(_.defaults(q2, queryFormDefaults), context);
     };
 
-    return _.groupBy(_.map((coll.queries || []), formFactory), 'rel');
+    var forms = _.groupBy(_.map((coll.queries || []), formFactory), 'rel');
+
+    if (coll.template) {
+      forms['create-form'] = [
+        new Form({
+          href: coll.href,
+          method: 'POST',
+          type: 'application/vnd.collection+json',
+          fields: coll.template.data
+        }, context)
+      ]
+    }
+    return forms;
   };
 
   this.embeddedParser = function(data, headers, context) {

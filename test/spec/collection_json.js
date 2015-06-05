@@ -162,7 +162,50 @@ describe('CollectionJsonExtension', function () {
       expect(forms.search[0].field('search')).to.have.property('value', 'default search');
     });
 
-    xit('includes actions for template for item creation', function() {
+    describe('item creation form', function() {
+      beforeEach(function() {
+        forms = extension.formParser({
+          collection: {
+            href: '/posts',
+            template : {
+              data: [
+                { name: 'title', prompt: 'Post Title' },
+                { name: 'post', prompt: 'Post Content' }
+              ]
+            }
+          }
+        }, {}, {});
+      });
+
+      it('includes actions for template for item creation', function() {
+        expect(_.get(forms, 'create-form[0]')).to.exist;
+      });
+
+      describe('the item creation form', function() {
+        var form;
+        beforeEach(function() {
+          form = _.get(forms, 'create-form[0]');
+        });
+
+        it('has the collection href', function() {
+          expect(form.href).to.equal('/posts');
+        });
+
+        it('has a method of POST', function() {
+          expect(form.method).to.equal('POST');
+        });
+
+        it('has a type of application/vnd.collection+json', function() {
+          expect(form.type).to.equal('application/vnd.collection+json');
+        });
+
+        it('has the included fields', function() {
+          expect(form.fields).to.deep.include.members([
+            { name: 'title', prompt: 'Post Title' },
+            { name: 'post', prompt: 'Post Content' }
+          ]);
+        });
+      });
     });
   });
 
