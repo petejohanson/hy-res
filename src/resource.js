@@ -304,16 +304,16 @@ Resource.prototype.$$resolve = function(data, headers, context) {
       return;
     }
 
-    var fields = (e.dataParser || _.constant([]))(data, headers, context);
+    var fields = (e.dataParser || _.constant([])).apply(e, [data, headers, context]);
 
     _.assign(this, _.reduce(fields, function(result, val) {
         result[val.name] = val.value;
         return result;
       }, {}));
 
-    _.assign(this.$$links, (e.linkParser || defaultParser)(data, headers, context));
-    _.assign(this.$$forms, (e.formParser || defaultParser)(data, headers, context));
-    _.assign(this.$$embedded, (e.embeddedParser || defaultParser)(data, headers, context));
+    _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
+    _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
+    _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context]));
   }, this);
 
   this.$resolved = true;

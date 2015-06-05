@@ -32,6 +32,24 @@ describe('Context', function () {
 
   });
 
+  describe('with new set of extensions', function() {
+    var newExtensions;
+    var originalContext;
+    beforeEach(function() {
+      newExtensions = [sinon.spy()];
+      originalContext = new Context(http, extensions, defaultOpts);
+      context = originalContext.withExtensions(newExtensions);
+    });
+
+    it('is a new instance', function() {
+      expect(context).to.not.equal(originalContext);
+    });
+
+    it('has the new extensions', function() {
+      expect(context.extensions).to.eql(newExtensions);
+    });
+  });
+
   describe('the empty context', function() {
     beforeEach(function() {
       context = new Context(http, extensions, defaultOpts);

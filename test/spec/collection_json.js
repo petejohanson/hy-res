@@ -1,8 +1,9 @@
 'use strict';
 
+var Context = require('../../src/context');
 var CollectionJsonExtension = require('../../src/collection_json');
 var chai = require('chai');
-chai.config.truncateThreshold = 0;
+chai.use(require('chai-hy-res'));
 var expect = chai.expect;
 
 describe('CollectionJsonExtension', function () {
@@ -34,7 +35,7 @@ describe('CollectionJsonExtension', function () {
           {
             'version' : '1.0',
             'href' : 'http://example.org/friends/',
-            
+
             'links' : [
               {'rel' : 'feed', 'href' : 'http://example.org/friends/rss'},
               {'rel' : 'queries', 'href' : 'http://example.org/friends/queries'}
@@ -63,7 +64,7 @@ describe('CollectionJsonExtension', function () {
           {
             'version' : '1.0',
             'href' : 'http://example.org/friends/',
-            
+
             'items' : [
               {
                 'href' : 'http://example.org/friends/jdoe',
@@ -76,7 +77,7 @@ describe('CollectionJsonExtension', function () {
                   {'rel' : 'avatar', 'href' : 'http://examples.org/images/jdoe', 'prompt' : 'Avatar', 'render' : 'image'}
                 ]
               },
-              
+
               {
                 'href' : 'http://example.org/friends/msmith',
                 'data' : [
@@ -90,7 +91,7 @@ describe('CollectionJsonExtension', function () {
               }
             ]
           }
-        }, {}, {});
+        }, {}, new Context({}, [extension]));
     });
 
     it('should return the items using the "item" link relation', function() {
@@ -98,31 +99,16 @@ describe('CollectionJsonExtension', function () {
     });
 
     it('should return the proper self link for each item', function() {
-      expect(embeds.item).to.deep.include.members([
-        {
-          'href' : 'http://example.org/friends/jdoe',
-          'data' : [
-            {'name' : 'full-name', 'value' : 'J. Doe', 'prompt' : 'Full Name'},
-            {'name' : 'email', 'value' : 'jdoe@example.org', 'prompt' : 'Email'}
-          ],
-          'links' : [
-            {'rel' : 'blog', 'href' : 'http://examples.org/blogs/jdoe', 'prompt' : 'Blog'},
-            {'rel' : 'avatar', 'href' : 'http://examples.org/images/jdoe', 'prompt' : 'Avatar', 'render' : 'image'}
-          ]
-        },
-        
-        {
-          'href' : 'http://example.org/friends/msmith',
-          'data' : [
-            {'name' : 'full-name', 'value' : 'M. Smith', 'prompt' : 'Full Name'},
-            {'name' : 'email', 'value' : 'msmith@example.org', 'prompt' : 'Email'}
-          ],
-          'links' : [
-            {'rel' : 'blog', 'href' : 'http://examples.org/blogs/msmith', 'prompt' : 'Blog'},
-            {'rel' : 'avatar', 'href' : 'http://examples.org/images/msmith', 'prompt' : 'Avatar', 'render' : 'image'}
-          ]
-        }
-      ]);
+      expect(embeds.item[0]).to.have.link('self').with.property('href', 'http://example.org/friends/jdoe');
+      expect(embeds.item[1]).to.have.link('self').with.property('href', 'http://example.org/friends/msmith');
+    });
+
+    it('should have the other links for the items', function() {
+      expect(embeds.item[0]).to.have.link('blog').with.property('href', 'http://examples.org/blogs/jdoe');
+    });
+
+    it('should have the data fields for the items', function() {
+      expect(embeds.item[0]).to.have.property('full-name', 'J. Doe');
     });
   });
 

@@ -3,7 +3,28 @@
 var _ = require('lodash');
 var Form = require('./form');
 var WebLink = require('./web_link');
+var Resource = require('./resource');
 var LinkCollection = require('./link_collection');
+
+var cjObjectLinkParser = function(obj, headers, context) {
+
+  var links = (obj.links || []).concat([{ rel: 'self', href: obj.href }]);
+
+  return _(links)
+    .map(function(l) { return new WebLink(l, context); })
+    .groupBy('rel')
+    .value();
+};
+
+var CollectionJsonItemExtension = function() {
+  this.applies = _.constant(true);
+
+  this.linkParser = cjObjectLinkParser;
+
+  this.dataParser = function(data) {
+    return data.data || [];
+  };
+};
 
 /**
  * Create the Collection+JSON extension
@@ -25,6 +46,7 @@ var LinkCollection = require('./link_collection');
  * parameter.
  */
 var CollectionJsonExtension = function(mediaTypes) {
+  this.itemExtension = new CollectionJsonItemExtension();
   var mediaTypeSet = { 'application/vnd.collection+json': true };
 
   mediaTypes = mediaTypes || [];
@@ -53,17 +75,7 @@ var CollectionJsonExtension = function(mediaTypes) {
   };
 
   this.linkParser = function(data, headers, context) {
-    var coll = data.collection;
-    if (!coll) {
-      return undefined;
-    }
-
-    var links = (coll.links || []).concat([{ rel: 'self', href: coll.href }]);
-
-    return _(links)
-       .map(function(l) { return new WebLink(l, context); })
-       .groupBy('rel')
-       .value();
+    return cjObjectLinkParser(data.collection, headers, context);
   };
 
   var queryFormDefaults = {
@@ -73,9 +85,6 @@ var CollectionJsonExtension = function(mediaTypes) {
 
   this.formParser = function(data, headers, context) {
     var coll = data.collection;
-    if (!coll) {
-      return undefined;
-    }
 
     var formFactory = function(q) {
       var q2 = _.clone(q);
@@ -87,15 +96,15 @@ var CollectionJsonExtension = function(mediaTypes) {
     return _.groupBy(_.map((coll.queries || []), formFactory), 'rel');
   };
 
-  this.embeddedParser = function(data) {
-    var coll = data.collection;
-    if (!coll) {
-      return undefined;
-    }
-
-    return { item: _.cloneDeep(coll.items) };
+  this.embeddedParser = function(data, headers, context) {
+    return {
+      item: Resource.embeddedCollection(
+        _.cloneDeep(data.collection.items),
+        headers,
+        context.withExtensions([this.itemExtension])
+      )
+    };
   };
 };
 
 module.exports = CollectionJsonExtension;
-

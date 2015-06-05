@@ -64,4 +64,13 @@ Context.prototype.withDefaults = function(options) {
   return _.merge({}, this.defaultOptions, options || {});
 };
 
+/**
+ * Create a new context with the provided extensions overriding the existing ones.
+ * @param {Array} extensions The new set of extensions to use for the context
+ * @returns {Context} A new context w/ the provided extensions
+ */
+Context.prototype.withExtensions = function(extensions) {
+  return new Context(this.http, extensions, this.defaultOptions);
+};
+
 module.exports = Context;
