@@ -103,7 +103,7 @@ var CollectionJsonExtension = function(mediaTypes) {
           type: 'application/vnd.collection+json',
           fields: coll.template.data
         }, context)
-      ]
+      ];
     }
     return forms;
   };

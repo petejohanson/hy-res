@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var Context = require('../../src/context');
 var CollectionJsonExtension = require('../../src/collection_json');
 var chai = require('chai');
