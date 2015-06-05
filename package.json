@@ -1,6 +1,6 @@
 {
   "name": "hy-res",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Generic hypermedia client supporting several formats",
   "keywords": [
     "hypermedia",
