@@ -59,6 +59,11 @@ Form.prototype.submit = function() { // TODO: options parameter?
     url: this.$$context.resolveUrl(this.href),
     method: this.method,
     transformRequest: [function(d, h) {
+      // Handle 'header getter' style headers, instead of bare object.
+      if (h instanceof Function) {
+        h = h();
+      }
+
       var trans = ContentTypeDataTransformers[h['Content-Type']];
       return trans ? trans(d) : d;
     }],
