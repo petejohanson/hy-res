@@ -64,7 +64,7 @@ Form.prototype.submit = function() { // TODO: options parameter?
         h = h();
       }
 
-      var trans = ContentTypeDataTransformers[h['Content-Type']];
+      var trans = encoders[h['content-type'] || h['Content-Type']];
       return trans ? trans(d) : d;
     }],
     headers: { 'Content-Type': this.type || 'application/x-www-form-urlencoded' }
