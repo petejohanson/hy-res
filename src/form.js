@@ -52,10 +52,16 @@ var ContentTypeDataTransformers = {
 /**
  * Perform an HTTP request to submit the form. The request itself
  * is created based on the URL, method, type, and field values.
+ * @arg {Object} [options] The options for the request.
+ * @arg {Object} [options.protocol] Options to pass to the underlying protocol,
+ * e.g. http/https.
  * @returns {Resource} A resource that will eventually be resolved with response details.
  */
-Form.prototype.submit = function() { // TODO: options parameter?
-  var config = {
+Form.prototype.submit = function(options) {
+  options = this.$$context.withDefaults(options);
+  var config = _.get(options, 'protocol', {});
+
+  config = _.merge({}, config, {
     url: this.$$context.resolveUrl(this.href),
     method: this.method,
     transformRequest: [function(d, h) {
@@ -68,7 +74,17 @@ Form.prototype.submit = function() { // TODO: options parameter?
       return trans ? trans(d) : d;
     }],
     headers: { 'Content-Type': this.type || 'application/x-www-form-urlencoded' }
-  };
+  });
+
+  if (!config.headers.Accept) {
+    var mediaTypes = _(this.$$context.extensions).pluck('mediaTypes').flatten().compact();
+    if (this.preferredResponseType) {
+      var preferred = this.preferredResponseType;
+      mediaTypes = mediaTypes.map(function(mt) { return mt === preferred ? mt : mt + ';q=0.5'; });
+    }
+    var accept = mediaTypes.join(',');
+    config.headers.Accept = accept;
+  }
 
   if (this.fields) {
     var fieldValues = _.map(this.fields, function(f) { var ret = {}; ret[f.name] = f.value; return ret; });

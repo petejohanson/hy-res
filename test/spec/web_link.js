@@ -62,7 +62,7 @@ describe('WebLink', function () {
       });
 
       it('passes an Accept header with extension content types', function() {
-        expect(http.calledWith(sinon.match.has('headers', { 'Accept': 'application/hal+json,application/json' }))).to.be.true;
+        expect(http).to.be.calledWith(sinon.match.has('headers', { 'Accept': 'application/hal+json,application/json' }));
       });
 
       describe('once the request completes', function() {

@@ -42,7 +42,7 @@ WebLink.prototype.follow = function(options) {
     if (this.type) {
       opts.headers.Accept = this.type;
     } else {
-      var accept = _.reduce(_.flatten(_.compact(_.pluck(this.$$context.extensions, 'mediaTypes'))), function(acc, s) { return acc + ',' + s; });
+      var accept = _(this.$$context.extensions).pluck('mediaTypes').flatten().compact().join(',');
       if (accept) {
         opts.headers.Accept = accept;
       }
