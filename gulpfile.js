@@ -149,5 +149,5 @@ gulp.task('coverage', function() {
 });
 
 gulp.task('ci', function(cb) {
-  runSequence('default', ['coverage', 'jsdoc'], cb);
+  runSequence('default', ['jsdoc'], cb);
 });
