@@ -27,7 +27,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Context.html">Context</a></li><li><a href="Form.html">Form</a></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Root.html">Root</a></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a></li>
+					<li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a></li><li><a href="Form.html">Form</a></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Root.html">Root</a></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a></li>
 				</ul>
 			</li>
 			
@@ -531,7 +531,7 @@ the specific resource has been resolved or not.</p>
         
             
 <dt>
-    <h4 class="name" id="$followAll"><span class="type-signature"></span>$followAll<span class="signature">(rel, options)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="$followAll"><span class="type-signature"></span>$followAll<span class="signature">(rel, <span class="optional">options</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -568,6 +568,8 @@ will be so in the future.</p>
 		<th>Type</th>
 
 		
+		<th>Argument</th>
+		
 
 		
 
@@ -593,6 +595,14 @@ will be so in the future.</p>
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -616,10 +626,20 @@ will be so in the future.</p>
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"><p>Options to control any http requests, URI template resolution, etc.</p></td>
+            <td class="description last"><p>Options for following the link. For details, see <a href="WebLink.html#follow">WebLink#follow</a>.</p></td>
         </tr>
 
 	
@@ -716,7 +736,7 @@ will be so in the future.</p>
         
             
 <dt>
-    <h4 class="name" id="$followOne"><span class="type-signature"></span>$followOne<span class="signature">(rel, options)</span><span class="type-signature"> &rarr; {<a href="Resource.html">Resource</a>}</span></h4>
+    <h4 class="name" id="$followOne"><span class="type-signature"></span>$followOne<span class="signature">(rel, <span class="optional">options</span>)</span><span class="type-signature"> &rarr; {<a href="Resource.html">Resource</a>}</span></h4>
     
     
 </dt>
@@ -753,6 +773,8 @@ request.</p>
 		<th>Type</th>
 
 		
+		<th>Argument</th>
+		
 
 		
 
@@ -778,6 +800,14 @@ request.</p>
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -801,10 +831,20 @@ request.</p>
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"><p>Options to control any http requests, URI template resolution, etc.</p></td>
+            <td class="description last"><p>Options for following the link. For details, see <a href="WebLink.html#follow">WebLink#follow</a>.</p></td>
         </tr>
 
 	
@@ -1580,7 +1620,7 @@ resolved.</p>
         
             
 <dt>
-    <h4 class="name" id="$links"><span class="type-signature"></span>$links<span class="signature">(rel)</span><span class="type-signature"> &rarr; {<a href="LinkCollection.html">LinkCollection</a>}</span></h4>
+    <h4 class="name" id="$links"><span class="type-signature"></span>$links<span class="signature">(<span class="optional">rel</span>)</span><span class="type-signature"> &rarr; {<a href="LinkCollection.html">LinkCollection</a>}</span></h4>
     
     
 </dt>
@@ -1611,6 +1651,8 @@ resolved.</p>
 		<th>Type</th>
 
 		
+		<th>Argument</th>
+		
 
 		
 
@@ -1636,10 +1678,21 @@ resolved.</p>
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"><p>The link relation to look up.</p></td>
+            <td class="description last"><p>The link relation to look up. If not provided, all
+links in the resource will be return.</p></td>
         </tr>
 
 	
@@ -1703,7 +1756,8 @@ resolved.</p>
     
             
 <div class="param-desc">
-    <p>The links with the given link relation.</p>
+    <p>The links with the given link relation, or
+all the links in the resource if a rel is not provided.</p>
 </div>
 
 
@@ -2094,8 +2148,8 @@ resolved.</p>
 	<br />
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a>
-	on 2015-05-22T23:13:05-04:00 using the <a
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0</a>
+	on 2015-06-13T23:57:12-04:00 using the <a
 	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 </span>
 </footer>

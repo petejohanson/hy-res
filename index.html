@@ -27,7 +27,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Context.html">Context</a></li><li><a href="Form.html">Form</a></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Root.html">Root</a></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a></li>
+					<li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a></li><li><a href="Form.html">Form</a></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a></li><li><a href="Resource.html">Resource</a></li><li><a href="Root.html">Root</a></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a></li>
 				</ul>
 			</li>
 			
@@ -77,7 +77,7 @@
 
 
     <section class="readme-section">
-        <article><h1>hy-res <a href="https://travis-ci.org/petejohanson/hy-res"><img src="https://travis-ci.org/petejohanson/hy-res.svg?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/r/petejohanson/hy-res"><img src="https://coveralls.io/repos/petejohanson/hy-res/badge.svg" alt="Coverage Status"></a></h1><p>A hypermedia client/library for <a href="http://angularjs.org/">AngularJS</a>. <a href="http://tools.ietf.org/html/draft-kelly-json-hal-06">HAL</a>, <a href="https://github.com/kevinswiber/siren">Siren</a>, and <a href="https://tools.ietf.org/html/rfc5988">Link header</a> extensions are included by default, but support for other media types can be added. For the most part, the core library is not normally used directly, instead consumed by way of a small framework integration layer, e.g. <a href="http://github.com/petejohanson/angular-hy-res">angular-hy-res</a>.</p>
+        <article><h1>hy-res <a href="https://travis-ci.org/petejohanson/hy-res"><img src="https://travis-ci.org/petejohanson/hy-res.svg?branch=master" alt="Build Status"></a> <a href="http://codecov.io/github/petejohanson/hy-res?branch=master"><img src="http://codecov.io/github/petejohanson/hy-res/coverage.svg?branch=master" alt="codecov.io"></a></h1><p>A hypermedia client/library for <a href="http://angularjs.org/">AngularJS</a>. <a href="http://tools.ietf.org/html/draft-kelly-json-hal-06">HAL</a>, <a href="https://github.com/kevinswiber/siren">Siren</a>, and <a href="https://tools.ietf.org/html/rfc5988">Link header</a> extensions are included by default, but support for other media types can be added. For the most part, the core library is not normally used directly, instead consumed by way of a small framework integration layer, e.g. <a href="http://github.com/petejohanson/angular-hy-res">angular-hy-res</a>.</p>
 <h2>Support</h2><p>For any questions, please post to the <a href="https://groups.google.com/forum/#!forum/hy-res">HyRes Google Group</a>.</p>
 <h2>Installation</h2><h3>NPM</h3><p>hy-res is available via NPM. To install:</p>
 <pre class="prettyprint source"><code>$ npm install --save hy-res</code></pre><p><em>Note: The API is still evolving, so during the 0.0.x series of releases there are no API stability guarantees Those users needed a stable API should set an explicit version in package.json</em></p>
@@ -155,7 +155,6 @@ paging through the collection, and the <code>item</code> relation for each item 
     &lt;li ng-repeat=&quot;post in posts&quot;>{{post.title}}&lt;/li>
   &lt;/ul>
 &lt;/div></code></pre><h2>To Do</h2><ul>
-<li>Document $form/$forms support.</li>
 <li>Submit form file uploads? Maybe allow consumers to provide populated FormData
 instance in <code>submit</code> parameters?</li>
 <li>Handle scenario where subset of links for a given link relation is embedded.
@@ -164,15 +163,11 @@ resources and unresolved resources that result from following the non-embedded
 links.</li>
 <li>Extensions for other media types (e.g. Collection+Json, Uber)</li>
 <li>Support URI schemes other than http/https (extension mechanism?)</li>
-<li>Ability to follow link relation w/ 'name' disambiguation parameter (HAL field)</li>
 <li>Mixins for resources based on... profile? link relation that was followed?</li>
 <li>Differentiate between embedded link vs embedded representation (See Siren spec)</li>
 <li>Sane error handling</li>
-<li>Handling or error tyoes, e.g. application/problem+json</li>
+<li>Handling or error types, e.g. application/problem+json</li>
 <li>Store resource's own URL somewhere accessible, perhaps <code>res.$href</code>?</li>
-<li>Change &quot;options&quot; to be nested under { transportOptions: opts } to allow
-hy-res options to exist as a distinct set of options. (e.g. data for URI
-template resolution)</li>
 <li>Store raw http response data in resource property, e.g. <code>res.$raw</code></li>
 <li>Support for PUT of modified resource to replace server state?</li>
 </ul></article>
@@ -208,8 +203,8 @@ template resolution)</li>
 	<br />
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta3</a>
-	on 2015-05-22T23:13:05-04:00 using the <a
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0</a>
+	on 2015-06-13T23:57:12-04:00 using the <a
 	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 </span>
 </footer>

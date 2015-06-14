@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>hy-res Class: SirenExtension</title>
+	<title>hy-res Class: CollectionJsonExtension</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -51,29 +51,26 @@
 	<div class="col-md-8">
 	
 		<div id="main">
-    		<h1 class="page-title">Class: SirenExtension</h1>
+    		<h1 class="page-title">Class: CollectionJsonExtension</h1>
 			
 
-	<h1 class="page-title">Class: SirenExtension</h1>
+	<h1 class="page-title">Class: CollectionJsonExtension</h1>
 <section>
 
 <header>
     
         <h2>
-        SirenExtension
+        CollectionJsonExtension
         </h2>
         
             <div class="class-description"><p>Extension for processing
-<a href="https://github.com/kevinswiber/siren">Siren</a> responses.  By default,
-the extension will only process links and embedded resources in
-responses if the HTTP response <code>Content-Type</code> header equals
-<code>application/vnd.siren+json</code>. If you have a custom media type that
-extends SIren, you can register it by passing it in the <code>mediaTypes</code>
-parameter.</p>
-<p>At this point, the Siren extension includes both the Siren <code>links</code> and
-the sub-entity embedded links in the set queried by the <a href="Resource.html#$link">Resource#$link</a>/<a href="Resource.html#$links">Resource#$links</a> functions.</p>
-<p>Siren's <a href="https://github.com/kevinswiber/siren#actions-1">actions</a> are
-exposed through <a href="Resource.html#$form">Resource#$form</a> and <a href="Resource.html#$forms">Resource#$forms</a>.</p></div>
+<a href="http://amundsen.com/media-types/collection/format/">Collection+JSON</a>
+responses.
+By default, the extension will only process links and embedded
+resources in responses if the HTTP response <code>Content-Type</code> header
+equals <code>application/vnd.collection+json</code>. If you have a custom media type that
+extends C+J, you can register it by passing it in the <code>mediaTypes</code>
+parameter.</p></div>
         
     
 </header>
@@ -84,7 +81,7 @@ exposed through <a href="Resource.html#$form">Resource#$form</a> and <a href="Re
     
         
 <dt>
-    <h4 class="name" id="SirenExtension"><span class="type-signature"></span>new SirenExtension<span class="signature">(mediaTypes)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="CollectionJsonExtension"><span class="type-signature"></span>new CollectionJsonExtension<span class="signature">(mediaTypes)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -92,7 +89,7 @@ exposed through <a href="Resource.html#$form">Resource#$form</a> and <a href="Re
     
     
     <div class="description">
-        <p>Create the Siren extension</p>
+        <p>Create the Collection+JSON extension</p>
     </div>
     
 
@@ -143,9 +140,10 @@ exposed through <a href="Resource.html#$form">Resource#$form</a> and <a href="Re
 
             
 
-            <td class="description last"><p>Media types in addition to <code>application/vnd.siren+json</code>
-that should be handled by this extensions. This allows for custom media
-types based on Siren to be handled properly.</p></td>
+            <td class="description last"><p>Media types in addition to
+<code>application/collection+json</code> that should be handled by this extensions.
+This allows for custom media types based on Collection+JSON to be handled
+properly.</p></td>
         </tr>
 
 	
