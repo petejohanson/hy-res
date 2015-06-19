@@ -224,7 +224,7 @@ var Resource = function() {
       }, function(err) {
         ret.$resolved = true;
         ret.$error = err;
-        reject(err);
+        return Promise.reject(ret);
       });
     });
 
@@ -352,6 +352,7 @@ Resource.fromRequest = function(request, context) {
         return res;
       }, function(response) {
         res.$$reject(response);
+        return Promise.reject(res);
       });
 
   return res;

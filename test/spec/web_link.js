@@ -8,6 +8,7 @@ var chai = require('chai');
 var expect = chai.expect;
 chai.use(require('sinon-chai'));
 chai.use(require('chai-hy-res'));
+chai.use(require('chai-as-promised'));
 var Context = require('../../src/context.js');
 var WebLink = require('../../src/web_link.js');
 var HalExtension = require('../../src/hal.js');
@@ -81,7 +82,30 @@ describe('WebLink', function () {
       });
     });
 
-    describe('following the link when there are default options ', function() {
+    describe('following a link that returns an error', function() {
+      var resource;
+      var httpResolve;
+      var httpPromise;
+
+      beforeEach(function() {
+        httpPromise = Promise.reject({data: {}, headers: {}, status: 404});
+        http
+          .withArgs(sinon.match({ url: 'http://api.server.com/posts/123' }))
+          .returns(httpPromise);
+
+        resource = link.follow();
+      });
+
+      it('has the follow rejection in the $error', function() {
+        return expect(resource.$promise).to.be.rejected.and.to.eventually.have.property('$error').eql({data: {}, headers: {}, status: 404});
+      });
+
+      it('has a rejected promise with the resource', function() {
+        return expect(resource.$promise).to.be.rejectedWith(resource);
+      });
+    });
+
+    describe('following the link when there are default options', function() {
       beforeEach(function() {
         http.returns(Promise.resolve({}));
         defaultOptions.protocol = { headers: { 'Prefer': 'return=representation' } };

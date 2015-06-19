@@ -427,6 +427,33 @@ describe('Resource', function () {
             });
           });
         });
+
+        describe('following an link relation with some failures', function () {
+          var stores;
+          var requestsPromise;
+          var firstStoreResolved, secondStoreResolved;
+
+          beforeEach(function() {
+            var firstPromise = new Promise(function(res,rej) {
+            });
+
+            http.withArgs(sinon.match({url: '/stores/123' })).returns(firstPromise);
+            var secondPromise = Promise.reject({
+              data: {},
+              headers: {},
+              status: 404
+            });
+
+            http.withArgs(sinon.match({url: '/stores/456' })).returns(secondPromise);
+
+            requestsPromise = Promise.all([firstPromise, secondPromise]);
+            stores = resource.$followAll('stores');
+          });
+
+          it('has a rejected $promise', function() {
+            return expect(stores.$promise).to.be.rejectedWith(stores);
+          });
+        });
       });
 
       describe('following a link object', function() {
