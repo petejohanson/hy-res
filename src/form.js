@@ -103,7 +103,7 @@ Form.prototype.submit = function(options) {
       return r;
     }
 
-    var loc = r.headers['location'];
+    var loc = r.headers.location;
     ctx = ctx.withUrl(config.url);
     return ctx.http({method: 'GET', url: ctx.resolveUrl(loc), headers: config.headers });
   });

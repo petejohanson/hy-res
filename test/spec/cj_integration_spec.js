@@ -86,10 +86,10 @@ describe('Collection+JSON + axios to perform an action', function() {
 
         it('has the submitted fields', function() {
           expect(resp['full-name']).to.eql('Doe, John');
-          expect(resp['email']).to.eql('john.doe@555.com');
+          expect(resp.email).to.eql('john.doe@555.com');
         });
-      })
+      });
     });
-  })
+  });
 });
 
