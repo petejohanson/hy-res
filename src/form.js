@@ -69,10 +69,13 @@ Form.prototype.submit = function(options) {
       if (h instanceof Function) {
         h = h();
       }
+      var extEncoders = _(this.$$context.extensions).pluck('encoders').compact();
+      var encoders = _(ContentTypeDataTransformers).concat(extEncoders.flatten().value()).reduce(_.merge);
 
-      var trans = ContentTypeDataTransformers[h['content-type'] || h['Content-Type']];
+      var ct = (h['content-type'] || h['Content-Type']);
+      var trans = encoders[ct];
       return trans ? trans(d) : d;
-    }],
+    }.bind(this)],
     headers: { 'Content-Type': this.type || 'application/x-www-form-urlencoded' }
   });
 
@@ -94,7 +97,17 @@ Form.prototype.submit = function(options) {
     config[prop] = vals;
   }
 
-  return Resouce.fromRequest(this.$$context.http(config), this.$$context);
+  var ctx = this.$$context;
+  var resp = ctx.http(config).then(function(r) {
+    if (r.status !== 201) {
+      return r;
+    }
+
+    var loc = r.headers['location'];
+    ctx = ctx.withUrl(config.url);
+    return ctx.http({method: 'GET', url: ctx.resolveUrl(loc), headers: config.headers });
+  });
+  return Resouce.fromRequest(resp, ctx);
 };
 
 /**

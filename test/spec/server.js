@@ -9,13 +9,15 @@ var app = express();
 app.use(hal.middleware);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/*+json' }));
 app.use(multer());
 
 app.route('/')
   .options(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
-       .header('Access-Control-Allow-Methods', 'GET,OPTIONS')
+       .header('Access-Control-Allow-Methods', 'GET,OPTIONS,POST')
        .header('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type')
+       .header('Access-Control-Expose-Headers', 'Location')
        .sendStatus(204);
   })
   .get(function (req, res) {
@@ -66,8 +68,8 @@ app.route('/')
 
             template: {
               data: [
-                { name: 'name', prompt: 'Name' },
-                { name: 'subject', prompt: 'Subject' }
+                { name: 'full-name', prompt: 'Full Name' },
+                { name: 'email', prompt: 'Email' }
               ]
             }
           }
@@ -123,6 +125,22 @@ app.route('/')
         });
       }
     });
+  })
+  .post(function(req, res) {
+    res.header('Access-Control-Allow-Origin', '*')
+       .header('Access-Control-Expose-Headers', 'Location');
+
+    if (req.is('application/vnd.collection+json')) {
+      console.log(req.body);
+      if (!req.body || !req.body.template || !req.body.template.data) {
+        res.sendStatus(400);
+        return;
+      }
+
+      res.location('/friends/123').sendStatus(201);
+    } else {
+      res.sendStatus(415);
+    }
   });
 
 app.route('/posts')

@@ -73,7 +73,8 @@
     "sinon": "^1.12.2",
     "sinon-chai": "^2.7.0",
     "webpack": "^1.4.15",
-    "webpack-dev-server": "^1.7.0"
+    "webpack-dev-server": "^1.7.0",
+    "karma-sauce-launcher": "~0.2.11"
   },
   "dependencies": {
     "URIjs": "^1.15.0",

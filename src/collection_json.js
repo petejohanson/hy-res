@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var FieldUtils = require('./field_utils');
 var Form = require('./form');
 var WebLink = require('./web_link');
 var Resource = require('./resource');
@@ -53,6 +54,17 @@ var CollectionJsonExtension = function(mediaTypes) {
   for (var i = 0; i < mediaTypes.length; i++) {
     mediaTypeSet[mediaTypes[i]] = true;
   }
+
+  this.encoders = {
+    'application/vnd.collection+json': function(data) {
+      console.log(data);
+      return JSON.stringify({
+        template: {
+          data: FieldUtils.extractFields(data)
+        }
+      });
+    }
+  };
 
   this.mediaTypes = _.keys(mediaTypeSet);
 

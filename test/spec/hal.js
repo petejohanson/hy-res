@@ -1,5 +1,7 @@
 'use strict';
 
+require('es6-promise').polyfill();
+
 var HalExtension = require('../../src/hal');
 var Resource = require('../../src/resource');
 var Context = require('../../src/context');

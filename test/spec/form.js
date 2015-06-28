@@ -6,11 +6,12 @@ var _ = require('lodash');
 
 var chai = require('chai');
 var expect = chai.expect;
-var sinonChai = require('sinon-chai');
-chai.use(sinonChai);
+chai.use(require('sinon-chai'));
+chai.use(require('chai-hy-res'));
 var Context = require('../../src/context.js');
 var Resource = require('../../src/resource.js');
 var Form = require('../../src/form.js');
+var Json = require('../../src/json.js');
 
 describe('Form', function () {
 
@@ -118,6 +119,41 @@ describe('Form', function () {
       it('should include the protocol options', function() {
         expect(http).to.have.been.calledWith(sinon.match({ headers: { 'Prefer': 'return=representation'}}));
       });
+    });
+  });
+
+  describe('form submission that results in 201 Create response', function() {
+
+    var form, http, resp;
+
+    beforeEach(function() {
+      http = sinon.stub();
+      form = new Form({
+        name: 'create-form',
+        href: '/posts',
+        method: 'POST',
+        fields: []
+      }, new Context(http, [new Json()]));
+
+      http
+        .withArgs(sinon.match({url: '/posts', method: 'POST'}))
+        .returns(Promise.resolve({data: {}, headers: {'location': '/posts/123' }, status: 201}));
+
+      http
+        .withArgs(sinon.match({url: '/posts/123', method: 'GET'}))
+        .returns(Promise.resolve({data: { title: 'yay' }, headers: {'content-type': 'application/json' }, status: 200}));
+      resp = form.submit();
+
+      return resp.$promise;
+    });
+
+    it('makes a GET call on the created location', function() {
+      //expect(http).to.be.calledWith(sinon.match({url: '/posts/123', method: 'GET'}));
+    });
+
+    it('returns the response from the created location', function() {
+      expect(resp).to.be.a.resolved.resource;
+      expect(resp.title).to.eql('yay');
     });
   });
 

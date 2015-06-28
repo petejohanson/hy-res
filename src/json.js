@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash');
+var fieldUtils = require('./field_utils');
 
 var JsonExtension = function() {
   this.mediaTypes = ['application/json'];
@@ -16,9 +16,7 @@ var JsonExtension = function() {
     return type === 'application/json';
   };
 
-  this.dataParser = _.ary(_.partialRight(_.transform, function(res, val, key) {
-      res.unshift({ name: key, value: val });
-  }, []), 1);
+  this.dataParser = fieldUtils.extractFields;
 };
 
 module.exports = JsonExtension;

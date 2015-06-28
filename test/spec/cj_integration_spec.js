@@ -49,5 +49,47 @@ describe('Collection+JSON + axios to perform an action', function() {
       expect(items[0]).to.have.link('self').with.property('href', 'http://example.org/friends/jdoe');
     });
   });
+
+  describe('creating an item', function() {
+    var form;
+
+    beforeEach(function() {
+      form = root.$form('create-form');
+    });
+
+    it('has the form for creating an item', function() {
+      expect(form).to.exist;
+      expect(form).to.be.an.instanceof(HyRes.Form);
+    });
+
+    describe('submitting the form', function() {
+      var resp;
+
+      beforeEach(function() {
+        form.field('full-name').value = 'Doe, John';
+        form.field('email').value = 'john.doe@555.com';
+        resp = form.submit();
+      });
+
+      it('creates a response', function() {
+        expect(resp).to.be.a.resource;
+      });
+
+      xdescribe('the form submission response', function() {
+        beforeEach(function() {
+          return resp.$promise;
+        });
+
+        it('is a resolved resource', function() {
+          expect(resp).to.be.a.resolved.resource;
+        });
+
+        it('has the submitted fields', function() {
+          expect(resp['full-name']).to.eql('Doe, John');
+          expect(resp['email']).to.eql('john.doe@555.com');
+        });
+      })
+    });
+  })
 });
 
