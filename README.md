@@ -124,7 +124,6 @@ And the view:
 * Support URI schemes other than http/https (extension mechanism?)
 * Mixins for resources based on... profile? link relation that was followed?
 * Differentiate between embedded link vs embedded representation (See Siren spec)
-* Sane error handling
 * Handling or error types, e.g. application/problem+json
 * Store resource's own URL somewhere accessible, perhaps `res.$href`?
 * Store raw http response data in resource property, e.g. `res.$raw`
