@@ -23,7 +23,7 @@
   "opts": {
     "readme": "./README.md",
     "recurse": true,
-    "template": "node_modules/ink-docstrap/template",
+    "template": "node_modules/minami",
     "destination": "./doc/",
     "tutorials": "./tutorials"
   }

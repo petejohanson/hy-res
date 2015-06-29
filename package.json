@@ -50,10 +50,9 @@
     "gulp-shell": "^0.4.1",
     "gulp-tag-version": "~1.1.0",
     "gulp-watch": "^3.0.0",
-    "ink-docstrap": "^0.5.2",
     "istanbul": "^0.3.13",
     "istanbul-instrumenter-loader": "^0.1.2",
-    "jsdoc": "^3.3.0-beta3",
+    "jsdoc": "^3.3.2",
     "jshint-stylish": "~0.4.0",
     "karma": "^0.12.28",
     "karma-coverage": "^0.3.1",
@@ -74,7 +73,8 @@
     "sinon-chai": "^2.7.0",
     "webpack": "^1.4.15",
     "webpack-dev-server": "^1.7.0",
-    "karma-sauce-launcher": "~0.2.11"
+    "karma-sauce-launcher": "~0.2.11",
+    "minami": "~1.1.0"
   },
   "dependencies": {
     "URIjs": "^1.15.0",
