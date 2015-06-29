@@ -296,6 +296,14 @@ Resource.prototype.$has = function(rel) {
   return this.$links(rel).length > 0 || this.$subs(rel).length > 0;
 };
 
+/**
+ * Send an HTTP DELETE request to the resource's 'self' link.
+ * @return {Resource} A resources with the response of the DELETE request.
+ */
+Resource.prototype.$delete = function() {
+  return this.$followOne('self', { protocol: {method: 'DELETE'} });
+};
+
 var defaultParser = _.constant({});
 
 Resource.prototype.$$resolve = function(data, headers, context) {

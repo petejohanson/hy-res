@@ -7,6 +7,7 @@ var HyRes = require('../../');
 var chai = require('chai');
 chai.use(require('chai-things'));
 chai.use(require('chai-hy-res'));
+chai.use(require('sinon-chai'));
 chai.use(require('chai-as-promised'));
 var expect = chai.expect;
 var _ = require('lodash');
@@ -192,6 +193,26 @@ describe('Resource', function () {
       expect(resource).to.be.an.unresolved.resource;
     });
 
+    describe('$delete-ing it', function() {
+      var deleteResp;
+
+      beforeEach(function() {
+        deleteResp = resource.$delete();
+
+        ordersResolve({
+          data: rawOrder,
+          headers: { 'content-type': 'application/hal+json' },
+          config: { url: '/orders/123' }
+        });
+
+        return deleteResp.$promise;
+      });
+
+      it('makes an HTTP DELETE request to the self link relation once the resource resolves', function() {
+        expect(http).to.have.been.calledWith(sinon.match({method: 'DELETE', url: '/orders/123' }));
+      });
+    });
+
     describe('a resolved resource', function() {
       beforeEach(function () {
         ordersResolve({
@@ -208,6 +229,20 @@ describe('Resource', function () {
 
       it('should contain the parsed properties', function () {
         expect(resource.type).to.eql('promo');
+      });
+
+      describe('$delete-ing it', function() {
+        var deleteResp;
+
+        beforeEach(function() {
+          deleteResp = resource.$delete();
+
+          return deleteResp.$promise;
+        });
+
+        it('makes an HTTP DELETE request to the self link relation', function() {
+          expect(http).to.have.been.calledWith(sinon.match({method: 'DELETE', url: '/orders/123' }));
+        });
       });
 
       describe('$has', function() {

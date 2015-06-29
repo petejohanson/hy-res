@@ -7,5 +7,3 @@ module.exports.extractFields = function(data) {
     res.unshift({ name: key, value: val });
   }, []);
 };
-
-//module.exports.reduceFields

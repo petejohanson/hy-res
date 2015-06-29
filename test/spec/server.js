@@ -98,7 +98,7 @@ app.route('/')
               method: 'POST',
               fields: [
                 { name: 'title', title: 'Title' },
-                { name: 'post', title: 'Post' },
+                { name: 'post', title: 'Post' }
               ]
             },
             {
@@ -109,7 +109,7 @@ app.route('/')
               type: 'multipart/form-data',
               fields: [
                 { name: 'title', title: 'Title', value: 'First Post!' },
-                { name: 'post', title: 'Post', value: 'hy-res rocks!' },
+                { name: 'post', title: 'Post', value: 'hy-res rocks!' }
               ]
             },
             {
@@ -120,7 +120,7 @@ app.route('/')
               type: 'application/json',
               fields: [
                 { name: 'title', title: 'Title', value: 'First Post!' },
-                { name: 'post', title: 'Post', value: 'hy-res rocks!' },
+                { name: 'post', title: 'Post', value: 'hy-res rocks!' }
               ]
             }
           ]
@@ -167,7 +167,6 @@ app.route('/posts')
       .header('Access-Control-Expose-Headers', 'Location');
 
     if (req.is('application/vnd.collection+json')) {
-      console.log(req.body);
       if (!req.body || !req.body.template || !req.body.template.data) {
         res.sendStatus(400);
         return;
@@ -193,7 +192,7 @@ app.route('/posts/:id')
   .get(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*');
     res.format({
-      "application/vnd.collection+json": function() {
+      'application/vnd.collection+json': function() {
         var idx =  parseInt(req.params.id);
         if (!idx) {
           return res.sendStatus(404);
@@ -213,7 +212,7 @@ app.route('/posts/:id')
           ]
         }});
       }
-    })
+    });
   })
   .put(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
