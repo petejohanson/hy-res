@@ -39,15 +39,15 @@ describe('Siren + axios to perform an action', function() {
 
       response = form.submit();
 
-      return response;
+      return response.$promise;
     });
 
     it('is succeeds', function() {
-      return expect(response.$promise).to.eventually.have.property('$resolved', true);
+      expect(response).to.have.property('$resolved', true);
     });
 
     it('has the response values', function() {
-      return expect(response.$promise).to.eventually.have.deep.property('q', 'hy-res');
+      expect(response).to.have.property('q', 'hy-res');
     });
   });
 
