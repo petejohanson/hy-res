@@ -31,15 +31,16 @@ var CollectionJsonItemExtension = function() {
  * Create the Collection+JSON extension
  *
  * @constructor
- * @arg {Array} mediaTypes Media types in addition to
+ * @arg {Array} [mediaTypes] Media types in addition to
  * `application/collection+json` that should be handled by this extensions.
  * This allows for custom media types based on Collection+JSON to be handled
  * properly.
  *
  * @classdesc
+ * **WARNING: The CollectionJsonExtension is incomplete, and not ready for production use**
+ *
  * Extension for processing
- * [Collection+JSON](http://amundsen.com/media-types/collection/format/)
- * responses.
+ * [Collection+JSON](http://amundsen.com/media-types/collection/format/).
  * By default, the extension will only process links and embedded
  * resources in responses if the HTTP response `Content-Type` header
  * equals `application/vnd.collection+json`. If you have a custom media type that
