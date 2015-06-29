@@ -12,6 +12,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/*+json' }));
 app.use(multer());
 
+var posts = [];
+
 app.route('/')
   .options(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
@@ -32,44 +34,44 @@ app.route('/')
           }
         });
       },
-      'application/vnd.collection+json': function() {
+      'application/vnd.collection+json': function () {
         res.json({
           collection: {
             href: '/',
             links: [
-              { rel: 'posts', href: '/posts' }
+              {rel: 'posts', href: '/posts'}
             ],
 
             items: [
               {
-                'href' : 'http://example.org/friends/jdoe',
-                'data' : [
-                  {'name' : 'full-name', 'value' : 'J. Doe', 'prompt' : 'Full Name'},
-                  {'name' : 'email', 'value' : 'jdoe@example.org', 'prompt' : 'Email'}
+                'href': 'http://example.org/friends/jdoe',
+                'data': [
+                  {'name': 'full-name', 'value': 'J. Doe', 'prompt': 'Full Name'},
+                  {'name': 'email', 'value': 'jdoe@example.org', 'prompt': 'Email'}
                 ],
-                'links' : [
-                  {'rel' : 'blog', 'href' : 'http://examples.org/blogs/jdoe', 'prompt' : 'Blog'},
-                  {'rel' : 'avatar', 'href' : 'http://examples.org/images/jdoe', 'prompt' : 'Avatar', 'render' : 'image'}
+                'links': [
+                  {'rel': 'blog', 'href': 'http://examples.org/blogs/jdoe', 'prompt': 'Blog'},
+                  {'rel': 'avatar', 'href': 'http://examples.org/images/jdoe', 'prompt': 'Avatar', 'render': 'image'}
                 ]
               },
 
               {
-                'href' : 'http://example.org/friends/msmith',
-                'data' : [
-                  {'name' : 'full-name', 'value' : 'M. Smith', 'prompt' : 'Full Name'},
-                  {'name' : 'email', 'value' : 'msmith@example.org', 'prompt' : 'Email'}
+                'href': 'http://example.org/friends/msmith',
+                'data': [
+                  {'name': 'full-name', 'value': 'M. Smith', 'prompt': 'Full Name'},
+                  {'name': 'email', 'value': 'msmith@example.org', 'prompt': 'Email'}
                 ],
-                'links' : [
-                  {'rel' : 'blog', 'href' : 'http://examples.org/blogs/msmith', 'prompt' : 'Blog'},
-                  {'rel' : 'avatar', 'href' : 'http://examples.org/images/msmith', 'prompt' : 'Avatar', 'render' : 'image'}
+                'links': [
+                  {'rel': 'blog', 'href': 'http://examples.org/blogs/msmith', 'prompt': 'Blog'},
+                  {'rel': 'avatar', 'href': 'http://examples.org/images/msmith', 'prompt': 'Avatar', 'render': 'image'}
                 ]
               }
             ],
 
             template: {
               data: [
-                { name: 'full-name', prompt: 'Full Name' },
-                { name: 'email', prompt: 'Email' }
+                {name: 'full-name', prompt: 'Full Name'},
+                {name: 'email', prompt: 'Email'}
               ]
             }
           }
@@ -125,22 +127,6 @@ app.route('/')
         });
       }
     });
-  })
-  .post(function(req, res) {
-    res.header('Access-Control-Allow-Origin', '*')
-       .header('Access-Control-Expose-Headers', 'Location');
-
-    if (req.is('application/vnd.collection+json')) {
-      console.log(req.body);
-      if (!req.body || !req.body.template || !req.body.template.data) {
-        res.sendStatus(400);
-        return;
-      }
-
-      res.location('/friends/123').sendStatus(201);
-    } else {
-      res.sendStatus(415);
-    }
   });
 
 app.route('/posts')
@@ -151,13 +137,50 @@ app.route('/posts')
        .sendStatus(204);
   })
   .get(function(req, res) {
-    res.header('Access-Control-Allow-Origin', '*')
-       .json(req.query);
+    res.header('Access-Control-Allow-Origin', '*');
+    res.format({
+      'application/json': function () {
+        res.json(req.query);
+      },
+      'application/vnd.collection+json': function () {
+        res.json({
+          collection: {
+            href: '/posts',
+
+
+            items: [
+            ],
+
+            template: {
+              data: [
+                {name: 'title', prompt: 'Post Title'},
+                {name: 'body', prompt: 'Post Content'}
+              ]
+            }
+          }
+        });
+      }
+    });
   })
   .post(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
-       .type('json')
-       .json(req.body);
+      .header('Access-Control-Expose-Headers', 'Location');
+
+    if (req.is('application/vnd.collection+json')) {
+      console.log(req.body);
+      if (!req.body || !req.body.template || !req.body.template.data) {
+        res.sendStatus(400);
+        return;
+      }
+
+      var idx = posts.unshift(req.body.template.data);
+
+      res.location('/posts/' + idx).sendStatus(201);
+    } else if (req.is('application/x-www-form-urlencoded')) {
+      res.send(req.body);
+    } else {
+      res.sendStatus(415);
+    }
   });
 
 app.route('/posts/:id')
@@ -167,7 +190,32 @@ app.route('/posts/:id')
        .header('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type')
        .sendStatus(204);
   })
- .put(function(req, res) {
+  .get(function(req, res) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.format({
+      "application/vnd.collection+json": function() {
+        var idx =  parseInt(req.params.id);
+        if (!idx) {
+          return res.sendStatus(404);
+        }
+
+        idx = idx - 1;
+        if (!posts[idx]) {
+          return res.sendStatus(404);
+        }
+
+        res.json({collection: {
+          items: [
+            {
+              href: req.url,
+              data: posts[idx]
+            }
+          ]
+        }});
+      }
+    })
+  })
+  .put(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
        .json(req.body);
   });

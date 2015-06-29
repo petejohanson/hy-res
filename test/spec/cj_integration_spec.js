@@ -54,7 +54,9 @@ describe('Collection+JSON + axios to perform an action', function() {
     var form;
 
     beforeEach(function() {
-      form = root.$form('create-form');
+      return root.$followOne('posts').$promise.then(function(pr) {
+        form = pr.$form('create-form');
+      });
     });
 
     it('has the form for creating an item', function() {
@@ -66,8 +68,8 @@ describe('Collection+JSON + axios to perform an action', function() {
       var resp;
 
       beforeEach(function() {
-        form.field('full-name').value = 'Doe, John';
-        form.field('email').value = 'john.doe@555.com';
+        form.field('title').value = 'Hello World';
+        form.field('body').value = 'First post!';
         resp = form.submit();
       });
 
@@ -75,7 +77,7 @@ describe('Collection+JSON + axios to perform an action', function() {
         expect(resp).to.be.a.resource;
       });
 
-      xdescribe('the form submission response', function() {
+      describe('the form submission response', function() {
         beforeEach(function() {
           return resp.$promise;
         });
@@ -84,9 +86,11 @@ describe('Collection+JSON + axios to perform an action', function() {
           expect(resp).to.be.a.resolved.resource;
         });
 
-        it('has the submitted fields', function() {
-          expect(resp['full-name']).to.eql('Doe, John');
-          expect(resp.email).to.eql('john.doe@555.com');
+        it('contains one embedded item with the submitted values', function() {
+          var item = resp.$sub('item');
+          expect(item).to.exist;
+          expect(item.title).to.eql('Hello World');
+          expect(item.body).to.eql('First post!');
         });
       });
     });
