@@ -6,8 +6,9 @@ A hypermedia client/library supporting several media formats. [HAL](http://tools
 
 For any questions, please post to the [HyRes Google Group](https://groups.google.com/forum/#!forum/hy-res).
 
-For release announcements and updates, you can also <a href="https://twitter.com/petejohanson" class="twitter-follow-button" data-show-count="false">Follow @petejohanson</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+For release announcements and updates, you can also follow [@petejohanson](https://twitter.com/petejohanson):
 
+<a href="https://twitter.com/petejohanson" class="twitter-follow-button" data-show-count="false">Follow @petejohanson</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
 ## Installation
 

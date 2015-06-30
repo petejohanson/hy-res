@@ -25,7 +25,6 @@
     "recurse": true,
     "template": "node_modules/minami",
     "destination": "./doc/",
-    "tutorials": "./tutorials",
-    "package": "./package.json"
+    "tutorials": "./tutorials"
   }
 }
