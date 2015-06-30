@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Tutorial: Forms - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a><ul class='methods'><li data-type='method'><a href="Context.html#resolveUrl">resolveUrl</a></li><li data-type='method'><a href="Context.html#withDefaults">withDefaults</a></li><li data-type='method'><a href="Context.html#withExtensions">withExtensions</a></li><li data-type='method'><a href="Context.html#withoutUrl">withoutUrl</a></li><li data-type='method'><a href="Context.html#withUrl">withUrl</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#clone">clone</a></li><li data-type='method'><a href="Form.html#field">field</a></li><li data-type='method'><a href="Form.html#submit">submit</a></li></ul></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a><ul class='methods'><li data-type='method'><a href="LinkCollection.html#follow">follow</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#$delete">$delete</a></li><li data-type='method'><a href="Resource.html#$embedded">$embedded</a></li><li data-type='method'><a href="Resource.html#$embeddeds">$embeddeds</a></li><li data-type='method'><a href="Resource.html#$followAll">$followAll</a></li><li data-type='method'><a href="Resource.html#$followOne">$followOne</a></li><li data-type='method'><a href="Resource.html#$form">$form</a></li><li data-type='method'><a href="Resource.html#$forms">$forms</a></li><li data-type='method'><a href="Resource.html#$has">$has</a></li><li data-type='method'><a href="Resource.html#$link">$link</a></li><li data-type='method'><a href="Resource.html#$links">$links</a></li><li data-type='method'><a href="Resource.html#$sub">$sub</a></li><li data-type='method'><a href="Resource.html#$subs">$subs</a></li></ul></li><li><a href="Root.html">Root</a><ul class='methods'><li data-type='method'><a href="Root.html#follow">follow</a></li><li data-type='method'><a href="Root.html#resolvedUrl">resolvedUrl</a></li></ul></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a><ul class='methods'><li data-type='method'><a href="WebLink.html#follow">follow</a></li><li data-type='method'><a href="WebLink.html#resolvedUrl">resolvedUrl</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-forms.html">Forms</a></li><li><a href="tutorial-uri-templates.html">URI Templates</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Tutorial: Forms</h1>
+    
+
+    <section>
+
+<header>
+    
+
+    <h2>Forms</h2>
+</header>
+
+<article>
+    <p>Hypermedia forms come in many varieties/flavors, but fundamentally, they consiste of two core set of information: the metadata about the form itself, e.g. URL/URI Template to use for completing the form request, or the content type, if any to encode the request in, and the set of field metadata fo the various inputs for th form.</p>
+<p>For tue most part, the only high level metadata tyat consumers may need is a title for display. Otherwise, the primary piece that consumers need do is manipulate the field valuea before submitting the form.</p>
+<h2>Example</h2><p>The following Siren example demonstrates using a hypermedia form to perform a request.</p>
+<h3>Form Resource</h3><p>Imagine a ToDo list API. The resource for loading the liat items might also include the form for adding a new item:</p>
+<pre class="prettyprint source lang-http"><code>HTTP/1.1 GET /items
+Host: http://todo.io/
+
+{
+  &quot;entities&quot;: [
+    // The ToDo liat items
+  ]
+  &quot;actions&quot;: [
+    {
+      &quot;name&quot;: &quot;create-item&quot;,
+      &quot;href&quot;: &quot;/items&quot;,
+      &quot;method&quot;: &quot;POST&quot;,
+      &quot;title&quot;: &quot;Add Item&quot;,
+      &quot;fields&quot;: [
+        { &quot;name&quot;: &quot;item&quot;, &quot;type&quot;: &quot;text&quot; }
+      ]
+    } 
+  ]
+}</code></pre><p>Assuming that <code>res</code> is a <a href="Resource.html">Resource</a> instance for <code>/itens</code>, we can do the following:</p>
+<pre class="prettyprint source lang-javascript"><code>var form = res.$form('create-item'); // Get a copy of the form
+form.field('item').value = 'Wash the dishes'; // Update field values.
+var newItemRes = form.submit(); // Make the HTTP request</code></pre><p>The call to <a href="Form.html#submit">Form#submit</a> will perform a request like the following:</p>
+<pre class="prettyprint source lang-http"><code>HTTP/1.1 POST /items
+Host: http://todo.io/
+Content-Type: application/x-www-form-urlencoded
+
+item=Wash%20the%20dishes</code></pre>
+</article>
+
+</section>
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Tue Jun 30 2015 01:37:27 GMT-0400 (EDT) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

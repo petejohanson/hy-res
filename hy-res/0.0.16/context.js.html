@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>context.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a><ul class='methods'><li data-type='method'><a href="Context.html#resolveUrl">resolveUrl</a></li><li data-type='method'><a href="Context.html#withDefaults">withDefaults</a></li><li data-type='method'><a href="Context.html#withExtensions">withExtensions</a></li><li data-type='method'><a href="Context.html#withoutUrl">withoutUrl</a></li><li data-type='method'><a href="Context.html#withUrl">withUrl</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#clone">clone</a></li><li data-type='method'><a href="Form.html#field">field</a></li><li data-type='method'><a href="Form.html#submit">submit</a></li></ul></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a><ul class='methods'><li data-type='method'><a href="LinkCollection.html#follow">follow</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#$delete">$delete</a></li><li data-type='method'><a href="Resource.html#$embedded">$embedded</a></li><li data-type='method'><a href="Resource.html#$embeddeds">$embeddeds</a></li><li data-type='method'><a href="Resource.html#$followAll">$followAll</a></li><li data-type='method'><a href="Resource.html#$followOne">$followOne</a></li><li data-type='method'><a href="Resource.html#$form">$form</a></li><li data-type='method'><a href="Resource.html#$forms">$forms</a></li><li data-type='method'><a href="Resource.html#$has">$has</a></li><li data-type='method'><a href="Resource.html#$link">$link</a></li><li data-type='method'><a href="Resource.html#$links">$links</a></li><li data-type='method'><a href="Resource.html#$sub">$sub</a></li><li data-type='method'><a href="Resource.html#$subs">$subs</a></li></ul></li><li><a href="Root.html">Root</a><ul class='methods'><li data-type='method'><a href="Root.html#follow">follow</a></li><li data-type='method'><a href="Root.html#resolvedUrl">resolvedUrl</a></li></ul></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a><ul class='methods'><li data-type='method'><a href="WebLink.html#follow">follow</a></li><li data-type='method'><a href="WebLink.html#resolvedUrl">resolvedUrl</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-forms.html">Forms</a></li><li><a href="tutorial-uri-templates.html">URI Templates</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">context.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+var URI = require('URIjs');
+var _ = require('lodash');
+
+/**
+ * Create a new context with the given http abstraction and set of
+ * extensions
+ * @constructor
+ *
+ * @classdesc
+ * The {@link Context} encapsulates the state/context of a given resource
+ * or request, including extensions available, the http mechanism for
+ * dereferencing URLs, etc.
+ */
+var Context = function(http, extensions, defaultOptions) {
+  this.http = http;
+  this.extensions = extensions;
+  this.defaultOptions = defaultOptions || {};
+};
+
+/**
+ * Given a possibly relative URL, resolve it using the context's
+ * base URL, if it exists.
+ * @arg {String} url The (possibly relative) URL to resolve.
+ * @returns String The resolved URL. This may still be relative is no base
+ * URL is set in the given context.
+ */
+Context.prototype.resolveUrl = function(url) {
+  if (this.url) {
+    url = new URI(url).absoluteTo(this.url).toString();
+  }
+  return url;
+};
+
+/**
+ * Create a copy of the context with any base URL removed.
+ * @returns {Context} the new context with base URL context removed.
+ */
+Context.prototype.withoutUrl = function() {
+  return this.withUrl(undefined);
+};
+
+/**
+ * Create a copy of the context with a new base URL.
+ * @arg {String} url The new base URL.
+ * @returns {Context} The new context with the base URL.
+ */
+Context.prototype.withUrl = function(url) {
+  var c = new Context(this.http, this.extensions, this.defaultOptions);
+  c.url = url;
+  return c;
+};
+
+/**
+ * Merge the default options with the provided ones to produce the final
+ * options for a follow operation.
+ * @arg {Object} [options] The request specific options.
+ * @returns {Object} The merged options.
+ */
+Context.prototype.withDefaults = function(options) {
+  var ret = {};
+
+  return _.merge({}, this.defaultOptions, options || {});
+};
+
+/**
+ * Create a new context with the provided extensions overriding the existing ones.
+ * @param {Array} extensions The new set of extensions to use for the context
+ * @returns {Context} A new context w/ the provided extensions
+ */
+Context.prototype.withExtensions = function(extensions) {
+  return new Context(this.http, extensions, this.defaultOptions);
+};
+
+module.exports = Context;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Tue Jun 30 2015 01:37:27 GMT-0400 (EDT) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Home - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a><ul class='methods'><li data-type='method'><a href="Context.html#resolveUrl">resolveUrl</a></li><li data-type='method'><a href="Context.html#withDefaults">withDefaults</a></li><li data-type='method'><a href="Context.html#withExtensions">withExtensions</a></li><li data-type='method'><a href="Context.html#withoutUrl">withoutUrl</a></li><li data-type='method'><a href="Context.html#withUrl">withUrl</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#clone">clone</a></li><li data-type='method'><a href="Form.html#field">field</a></li><li data-type='method'><a href="Form.html#submit">submit</a></li></ul></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a><ul class='methods'><li data-type='method'><a href="LinkCollection.html#follow">follow</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#$delete">$delete</a></li><li data-type='method'><a href="Resource.html#$embedded">$embedded</a></li><li data-type='method'><a href="Resource.html#$embeddeds">$embeddeds</a></li><li data-type='method'><a href="Resource.html#$followAll">$followAll</a></li><li data-type='method'><a href="Resource.html#$followOne">$followOne</a></li><li data-type='method'><a href="Resource.html#$form">$form</a></li><li data-type='method'><a href="Resource.html#$forms">$forms</a></li><li data-type='method'><a href="Resource.html#$has">$has</a></li><li data-type='method'><a href="Resource.html#$link">$link</a></li><li data-type='method'><a href="Resource.html#$links">$links</a></li><li data-type='method'><a href="Resource.html#$sub">$sub</a></li><li data-type='method'><a href="Resource.html#$subs">$subs</a></li></ul></li><li><a href="Root.html">Root</a><ul class='methods'><li data-type='method'><a href="Root.html#follow">follow</a></li><li data-type='method'><a href="Root.html#resolvedUrl">resolvedUrl</a></li></ul></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a><ul class='methods'><li data-type='method'><a href="WebLink.html#follow">follow</a></li><li data-type='method'><a href="WebLink.html#resolvedUrl">resolvedUrl</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-forms.html">Forms</a></li><li><a href="tutorial-uri-templates.html">URI Templates</a></li></ul>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    
+
+
+    <section class="readme">
+        <article><h1>hy-res <a href="https://travis-ci.org/petejohanson/hy-res"><img src="https://travis-ci.org/petejohanson/hy-res.svg?branch=master" alt="Build Status"></a> <a href="http://codecov.io/github/petejohanson/hy-res?branch=master"><img src="http://codecov.io/github/petejohanson/hy-res/coverage.svg?branch=master" alt="codecov.io"></a></h1><p>A hypermedia client/library supporting several media formats. <a href="http://tools.ietf.org/html/draft-kelly-json-hal-06">HAL</a>, <a href="https://github.com/kevinswiber/siren">Siren</a>, and <a href="https://tools.ietf.org/html/rfc5988">Link header</a> extensions are included by default, but support for other media types can be added. For the most part, the core library is not normally used directly, instead consumed by way of a small framework integration layer, e.g. <a href="http://github.com/petejohanson/angular-hy-res">angular-hy-res</a>.</p>
+<h2>Support</h2><p>For any questions, please post to the <a href="https://groups.google.com/forum/#!forum/hy-res">HyRes Google Group</a>.</p>
+<p>For release announcements and updates, you can also <a href="https://twitter.com/petejohanson" class="twitter-follow-button" data-show-count="false">Follow @petejohanson</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></p>
+<h2>Installation</h2><h3>NPM</h3><p>hy-res is available via NPM. To install:</p>
+<pre class="prettyprint source"><code>$ npm install --save hy-res</code></pre><p><em>Note: The API is still evolving, so during the 0.0.x series of releases there are no API stability guarantees Those users needed a stable API should set an explicit version in package.json</em></p>
+<h2>Documentation</h2><p>hy-res is inspired by AngularJS' <code>$resource</code> service that focuses on using hypermedia
+controls, links (and/or embedded resources) discovered by link relation, to traverse a hypermedia enabled API.
+hy-res itself is not dependant on AngularJS, and can be used standalone along w/ the <a href="https://www.npmjs.com/package/axios">axios</a>
+library. For deep AngularJS, leveraging the <code>$http</code> service, use the <a href="https://github.com/petejohanson/angular-hy-res">angular-hy-res</a>
+library.</p>
+<p>For details, see refer to the <a href="http://petejohanson.github.io/hy-res/">API documentation</a>.</p>
+<h2>Examples</h2><p>A complete working example can be found at <a href="https://github.com/petejohanson/angular-hy-res-example">angular-hy-res-example</a>,
+which demonstrates the below pagination concept. A public copy is deployed to Heroku at:</p>
+<p><a href="https://angular-hy-res-example.herokuapp.com/">https://angular-hy-res-example.herokuapp.com/</a></p>
+<p>For example, given a HAL collection resource that uses the standard link relations <code>next</code> and <code>prev</code> to control
+paging through the collection, and the <code>item</code> relation for each item in the collection, here is a sample response:</p>
+<pre class="prettyprint source lang-json"><code>{
+    &quot;_links&quot;: {
+        &quot;self&quot;: { &quot;href&quot;: &quot;/page/2&quot; },
+        &quot;next&quot;: { &quot;href&quot;: &quot;/page/3&quot; },
+        &quot;prev&quot;: { &quot;href&quot;: &quot;/page/1&quot; }
+    }
+    &quot;_embedded&quot;: {
+        &quot;item&quot;: [
+          {
+            &quot;_links&quot;: { &quot;self&quot;: { &quot;href&quot;: &quot;/posts/123&quot; } },
+            &quot;title&quot;: &quot;MY blog post&quot;,
+            &quot;tags&quot;: [ &quot;blogging&quot;, &quot;hypermedia&quot; ]
+          }
+        ]
+    }
+}</code></pre><p>Then the controller can easily be:</p>
+<pre class="prettyprint source lang-javascript"><code>angular.module('angularHyResDocs')
+  .controller('ahrdPageCtrl', function(root) {
+    $scope.page = root.$followOne('http://api.myserver.com/rel/posts');
+    $scope.posts = $scope.page.$followAll('item');
+
+    var follow = function(rel) {
+      $scope.page = $scope.page.$followOne(rel);
+      $scope.posts = $scope.page.$followAll('item');
+    };
+
+    $scope.next = function() {
+      if (!$scope.hasNext()) {
+        return;
+      }
+
+      follow('next');
+    };
+
+    $scope.prev = function() {
+      if (!$scope.hasPrev()) {
+        return;
+      }
+
+      follow('prev');
+    };
+
+    $scope.hasNext = function() {
+      return $scope.page.$has('next');
+    };
+
+    $scope.hasPrev = function() {
+      return $scope.page.$has('prev');
+    };
+  });</code></pre><p>And the view:</p>
+<pre class="prettyprint source lang-html"><code>&lt;div>
+  &lt;ul class=&quot;pagination&quot;>
+    &lt;li>
+      &lt;a ng-click=&quot;{{prev()}}&quot; ng-class=&quot;{disabled: !hasPrev()}&quot;>&laquo;&lt;/a>
+    &lt;/li>
+    &lt;li>
+      &lt;a ng-click=&quot;{{next()}}&quot; ng-class=&quot;{disabled: !hasNext()}&quot;>&raquo;&lt;/a>
+    &lt;/li>
+  &lt;/ul>
+  &lt;ul>
+    &lt;li ng-repeat=&quot;post in posts&quot;>{{post.title}}&lt;/li>
+  &lt;/ul>
+&lt;/div></code></pre><h2>To Do</h2><ul>
+<li>Submit form file uploads? Maybe allow consumers to provide populated FormData
+instance in <code>submit</code> parameters?</li>
+<li>Handle scenario where subset of links for a given link relation is embedded.
+For this scenario, we should really return a mix of resolved embedded
+resources and unresolved resources that result from following the non-embedded
+links.</li>
+<li>Extensions for other media types (e.g. Collection+Json, Uber)</li>
+<li>Support URI schemes other than http/https (extension mechanism?)</li>
+<li>Mixins for resources based on... profile? link relation that was followed?</li>
+<li>Differentiate between embedded link vs embedded representation (See Siren spec)</li>
+<li>Handling or error types, e.g. application/problem+json</li>
+<li>Store resource's own URL somewhere accessible, perhaps <code>res.$href</code>?</li>
+<li>Store raw http response data in resource property, e.g. <code>res.$raw</code></li>
+<li>Support for PUT of modified resource to replace server state?</li>
+</ul></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Tue Jun 30 2015 01:37:27 GMT-0400 (EDT) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

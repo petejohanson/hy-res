@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>hal.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a><ul class='methods'><li data-type='method'><a href="Context.html#resolveUrl">resolveUrl</a></li><li data-type='method'><a href="Context.html#withDefaults">withDefaults</a></li><li data-type='method'><a href="Context.html#withExtensions">withExtensions</a></li><li data-type='method'><a href="Context.html#withoutUrl">withoutUrl</a></li><li data-type='method'><a href="Context.html#withUrl">withUrl</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#clone">clone</a></li><li data-type='method'><a href="Form.html#field">field</a></li><li data-type='method'><a href="Form.html#submit">submit</a></li></ul></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a><ul class='methods'><li data-type='method'><a href="LinkCollection.html#follow">follow</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#$delete">$delete</a></li><li data-type='method'><a href="Resource.html#$embedded">$embedded</a></li><li data-type='method'><a href="Resource.html#$embeddeds">$embeddeds</a></li><li data-type='method'><a href="Resource.html#$followAll">$followAll</a></li><li data-type='method'><a href="Resource.html#$followOne">$followOne</a></li><li data-type='method'><a href="Resource.html#$form">$form</a></li><li data-type='method'><a href="Resource.html#$forms">$forms</a></li><li data-type='method'><a href="Resource.html#$has">$has</a></li><li data-type='method'><a href="Resource.html#$link">$link</a></li><li data-type='method'><a href="Resource.html#$links">$links</a></li><li data-type='method'><a href="Resource.html#$sub">$sub</a></li><li data-type='method'><a href="Resource.html#$subs">$subs</a></li></ul></li><li><a href="Root.html">Root</a><ul class='methods'><li data-type='method'><a href="Root.html#follow">follow</a></li><li data-type='method'><a href="Root.html#resolvedUrl">resolvedUrl</a></li></ul></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a><ul class='methods'><li data-type='method'><a href="WebLink.html#follow">follow</a></li><li data-type='method'><a href="WebLink.html#resolvedUrl">resolvedUrl</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-forms.html">Forms</a></li><li><a href="tutorial-uri-templates.html">URI Templates</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">hal.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+var _ = require('lodash');
+var WebLink = require('./web_link');
+var LinkCollection = require('./link_collection');
+var Resource = require('./resource');
+
+/**
+ * Create the HAL extension
+ *
+ * @constructor
+ * @arg {Array} mediaTypes Media types in addition to `application/hal+json`
+ * that should be handled by this extensions. This allows for custom media
+ * types based on HAL to be handled properly.
+ *
+ * @classdesc
+ * Extension for processing
+ * [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06) responses.
+ * By default, the extension will only process links and embedded
+ * resources in responses if the HTTP response `Content-Type` header
+ * equals `application/hal+json`. If you have a custom media type that
+ * extends HAL, you can register it by passing it in the `mediaTypes`
+ * parameter.
+ */
+var HalExtension = function(mediaTypes) {
+  var mediaTypeSet = { 'application/hal+json': true };
+
+  mediaTypes = mediaTypes || [];
+  for (var i = 0; i &lt; mediaTypes.length; i++) {
+    mediaTypeSet[mediaTypes[i]] = true;
+  }
+
+  this.mediaTypes = _.keys(mediaTypeSet);
+
+  this.applies = function(data, headers) {
+    var h = headers['content-type'];
+    if (!h) {
+      return false;
+    }
+
+    // Handle parameters, e.g. application/hal+json; charset=UTF-8
+    var type = h.split(';')[0];
+    return mediaTypeSet[type] !==  undefined;
+  };
+
+  this.dataParser = function(data, headers) {
+    return _.transform(data, function(res, val, key) {
+      if (key === '_links' || key === '_embedded')
+        return;
+      res.unshift({ name: key, value: val });
+    }, []);
+  };
+
+  this.linkParser = function(data, headers, context) {
+    if (!_.isObject(data._links)) {
+      return null;
+    }
+
+    var ret = {};
+    _.forEach(data._links, function(val, key) {
+      if (!_.isArray(val)) {
+        val = [val];
+      }
+
+      var linkArray = [];
+      _.forEach(val, function(l) {
+        // Because HAL uses link relations as object keys, we populate
+        // the rel field on the link manually so the link is self
+        // contained from this point onward.
+        l.rel = key;
+        linkArray.push(new WebLink(l, context));
+      }, this);
+
+      ret[key] = LinkCollection.fromArray(linkArray);
+    }, this);
+    return ret;
+  };
+
+  this.embeddedParser = function(data, headers, context) {
+    var ret = {};
+    _.forEach(data._embedded || {}, function(val, key) {
+      if (!_.isArray(val)) {
+        val = [val];
+      }
+
+      ret[key] = Resource.embeddedCollection(val, headers, context);
+    });
+
+    return ret;
+  };
+};
+
+module.exports = HalExtension;
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Tue Jun 30 2015 01:37:27 GMT-0400 (EDT) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
