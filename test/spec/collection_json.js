@@ -92,7 +92,17 @@ describe('CollectionJsonExtension', function () {
                   {'rel' : 'avatar', 'href' : 'http://examples.org/images/msmith', 'prompt' : 'Avatar', 'render' : 'image'}
                 ]
               }
-            ]
+            ],
+
+            'template' : {
+              'data' : [
+                {'name' : 'full-name', 'value' : '', 'prompt' : 'Full Name'},
+                {'name' : 'email', 'value' : '', 'prompt' : 'Email'},
+                {'name' : 'blog', 'value' : '', 'prompt' : 'Blog'},
+                {'name' : 'avatar', 'value' : '', 'prompt' : 'Avatar'}
+
+              ]
+            }
           }
         }, {}, new Context(http, [extension]));
     });
@@ -128,6 +138,11 @@ describe('CollectionJsonExtension', function () {
       it('should have the item fields populated', function() {
         expect(editForm.field('full-name')).to.have.property('value', 'J. Doe');
         expect(editForm.field('email')).to.have.property('value', 'jdoe@example.org');
+      });
+
+      it('should include the template fields not already defined for that item', function() {
+        expect(editForm.field('avatar')).to.exist;
+        expect(editForm.field('blog')).to.exist;
       });
 
       describe('submitting the edit-form', function() {

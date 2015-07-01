@@ -17,7 +17,7 @@ var cjObjectLinkParser = function(obj, headers, context) {
     .value();
 };
 
-var CollectionJsonItemExtension = function() {
+var CollectionJsonItemExtension = function(parentCollection) {
   this.applies = _.constant(true);
 
   this.linkParser = cjObjectLinkParser;
@@ -27,13 +27,16 @@ var CollectionJsonItemExtension = function() {
   };
 
   this.formParser = function(data, headers, context) {
+    var templateData = _.get(parentCollection, 'collection.template.data') || [];
+
+    var fields = _(templateData.concat(data.data || [])).indexBy('name').values().value();
     return {
       'edit-form': [
         new Form({
           href: data.href,
           method: 'PUT',
           type: 'application/vnd.collection+json',
-          fields: _.clone(data.data)
+          fields: fields
         }, context)
       ]
     };
@@ -80,7 +83,6 @@ var CollectionJsonItemExtension = function() {
  *
  */
 var CollectionJsonExtension = function(mediaTypes) {
-  this.itemExtension = new CollectionJsonItemExtension();
   var mediaTypeSet = { 'application/vnd.collection+json': true };
 
   mediaTypes = mediaTypes || [];
@@ -157,7 +159,7 @@ var CollectionJsonExtension = function(mediaTypes) {
       item: Resource.embeddedCollection(
         _.cloneDeep(data.collection.items),
         headers,
-        context.withExtensions([this.itemExtension])
+        context.withExtensions([new CollectionJsonItemExtension(data)])
       )
     };
   };
