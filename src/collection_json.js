@@ -25,6 +25,19 @@ var CollectionJsonItemExtension = function() {
   this.dataParser = function(data) {
     return data.data || [];
   };
+
+  this.formParser = function(data, headers, context) {
+    return {
+      'edit-form': [
+        new Form({
+          href: data.href,
+          method: 'PUT',
+          type: 'application/vnd.collection+json',
+          fields: _.clone(data.data)
+        }, context)
+      ]
+    };
+  };
 };
 
 /**
@@ -32,7 +45,7 @@ var CollectionJsonItemExtension = function() {
  *
  * @constructor
  * @arg {Array} [mediaTypes] Media types in addition to
- * `application/collection+json` that should be handled by this extensions.
+ * `application/vnd.collection+json` that should be handled by this extensions.
  * This allows for custom media types based on Collection+JSON to be handled
  * properly.
  *
@@ -46,6 +59,25 @@ var CollectionJsonItemExtension = function() {
  * equals `application/vnd.collection+json`. If you have a custom media type that
  * extends C+J, you can register it by passing it in the `mediaTypes`
  * parameter.
+ *
+ * C+J queries are exposed as forms, and can be accessed using {@link Resource#$form}
+ * or {@link Resource#$forms}. For adding items, a form is accessible using the
+ * `create-form` IANA standard link relation.
+ *
+ * Collection items can be extracted using the `item` standard link relation using
+ * {@link Resource#$sub} or {@link Resource#$subs}.
+ *
+ * A given embedded item can be edited by using the form with the `edit-form` standard
+ * link relation.
+ *
+ * @example <caption>Example editing an existing item</caption>
+ * new Root('http://localhost/posts', axios, [new CollectionJsonExtension()]).follow().then(function(coll) {
+ *   var firstItem = coll.$subs('item')[0];
+ *   var editForm = firstItem.$form('edit-form');
+ *   editForm.field('title').value = 'Edited Title';
+ *   var newFirstItem = editForm.submit().$followOne('item');
+ * });
+ *
  */
 var CollectionJsonExtension = function(mediaTypes) {
   this.itemExtension = new CollectionJsonItemExtension();
@@ -58,7 +90,6 @@ var CollectionJsonExtension = function(mediaTypes) {
 
   this.encoders = {
     'application/vnd.collection+json': function(data) {
-      console.log(data);
       return JSON.stringify({
         template: {
           data: FieldUtils.extractFields(data)
@@ -75,7 +106,7 @@ var CollectionJsonExtension = function(mediaTypes) {
       return false;
     }
 
-    // Handle parameters, e.g. application/collection+json; charset=UTF-8
+    // Handle parameters, e.g. application/vnd.collection+json; charset=UTF-8
     var type = h.split(';')[0];
     return mediaTypeSet[type] !==  undefined;
   };

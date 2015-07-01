@@ -5,6 +5,7 @@ var Context = require('../../src/context');
 var CollectionJsonExtension = require('../../src/collection_json');
 var chai = require('chai');
 chai.use(require('chai-hy-res'));
+chai.use(require('sinon-chai'));
 var expect = chai.expect;
 
 describe('CollectionJsonExtension', function () {
@@ -58,8 +59,9 @@ describe('CollectionJsonExtension', function () {
   });
 
   describe('embedded parser', function() {
-    var embeds;
+    var http, embeds;
     beforeEach(function() {
+      http = sinon.stub();
       embeds = extension.embeddedParser(
         { 'collection' :
           {
@@ -92,7 +94,7 @@ describe('CollectionJsonExtension', function () {
               }
             ]
           }
-        }, {}, new Context({}, [extension]));
+        }, {}, new Context(http, [extension]));
     });
 
     it('should return the items using the "item" link relation', function() {
@@ -110,6 +112,44 @@ describe('CollectionJsonExtension', function () {
 
     it('should have the data fields for the items', function() {
       expect(embeds.item[0]).to.have.property('full-name', 'J. Doe');
+    });
+
+    describe('the edit-form form for the embedded item', function () {
+      var editForm;
+      beforeEach(function() {
+        http.returns(Promise.resolve({data: {}, headers: {}, status: 204}));
+        editForm = embeds.item[0].$form('edit-form');
+      });
+
+      it('should contain the edit-form', function() {
+        expect(editForm).to.exist;
+      });
+
+      it('should have the item fields populated', function() {
+        expect(editForm.field('full-name')).to.have.property('value', 'J. Doe');
+        expect(editForm.field('email')).to.have.property('value', 'jdoe@example.org');
+      });
+
+      describe('submitting the edit-form', function() {
+        var resp;
+        beforeEach(function() {
+          editForm.field('full-name').value = 'John Doe';
+          resp = editForm.submit();
+
+          return resp.$promise;
+        });
+
+        it('makes an HTTP PUT to the item URL with the field data', function() {
+          expect(http).to.have.been.calledWith(sinon.match(
+            {
+              url: 'http://example.org/friends/jdoe',
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/vnd.collection+json' },
+              data: { 'full-name': 'John Doe', email: 'jdoe@example.org' }
+            }
+          ));
+        });
+      });
     });
   });
 
@@ -140,6 +180,15 @@ describe('CollectionJsonExtension', function () {
     beforeEach(function() {
       forms = extension.formParser({
         'collection': {
+          items: [
+            {
+              href: '/friends/jdoe',
+              data: [
+                { name: 'name', value: 'John Doe' },
+                { name: 'email', value: 'jdoe@jdoe.com' }
+              ]
+            }
+          ],
           'queries' : [
             {
               'rel' : 'search',
@@ -151,7 +200,7 @@ describe('CollectionJsonExtension', function () {
             }
           ]
         }
-      }, {}, {});
+      }, {}, new Context({}, [extension]));
     });
 
     it('creates forms for the included queries', function() {
