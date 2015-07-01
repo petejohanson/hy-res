@@ -28,8 +28,10 @@ var CollectionJsonItemExtension = function(parentCollection) {
 
   this.formParser = function(data, headers, context) {
     var templateData = _.get(parentCollection, 'collection.template.data') || [];
-
+    // Depend on indexBy using the *last* item to generate a key as the value to
+    // have the item's data, if present, override the template's data.
     var fields = _(templateData.concat(data.data || [])).indexBy('name').values().value();
+
     return {
       'edit-form': [
         new Form({

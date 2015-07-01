@@ -8,4 +8,5 @@ module.exports = {
   JsonExtension: require('./src/json'),
   LinkHeaderExtension: require('./src/link_header'),
   SirenExtension: require('./src/siren'),
+  CollectionJsonExtension: require('./src/collection_json')
 };
