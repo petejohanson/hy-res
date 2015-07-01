@@ -25,8 +25,8 @@ _Note: The API is still evolving, so during the 0.0.x series of releases there a
 hy-res is inspired by AngularJS' `$resource` service that focuses on using hypermedia
 controls, links (and/or embedded resources) discovered by link relation, to traverse a hypermedia enabled API.
 hy-res itself is not dependant on AngularJS, and can be used standalone along w/ the [axios](https://www.npmjs.com/package/axios)
-library. For deep AngularJS, leveraging the `$http` service, use the [angular-hy-res](https://github.com/petejohanson/angular-hy-res)
-library.
+library. For deep AngularJS integration, leveraging the `$http` service, use the [angular-hy-res](https://github.com/petejohanson/angular-hy-res)
+wrapper library.
 
 For details, see refer to the [API documentation](http://petejohanson.github.io/hy-res/).
 
