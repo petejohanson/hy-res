@@ -55,8 +55,6 @@ var CollectionJsonItemExtension = function(parentCollection) {
  * properly.
  *
  * @classdesc
- * **WARNING: The CollectionJsonExtension is incomplete, and not ready for production use**
- *
  * Extension for processing
  * [Collection+JSON](http://amundsen.com/media-types/collection/format/).
  * By default, the extension will only process links and embedded
