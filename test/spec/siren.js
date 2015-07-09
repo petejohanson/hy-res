@@ -28,6 +28,10 @@ describe('SirenExtension', function () {
     it('should apply to a custom content type', function() {
       expect(ext.applies({}, { 'content-type':  addlMediaType })).to.be.true;
     });
+
+    it('should not apply to 204 No Content responses', function() {
+      expect(ext.applies({}, {}, 204)).to.be.false;
+    });
   });
 
   describe('links parser', function() {

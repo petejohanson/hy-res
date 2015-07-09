@@ -27,6 +27,10 @@ describe('CollectionJsonExtension', function () {
     it('should apply to additional media type', function() {
       expect(extension.applies({}, { 'content-type': addlMediaType }, 200)).to.be.true;
     });
+
+    it('should not apply to 204 No Content responses', function() {
+      expect(extension.applies({}, {}, 204)).to.be.false;
+    });
   });
 
   describe('links parser', function() {
