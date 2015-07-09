@@ -33,8 +33,7 @@ var LinkCollection = require('./link_collection');
 var SirenExtension = function(mediaTypes) {
   var formDefaults = {
     method: 'GET',
-    type: 'application/x-www-form-urlencoded',
-    preferredResponseType: 'application/vnd.siren+json'
+    type: 'application/x-www-form-urlencoded'
   };
 
   var mediaTypeSet = { 'application/vnd.siren+json': true };
