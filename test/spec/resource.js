@@ -89,7 +89,7 @@ describe('Resource', function () {
 
       describe('for duplicate named forms', function() {
         it('throws', function() {
-          expect(function() { resource.$form('edit-form'); }).to.throw;
+          expect(function() { resource.$form('edit-form'); }).to.throw();
         });
       });
     });
@@ -295,6 +295,12 @@ describe('Resource', function () {
           expect(links).to.all.be.instanceof(HyRes.WebLink);
           expect(_.find(links, 'rel', 'self')).to.have.property('href', '/orders/123');
           expect(_.filter(links, 'rel', 'stores').length).to.equal(2);
+        });
+      });
+
+      describe('$sub called when multiple embedded resources present', function() {
+        it('should throw an error', function() {
+          expect(function() { resource.$sub('discounts'); }).to.throw();
         });
       });
 
