@@ -352,9 +352,12 @@ Resource.fromRequest = function(request, context) {
   var res = new Resource();
   res.$promise =
     request.then(function(response) {
-        context = context.withoutUrl();
+        context = context.baseline();
         if (response.config && response.config.url) {
-          context = context.withUrl(response.config.url);
+          context = context.forResource({
+            url: response.config.url,
+            headers: response.headers
+          });
         }
         res.$$resolve(response.data, response.headers, context);
         return res;

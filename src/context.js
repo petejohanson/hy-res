@@ -17,6 +17,7 @@ var Context = function(http, extensions, defaultOptions) {
   this.http = http;
   this.extensions = extensions;
   this.defaultOptions = defaultOptions || {};
+  this.headers = {};
 };
 
 /**
@@ -34,21 +35,41 @@ Context.prototype.resolveUrl = function(url) {
 };
 
 /**
- * Create a copy of the context with any base URL removed.
- * @returns {Context} the new context with base URL context removed.
+ * Generate an HTTP Accept header from the extension media types,
+ * preferring the context content type over others, e.g
+ * `application/vnd.siren+json;application/json;q=0.5`.
+ * @returns {string} The generated Accept header value
  */
-Context.prototype.withoutUrl = function() {
-  return this.withUrl(undefined);
+Context.prototype.acceptHeader = function() {
+  var mediaTypes = _(this.extensions).pluck('mediaTypes').flatten().compact();
+  if (this.headers['content-type']) {
+    var preferred = this.headers['content-type'];
+    mediaTypes = mediaTypes.map(function(mt) { return mt === preferred ? mt : mt + ';q=0.5'; });
+  }
+  return mediaTypes.join(',');
 };
 
 /**
- * Create a copy of the context with a new base URL.
- * @arg {String} url The new base URL.
- * @returns {Context} The new context with the base URL.
+ * Create a copy of the context with any base URL removed.
+ * @returns {Context} the new context with base URL context removed.
  */
-Context.prototype.withUrl = function(url) {
+Context.prototype.baseline = function() {
+  return this.forResource(undefined);
+};
+
+/**
+ * Create a copy of the context with a new resource context
+ * @arg {Object} resource The context resource object.
+ * @arg {String} resource.url The new context URL.
+ * @arg {Object} resource.headers The headers of the resource context.
+ * @returns {Context} The new context with the given resource.
+ */
+Context.prototype.forResource = function(resource) {
   var c = new Context(this.http, this.extensions, this.defaultOptions);
-  c.url = url;
+  resource = resource || {};
+  c.url = resource.url;
+  c.headers = resource.headers || {};
+
   return c;
 };
 

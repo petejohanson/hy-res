@@ -14,16 +14,25 @@ describe('Context', function () {
   beforeEach(function() {
     defaultOpts = {};
     http = sinon.spy();
-    extensions = [sinon.spy()];
+    extensions = [{mediaTypes: ['application/json', 'application/vnd.collection+json']}];
   });
 
-  describe('with a URL', function() {
+  describe('for a given resource', function() {
     beforeEach(function() {
-      context = new Context(http, extensions, defaultOpts).withUrl('http://localhost:8080');
+      context = new Context(http, extensions, defaultOpts).forResource({
+        url: 'http://localhost:8080',
+        headers: {
+          'content-type': 'application/vnd.collection+json'
+        }
+      });
     });
 
     it('resolves relative URLs', function() {
       expect(context.resolveUrl('/posts')).to.eql('http://localhost:8080/posts');
+    });
+
+    it('generates an accept header preferring the content type of the context', function() {
+      expect(context.acceptHeader()).to.eql('application/json;q=0.5,application/vnd.collection+json');
     });
 
     it('leaves absolute URLs alone', function() {

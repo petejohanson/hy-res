@@ -80,13 +80,14 @@ Form.prototype.submit = function(options) {
   });
 
   if (!config.headers.Accept) {
-    var mediaTypes = _(this.$$context.extensions).pluck('mediaTypes').flatten().compact();
-    if (this.preferredResponseType) {
-      var preferred = this.preferredResponseType;
-      mediaTypes = mediaTypes.map(function(mt) { return mt === preferred ? mt : mt + ';q=0.5'; });
-    }
-    var accept = mediaTypes.join(',');
-    config.headers.Accept = accept;
+    //var mediaTypes = _(this.$$context.extensions).pluck('mediaTypes').flatten().compact();
+    //if (this.preferredResponseType) {
+    //  var preferred = this.preferredResponseType;
+    //  mediaTypes = mediaTypes.map(function(mt) { return mt === preferred ? mt : mt + ';q=0.5'; });
+    //}
+    //var accept = mediaTypes.join(',');
+    //config.headers.Accept = accept;
+    config.headers.Accept = this.$$context.acceptHeader();
   }
 
   if (this.fields) {
@@ -104,7 +105,7 @@ Form.prototype.submit = function(options) {
     }
 
     var loc = r.headers.location;
-    ctx = ctx.withUrl(config.url);
+    ctx = ctx.forResource({url: config.url});
     return ctx.http({method: 'GET', url: ctx.resolveUrl(loc), headers: config.headers });
   });
   return Resouce.fromRequest(resp, ctx);

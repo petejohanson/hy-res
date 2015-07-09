@@ -35,8 +35,9 @@ describe('Form', function () {
         ]
       };
 
-      // TODO: Need context to handle making relative -> absolute URL.
-      form = new Form(data, new Context(http, [{ mediaTypes: ['application/vnd.siren+json', 'application/vnd.custom+json'] }]));
+      var ctx = new Context(http, [{mediaTypes: ['application/vnd.siren+json', 'application/vnd.custom+json']}]);
+      ctx = ctx.forResource({url: 'http://localhost/', headers: {'content-type': 'application/vnd.custom+json' }});
+      form = new Form(data, ctx);
     });
 
     it('has the data properties', function() {
@@ -69,21 +70,6 @@ describe('Form', function () {
       });
     });
 
-    describe('form submission w/ a preferredResponseType', function() {
-      var result;
-      beforeEach(function() {
-        form.preferredResponseType = 'application/vnd.custom+json';
-        http.returns(Promise.resolve({data: {}, headers: {}, status: 200 }));
-        result = form.submit();
-      });
-
-      it('should weight the other media types lower in the Accept header', function() {
-        // Brittle test. Should be a property that inspects relative 'q' values in passed
-        // in accept header.
-        expect(http).to.have.been.calledWith(sinon.match({headers: { Accept: 'application/vnd.siren+json;q=0.5,application/vnd.custom+json' }}));
-      });
-    });
-
     describe('form submission', function() {
       var result;
 
@@ -92,8 +78,8 @@ describe('Form', function () {
         result = form.submit({ protocol: { headers: { Prefer: 'return=representation' }}});
       });
 
-      it('should request the form URL', function() {
-        expect(http).to.have.been.calledWith(sinon.match({ url: '/posts' }));
+      it('should request the absolute form URL', function() {
+        expect(http).to.have.been.calledWith(sinon.match({ url: 'http://localhost/posts' }));
       });
 
       it('should return a Resource', function() {
@@ -108,8 +94,8 @@ describe('Form', function () {
         expect(http).to.have.been.calledWith(sinon.match({ headers: { 'Content-Type': 'application/x-www-form-urlencoded' }}));
       });
 
-      it('should generate an Accept header based on registered extensions', function() {
-        expect(http).to.have.been.calledWith(sinon.match({ headers: { 'Accept': 'application/vnd.siren+json,application/vnd.custom+json' }}));
+      it('should generate an Accept header based on registered extensions, prefering context content type', function() {
+        expect(http).to.have.been.calledWith(sinon.match({ headers: { 'Accept': 'application/vnd.siren+json;q=0.5,application/vnd.custom+json' }}));
       });
 
       it('should send the field data', function() {

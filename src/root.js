@@ -18,7 +18,7 @@ var WebLink = require('./web_link');
 var Root = function(url, http, extensions, defaultOptions) {
   var ctx = new Context(http, extensions, defaultOptions);
 
-  WebLink.call(this, { href: url }, ctx.withUrl(url));
+  WebLink.call(this, { href: url }, ctx.forResource({url: url}));
 };
 
 Root.prototype = _.create(WebLink.prototype, {

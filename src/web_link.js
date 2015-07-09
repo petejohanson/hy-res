@@ -27,7 +27,9 @@ var WebLink = function(data, context) {
  * populated {@link Resource}.
  * @arg {Object} [options] The options for the request.
  * @arg {Object} [options.protocol] Options to pass to the underlying protocol,
- * e.g. http/https.
+ * @arg {Boolean} [options.preferContextMediaType] Whether to prefer the media type
+ * that originated this WebLink in the Accept header of the request, e.g.
+ * `Accept: application/vnd.collection+json, application/vnd.siren+json;q=0.5`
  * @arg {Object} [options.data] When following a link that is a URI Template,
  * this object will used as variables when resolving the template into the
  * final URI.
@@ -42,10 +44,7 @@ WebLink.prototype.follow = function(options) {
     if (this.type) {
       opts.headers.Accept = this.type;
     } else {
-      var accept = _(this.$$context.extensions).pluck('mediaTypes').flatten().compact().join(',');
-      if (accept) {
-        opts.headers.Accept = accept;
-      }
+      opts.headers.Accept = this.$$context.acceptHeader();
     }
   }
 

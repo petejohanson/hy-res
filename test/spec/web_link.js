@@ -27,10 +27,16 @@ describe('WebLink', function () {
       defaultOptions = {};
       var extensions = [new HalExtension(), new JsonExtension(), new LinkHeaderExtension()];
 
+      var ctx = new Context(http, extensions, defaultOptions).forResource({
+        url: 'http://api.server.com/',
+        headers: {
+          'content-type': 'application/hal+json'
+        }
+      });
       link = new WebLink({
         href: '/posts/123',
         title: 'Hypermedia and AngularJS'
-      }, new Context(http, extensions, defaultOptions).withUrl('http://api.server.com/'));
+      }, ctx);
     });
 
     it('had the data properties', function() {
@@ -62,8 +68,8 @@ describe('WebLink', function () {
         expect(resource).to.be.an.unresolved.resource;
       });
 
-      it('passes an Accept header with extension content types', function() {
-        expect(http).to.be.calledWith(sinon.match.has('headers', { 'Accept': 'application/hal+json,application/json' }));
+      it('passes an Accept header with extension content types, preferring the context content type', function() {
+        expect(http).to.be.calledWith(sinon.match.has('headers', { 'Accept': 'application/hal+json,application/json;q=0.5' }));
       });
 
       describe('once the request completes', function() {
