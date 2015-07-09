@@ -23,7 +23,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a><ul class='methods'><li data-type='method'><a href="Context.html#resolveUrl">resolveUrl</a></li><li data-type='method'><a href="Context.html#withDefaults">withDefaults</a></li><li data-type='method'><a href="Context.html#withExtensions">withExtensions</a></li><li data-type='method'><a href="Context.html#withoutUrl">withoutUrl</a></li><li data-type='method'><a href="Context.html#withUrl">withUrl</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#clone">clone</a></li><li data-type='method'><a href="Form.html#field">field</a></li><li data-type='method'><a href="Form.html#submit">submit</a></li></ul></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a><ul class='methods'><li data-type='method'><a href="LinkCollection.html#follow">follow</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#$delete">$delete</a></li><li data-type='method'><a href="Resource.html#$embedded">$embedded</a></li><li data-type='method'><a href="Resource.html#$embeddeds">$embeddeds</a></li><li data-type='method'><a href="Resource.html#$followAll">$followAll</a></li><li data-type='method'><a href="Resource.html#$followOne">$followOne</a></li><li data-type='method'><a href="Resource.html#$form">$form</a></li><li data-type='method'><a href="Resource.html#$forms">$forms</a></li><li data-type='method'><a href="Resource.html#$has">$has</a></li><li data-type='method'><a href="Resource.html#$link">$link</a></li><li data-type='method'><a href="Resource.html#$links">$links</a></li><li data-type='method'><a href="Resource.html#$sub">$sub</a></li><li data-type='method'><a href="Resource.html#$subs">$subs</a></li></ul></li><li><a href="Root.html">Root</a><ul class='methods'><li data-type='method'><a href="Root.html#follow">follow</a></li><li data-type='method'><a href="Root.html#resolvedUrl">resolvedUrl</a></li></ul></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a><ul class='methods'><li data-type='method'><a href="WebLink.html#follow">follow</a></li><li data-type='method'><a href="WebLink.html#resolvedUrl">resolvedUrl</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-forms.html">Forms</a></li><li><a href="tutorial-uri-templates.html">URI Templates</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a><ul class='methods'><li data-type='method'><a href="Context.html#acceptHeader">acceptHeader</a></li><li data-type='method'><a href="Context.html#baseline">baseline</a></li><li data-type='method'><a href="Context.html#forResource">forResource</a></li><li data-type='method'><a href="Context.html#resolveUrl">resolveUrl</a></li><li data-type='method'><a href="Context.html#withDefaults">withDefaults</a></li><li data-type='method'><a href="Context.html#withExtensions">withExtensions</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#clone">clone</a></li><li data-type='method'><a href="Form.html#field">field</a></li><li data-type='method'><a href="Form.html#submit">submit</a></li></ul></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a><ul class='methods'><li data-type='method'><a href="LinkCollection.html#follow">follow</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#$delete">$delete</a></li><li data-type='method'><a href="Resource.html#$embedded">$embedded</a></li><li data-type='method'><a href="Resource.html#$embeddeds">$embeddeds</a></li><li data-type='method'><a href="Resource.html#$followAll">$followAll</a></li><li data-type='method'><a href="Resource.html#$followOne">$followOne</a></li><li data-type='method'><a href="Resource.html#$form">$form</a></li><li data-type='method'><a href="Resource.html#$forms">$forms</a></li><li data-type='method'><a href="Resource.html#$has">$has</a></li><li data-type='method'><a href="Resource.html#$link">$link</a></li><li data-type='method'><a href="Resource.html#$links">$links</a></li><li data-type='method'><a href="Resource.html#$sub">$sub</a></li><li data-type='method'><a href="Resource.html#$subs">$subs</a></li></ul></li><li><a href="Root.html">Root</a><ul class='methods'><li data-type='method'><a href="Root.html#follow">follow</a></li><li data-type='method'><a href="Root.html#resolvedUrl">resolvedUrl</a></li></ul></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a><ul class='methods'><li data-type='method'><a href="WebLink.html#follow">follow</a></li><li data-type='method'><a href="WebLink.html#resolvedUrl">resolvedUrl</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-forms.html">Forms</a></li><li><a href="tutorial-uri-templates.html">URI Templates</a></li></ul>
 </nav>
 
 <div id="main">
@@ -57,6 +57,7 @@ var Context = function(http, extensions, defaultOptions) {
   this.http = http;
   this.extensions = extensions;
   this.defaultOptions = defaultOptions || {};
+  this.headers = {};
 };
 
 /**
@@ -74,21 +75,41 @@ Context.prototype.resolveUrl = function(url) {
 };
 
 /**
- * Create a copy of the context with any base URL removed.
- * @returns {Context} the new context with base URL context removed.
+ * Generate an HTTP Accept header from the extension media types,
+ * preferring the context content type over others, e.g
+ * `application/vnd.siren+json;application/json;q=0.5`.
+ * @returns {string} The generated Accept header value
  */
-Context.prototype.withoutUrl = function() {
-  return this.withUrl(undefined);
+Context.prototype.acceptHeader = function() {
+  var mediaTypes = _(this.extensions).pluck('mediaTypes').flatten().compact();
+  if (this.headers['content-type']) {
+    var preferred = this.headers['content-type'];
+    mediaTypes = mediaTypes.map(function(mt) { return mt === preferred ? mt : mt + ';q=0.5'; });
+  }
+  return mediaTypes.join(',');
 };
 
 /**
- * Create a copy of the context with a new base URL.
- * @arg {String} url The new base URL.
- * @returns {Context} The new context with the base URL.
+ * Create a copy of the context with any base URL removed.
+ * @returns {Context} the new context with base URL context removed.
  */
-Context.prototype.withUrl = function(url) {
+Context.prototype.baseline = function() {
+  return this.forResource(undefined);
+};
+
+/**
+ * Create a copy of the context with a new resource context
+ * @arg {Object} resource The context resource object.
+ * @arg {String} resource.url The new context URL.
+ * @arg {Object} resource.headers The headers of the resource context.
+ * @returns {Context} The new context with the given resource.
+ */
+Context.prototype.forResource = function(resource) {
   var c = new Context(this.http, this.extensions, this.defaultOptions);
-  c.url = url;
+  resource = resource || {};
+  c.url = resource.url;
+  c.headers = resource.headers || {};
+
   return c;
 };
 
@@ -126,7 +147,7 @@ module.exports = Context;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Mon Jul 06 2015 18:04:02 GMT-0400 (EDT) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Thu Jul 09 2015 00:21:29 GMT-0400 (EDT) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

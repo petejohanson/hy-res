@@ -23,7 +23,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a><ul class='methods'><li data-type='method'><a href="Context.html#resolveUrl">resolveUrl</a></li><li data-type='method'><a href="Context.html#withDefaults">withDefaults</a></li><li data-type='method'><a href="Context.html#withExtensions">withExtensions</a></li><li data-type='method'><a href="Context.html#withoutUrl">withoutUrl</a></li><li data-type='method'><a href="Context.html#withUrl">withUrl</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#clone">clone</a></li><li data-type='method'><a href="Form.html#field">field</a></li><li data-type='method'><a href="Form.html#submit">submit</a></li></ul></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a><ul class='methods'><li data-type='method'><a href="LinkCollection.html#follow">follow</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#$delete">$delete</a></li><li data-type='method'><a href="Resource.html#$embedded">$embedded</a></li><li data-type='method'><a href="Resource.html#$embeddeds">$embeddeds</a></li><li data-type='method'><a href="Resource.html#$followAll">$followAll</a></li><li data-type='method'><a href="Resource.html#$followOne">$followOne</a></li><li data-type='method'><a href="Resource.html#$form">$form</a></li><li data-type='method'><a href="Resource.html#$forms">$forms</a></li><li data-type='method'><a href="Resource.html#$has">$has</a></li><li data-type='method'><a href="Resource.html#$link">$link</a></li><li data-type='method'><a href="Resource.html#$links">$links</a></li><li data-type='method'><a href="Resource.html#$sub">$sub</a></li><li data-type='method'><a href="Resource.html#$subs">$subs</a></li></ul></li><li><a href="Root.html">Root</a><ul class='methods'><li data-type='method'><a href="Root.html#follow">follow</a></li><li data-type='method'><a href="Root.html#resolvedUrl">resolvedUrl</a></li></ul></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a><ul class='methods'><li data-type='method'><a href="WebLink.html#follow">follow</a></li><li data-type='method'><a href="WebLink.html#resolvedUrl">resolvedUrl</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-forms.html">Forms</a></li><li><a href="tutorial-uri-templates.html">URI Templates</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a><ul class='methods'><li data-type='method'><a href="Context.html#acceptHeader">acceptHeader</a></li><li data-type='method'><a href="Context.html#baseline">baseline</a></li><li data-type='method'><a href="Context.html#forResource">forResource</a></li><li data-type='method'><a href="Context.html#resolveUrl">resolveUrl</a></li><li data-type='method'><a href="Context.html#withDefaults">withDefaults</a></li><li data-type='method'><a href="Context.html#withExtensions">withExtensions</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#clone">clone</a></li><li data-type='method'><a href="Form.html#field">field</a></li><li data-type='method'><a href="Form.html#submit">submit</a></li></ul></li><li><a href="HalExtension.html">HalExtension</a></li><li><a href="LinkCollection.html">LinkCollection</a><ul class='methods'><li data-type='method'><a href="LinkCollection.html#follow">follow</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#$delete">$delete</a></li><li data-type='method'><a href="Resource.html#$embedded">$embedded</a></li><li data-type='method'><a href="Resource.html#$embeddeds">$embeddeds</a></li><li data-type='method'><a href="Resource.html#$followAll">$followAll</a></li><li data-type='method'><a href="Resource.html#$followOne">$followOne</a></li><li data-type='method'><a href="Resource.html#$form">$form</a></li><li data-type='method'><a href="Resource.html#$forms">$forms</a></li><li data-type='method'><a href="Resource.html#$has">$has</a></li><li data-type='method'><a href="Resource.html#$link">$link</a></li><li data-type='method'><a href="Resource.html#$links">$links</a></li><li data-type='method'><a href="Resource.html#$sub">$sub</a></li><li data-type='method'><a href="Resource.html#$subs">$subs</a></li></ul></li><li><a href="Root.html">Root</a><ul class='methods'><li data-type='method'><a href="Root.html#follow">follow</a></li><li data-type='method'><a href="Root.html#resolvedUrl">resolvedUrl</a></li></ul></li><li><a href="SirenExtension.html">SirenExtension</a></li><li><a href="WebLink.html">WebLink</a><ul class='methods'><li data-type='method'><a href="WebLink.html#follow">follow</a></li><li data-type='method'><a href="WebLink.html#resolvedUrl">resolvedUrl</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-forms.html">Forms</a></li><li><a href="tutorial-uri-templates.html">URI Templates</a></li></ul>
 </nav>
 
 <div id="main">
@@ -161,6 +161,441 @@ extensions</p>
 
     
 
+    <h4 class="name" id="acceptHeader"><span class="type-signature"></span>acceptHeader<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Generate an HTTP Accept header from the extension media types,
+preferring the context content type over others, e.g
+<code>application/vnd.siren+json;application/json;q=0.5</code>.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line43">line 43</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The generated Accept header value</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="baseline"><span class="type-signature"></span>baseline<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Context.html">Context</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Create a copy of the context with any base URL removed.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the new context with base URL context removed.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Context.html">Context</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="forResource"><span class="type-signature"></span>forResource<span class="signature">(resource)</span><span class="type-signature"> &rarr; {<a href="Context.html">Context</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Create a copy of the context with a new resource context</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resource</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The context resource object.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The new context URL.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>headers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The headers of the resource context.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line67">line 67</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The new context with the given resource.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Context.html">Context</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id="resolveUrl"><span class="type-signature"></span>resolveUrl<span class="signature">(url)</span><span class="type-signature"></span></h4>
 
     
@@ -262,7 +697,7 @@ base URL, if it exists.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line29">line 29</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -417,7 +852,7 @@ options for a follow operation.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line61">line 61</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line82">line 82</a>
     </li></ul></dd>
     
 
@@ -570,7 +1005,7 @@ options for a follow operation.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line72">line 72</a>
+        <a href="context.js.html">context.js</a>, <a href="context.js.html#line93">line 93</a>
     </li></ul></dd>
     
 
@@ -619,263 +1054,6 @@ options for a follow operation.</p>
 
 
         
-            
-
-    
-
-    <h4 class="name" id="withoutUrl"><span class="type-signature"></span>withoutUrl<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Context.html">Context</a>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Create a copy of the context with any base URL removed.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line40">line 40</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>the new context with base URL context removed.</p>
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Context.html">Context</a></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="withUrl"><span class="type-signature"></span>withUrl<span class="signature">(url)</span><span class="type-signature"> &rarr; {<a href="Context.html">Context</a>}</span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Create a copy of the context with a new base URL.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>url</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The new base URL.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="context.js.html">context.js</a>, <a href="context.js.html#line49">line 49</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    <p>The new context with the base URL.</p>
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Context.html">Context</a></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
     
 
     
@@ -893,7 +1071,7 @@ options for a follow operation.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Mon Jul 06 2015 18:04:02 GMT-0400 (EDT) using the Minami theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Thu Jul 09 2015 00:21:29 GMT-0400 (EDT) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
