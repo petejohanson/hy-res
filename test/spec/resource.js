@@ -351,6 +351,12 @@ describe('Resource', function () {
       });
 
       describe('$followOne', function() {
+        describe('with a link relation not present', function() {
+          it('returns null', function() {
+            expect(resource.$followOne('notfound')).to.be.null;
+          });
+        });
+
         describe('with a single link relation', function () {
 
           var customerResource;
