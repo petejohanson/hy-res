@@ -9,6 +9,7 @@ var expect = chai.expect;
 chai.use(require('sinon-chai'));
 chai.use(require('chai-hy-res'));
 chai.use(require('chai-as-promised'));
+chai.config.truncateThreshold = 0;
 var Context = require('../../src/context.js');
 var WebLink = require('../../src/web_link.js');
 var HalExtension = require('../../src/hal.js');
@@ -103,7 +104,7 @@ describe('WebLink', function () {
       });
 
       it('has the follow rejection in the $error', function() {
-        return expect(resource.$promise).to.be.rejected.and.to.eventually.have.property('$error').eql({data: {}, headers: {}, status: 404});
+        return expect(resource.$promise).to.be.rejected.and.to.eventually.have.property('$error').eql({message: 'HTTP request to load resource failed', inner: {data: {}, headers: {}, status: 404}});
       });
 
       it('has a rejected promise with the resource', function() {
