@@ -216,15 +216,18 @@ var Resource = function() {
       this.$promise.then(function(r) {
         var resources = r.$followAll(rel, options);
         Array.prototype.push.apply(ret, resources);
-        return resources.$promise;
-      }).then(function(r) {
-        ret.$resolved = true;
-        return ret;
-        //resolve(ret);
+        return resources.$promise.catch(function(err) {
+          ret.$resolved = true;
+          ret.$error = { message: 'One or more resources failed to load for $followAll(' + rel + ')', inner: err };
+          throw ret;
+        });
       }, function(err) {
         ret.$resolved = true;
-        ret.$error = err;
-        return Promise.reject(ret);
+        ret.$error = { message: 'Parent resolution failed, unable to $followAll(' + rel + ')', inner: err };
+        throw ret;
+      }).then(function() {
+        ret.$resolved = true;
+        return ret;
       });
 
     return ret;
@@ -361,8 +364,8 @@ Resource.fromRequest = function(request, context) {
         res.$$resolve(response.data, response.headers, context);
         return res;
       }, function(response) {
-        res.$$reject(response);
-        return Promise.reject(res);
+        res.$$reject({message: 'HTTP request to load resource failed', inner: response });
+        throw res;
       });
 
   return res;

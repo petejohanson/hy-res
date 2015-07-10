@@ -748,8 +748,6 @@ describe('Resource', function () {
       describe('when the request has an error', function() {
         beforeEach(function() {
           ordersReject('oh no!');
-
-          //return resource.$promise;
         });
 
         it('is rejected', function() {
