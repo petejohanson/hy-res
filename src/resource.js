@@ -212,21 +212,20 @@ var Resource = function() {
     var ret = [];
     ret.$resolved = false;
     ret.$error = null;
-    var myself = this;
-    ret.$promise = new Promise(function(resolve, reject) {
-      myself.$promise.then(function(r) {
+    ret.$promise =
+      this.$promise.then(function(r) {
         var resources = r.$followAll(rel, options);
         Array.prototype.push.apply(ret, resources);
         return resources.$promise;
       }).then(function(r) {
         ret.$resolved = true;
-        resolve(ret);
+        return ret;
+        //resolve(ret);
       }, function(err) {
         ret.$resolved = true;
         ret.$error = err;
         return Promise.reject(ret);
       });
-    });
 
     return ret;
   };

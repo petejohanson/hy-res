@@ -137,7 +137,7 @@ describe('Resource', function () {
   describe('an unresolved root resource', function() {
     var resource;
     var http;
-    var ordersPromise, ordersResolve;
+    var ordersPromise, ordersResolve, ordersReject;
     var rawOrder = {
       type:'promo',
       _links:{
@@ -184,6 +184,7 @@ describe('Resource', function () {
       http = sinon.stub();
       ordersPromise = new Promise(function(res,rej) {
         ordersResolve = res;
+        ordersReject = rej;
       });
       http.withArgs(sinon.match({ url: '/orders/123' })).returns(ordersPromise);
       resource = new HyRes.Root('/orders/123', http, extensions).follow();
@@ -741,6 +742,18 @@ describe('Resource', function () {
 
         it('should have the profile location', function() {
           expect(profileResources[0].location).to.eql('Anytown, USA');
+        });
+      });
+
+      describe('when the request has an error', function() {
+        beforeEach(function() {
+          ordersReject('oh no!');
+
+          //return resource.$promise;
+        });
+
+        it('is rejected', function() {
+          return expect(profileResources.$promise).to.eventually.be.rejected;
         });
       });
     });
