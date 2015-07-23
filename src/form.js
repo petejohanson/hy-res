@@ -80,13 +80,6 @@ Form.prototype.submit = function(options) {
   });
 
   if (!config.headers.Accept) {
-    //var mediaTypes = _(this.$$context.extensions).pluck('mediaTypes').flatten().compact();
-    //if (this.preferredResponseType) {
-    //  var preferred = this.preferredResponseType;
-    //  mediaTypes = mediaTypes.map(function(mt) { return mt === preferred ? mt : mt + ';q=0.5'; });
-    //}
-    //var accept = mediaTypes.join(',');
-    //config.headers.Accept = accept;
     config.headers.Accept = this.$$context.acceptHeader();
   }
 
@@ -100,7 +93,7 @@ Form.prototype.submit = function(options) {
 
   var ctx = this.$$context;
   var resp = ctx.http(config).then(function(r) {
-    if (r.status !== 201) {
+    if (r.status !== 201 || !r.headers.location) {
       return r;
     }
 

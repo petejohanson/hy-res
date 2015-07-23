@@ -108,7 +108,7 @@ describe('Form', function () {
     });
   });
 
-  describe('form submission that results in 201 Create response', function() {
+  describe('form submission that results in 201 Created response', function() {
 
     var form, http, resp;
 
@@ -134,10 +134,38 @@ describe('Form', function () {
     });
 
     it('makes a GET call on the created location', function() {
-      //expect(http).to.be.calledWith(sinon.match({url: '/posts/123', method: 'GET'}));
+      expect(http).to.be.calledWith(sinon.match({url: '/posts/123', method: 'GET'}));
     });
 
     it('returns the response from the created location', function() {
+      expect(resp).to.be.a.resolved.resource;
+      expect(resp.title).to.eql('yay');
+    });
+  });
+
+  describe('form submission that results in 201 Created response but no Location header', function() {
+
+    var form, http, resp;
+
+    beforeEach(function() {
+      http = sinon.stub();
+      form = new Form({
+        name: 'create-form',
+        href: '/posts',
+        method: 'POST',
+        fields: []
+      }, new Context(http, [new Json()]));
+
+      http
+        .withArgs(sinon.match({url: '/posts', method: 'POST'}))
+        .returns(Promise.resolve({data: { title: 'yay'}, headers: { 'content-type': 'application/json'}, status: 201}));
+
+      resp = form.submit();
+
+      return resp.$promise;
+    });
+
+    it('returns the response from the initial form call', function() {
       expect(resp).to.be.a.resolved.resource;
       expect(resp.title).to.eql('yay');
     });
