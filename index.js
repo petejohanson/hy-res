@@ -4,6 +4,8 @@ module.exports = {
   WebLink: require('./src/web_link'),
   Resource: require('./src/resource'),
   Form: require('./src/form'),
+  FieldUtils: require('./src/field_utils'),
+  LinkCollection: require('./src/link_collection'),
   HalExtension: require('./src/hal'),
   JsonExtension: require('./src/json'),
   LinkHeaderExtension: require('./src/link_header'),

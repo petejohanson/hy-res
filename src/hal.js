@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var FieldUtils = require('./field_utils');
 var WebLink = require('./web_link');
 var LinkCollection = require('./link_collection');
 var Resource = require('./resource');
@@ -44,11 +45,9 @@ var HalExtension = function(mediaTypes) {
   };
 
   this.dataParser = function(data, headers) {
-    return _.transform(data, function(res, val, key) {
-      if (key === '_links' || key === '_embedded')
-        return;
-      res.unshift({ name: key, value: val });
-    }, []);
+    return FieldUtils.extractFields(_.omit(data, function(val, key) {
+      return key === '_links' || key === '_embedded';
+    }));
   };
 
   this.linkParser = function(data, headers, context) {
