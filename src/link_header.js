@@ -5,6 +5,17 @@ var httpLink = require('http-link');
 var _ = require('lodash');
 var WebLink = require('./web_link');
 
+/**
+ * Create a new link header extension.
+ *
+ * @constructor
+ * @implements {Extension}
+ *
+ * @classdesc
+ * Extension for parsing [HTTP Link Headers](http://tools.ietf.org/html/rfc5988#section-5)
+ * in responses
+ *
+ */
 var LinkHeaderExtension = function() {
   this.applies = function(data, headers) {
     return _.isString(headers.link);

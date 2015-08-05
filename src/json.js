@@ -2,6 +2,16 @@
 
 var fieldUtils = require('./field_utils');
 
+/**
+ * Create a new JSON extension.
+ *
+ * @constructor
+ * @implements {Extension}
+ *
+ * @classdesc
+ * Extension for parsing basic field data from `application/json` responses.
+ *
+ */
 var JsonExtension = function() {
   this.mediaTypes = ['application/json'];
 

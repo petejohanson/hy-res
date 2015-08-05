@@ -10,6 +10,7 @@ var LinkCollection = require('./link_collection');
  * Create the Siren extension
  *
  * @constructor
+ * @implements {Extension}
  * @arg {Array} mediaTypes Media types in addition to `application/vnd.siren+json`
  * that should be handled by this extensions. This allows for custom media
  * types based on Siren to be handled properly.

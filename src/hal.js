@@ -10,6 +10,7 @@ var Resource = require('./resource');
  * Create the HAL extension
  *
  * @constructor
+ * @implements {Extension}
  * @arg {Array} mediaTypes Media types in addition to `application/hal+json`
  * that should be handled by this extensions. This allows for custom media
  * types based on HAL to be handled properly.
@@ -40,7 +41,7 @@ var HalExtension = function(mediaTypes) {
     }
 
     // Handle parameters, e.g. application/hal+json; charset=UTF-8
-    var type = h.split(';')[0];
+    var   type = h.split(';')[0];
     return mediaTypeSet[type] !==  undefined;
   };
 

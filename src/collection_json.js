@@ -49,6 +49,7 @@ var CollectionJsonItemExtension = function(parentCollection) {
  * Create the Collection+JSON extension
  *
  * @constructor
+ * @implements {Extension}
  * @arg {Array} [mediaTypes] Media types in addition to
  * `application/vnd.collection+json` that should be handled by this extensions.
  * This allows for custom media types based on Collection+JSON to be handled
