@@ -124,7 +124,7 @@ And the view:
   For this scenario, we should really return a mix of resolved embedded
   resources and unresolved resources that result from following the non-embedded
   links.
-* Extensions for other media types (e.g. Collection+Json, Uber)
+* Extensions for other media types (e.g. Uber, Mason)
 * Support URI schemes other than http/https (extension mechanism?)
 * Mixins for resources based on... profile? link relation that was followed?
 * Differentiate between embedded link vs embedded representation (See Siren spec)
