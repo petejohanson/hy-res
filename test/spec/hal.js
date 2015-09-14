@@ -24,9 +24,14 @@ describe('HalExtension', function () {
       expect(extension.applies({}, { 'content-type': 'application/hal+json' }, 200)).to.be.true;
     });
 
+    it('should apply to application/vnd.hal+json content type', function() {
+      expect(extension.applies({}, { 'content-type': 'application/vnd.hal+json' }, 200)).to.be.true;
+    });
+
     it('should apply to application/hal+json content type with params', function() {
       expect(extension.applies({}, { 'content-type': 'application/hal+json; charset=utf-8' }, 200)).to.be.true;
     });
+
     it('should apply to additional media type', function() {
       expect(extension.applies({}, { 'content-type': addlMediaType }, 200)).to.be.true;
     });
@@ -93,6 +98,6 @@ describe('HalExtension', function () {
   });
 
   it('should have standard and custom media types', function() {
-    expect(extension.mediaTypes).to.eql(['application/hal+json', addlMediaType]);
+    expect(extension.mediaTypes).to.eql(['application/hal+json', 'application/vnd.hal+json', addlMediaType]);
   });
 });

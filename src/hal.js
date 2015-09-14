@@ -25,7 +25,10 @@ var Resource = require('./resource');
  * parameter.
  */
 var HalExtension = function(mediaTypes) {
-  var mediaTypeSet = { 'application/hal+json': true };
+  var mediaTypeSet = {
+    'application/hal+json': true,
+    'application/vnd.hal+json': true
+  };
 
   mediaTypes = mediaTypes || [];
   for (var i = 0; i < mediaTypes.length; i++) {
