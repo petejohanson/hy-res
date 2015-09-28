@@ -166,6 +166,44 @@ describe('SirenExtension', function () {
         {name: 'title', value: 'My Order #123' }
       ]);
     });
+
+    it('should include the class, if present and class is string', function() {
+      var singleTypedSiren = {
+        links: [ { rel: ['self'], href: '/orders/123' } ],
+        properties: {
+          name: 'John Doe',
+          id: '123'
+        },
+        title: 'My Order #123',
+        class: 'order'
+      };
+
+      var data = ext.dataParser(singleTypedSiren, {});
+      expect(data).to.deep.include.members([
+        {name: 'name', value: 'John Doe' },
+        {name: 'id', value: '123' },
+        {name: 'title', value: 'My Order #123' },
+        {name: '$$class', value: 'order'}
+      ]);
+    });
+
+    it('should include the class, if present and class is array', function() {
+      var multiTypedSiren = {
+        links: [ { rel: ['self'], href: '/orders/123' } ],
+        properties: {
+          name: 'John Doe',
+          id: '123'
+        },
+        title: 'Orders',
+        class: ['order', 'collection']
+      };
+
+      var collectionData = ext.dataParser(multiTypedSiren, {});
+      expect(collectionData).to.deep.include.members([
+        {name: 'title', value: 'Orders' },
+        {name: '$$class', value:['order', 'collection']}
+      ]);
+    });
   });
 
   describe('form parser', function() {

@@ -57,13 +57,25 @@ var SirenExtension = function(mediaTypes) {
     return mediaTypeSet[type] !==  undefined;
   };
 
-  this.dataParser = function(data, headers) {
-    var ret = _.transform(data.properties, function(res, val, key) {
+  this.dataParser = function (data) {
+    var traitKeysMap = {'title':'title', 'class':'$$class'};
+    var sirenTraits  = Object.keys(traitKeysMap);
+
+    var ret = _.transform(data.properties, function (res, val, key) {
       res.unshift({ name: key, value: val });
     }, []);
-    if (data.title) {
-      ret.unshift({ name: 'title', value: data.title });
-    }
+
+    // bring SIREN specific attributes to resources object
+    sirenTraits.forEach(function addTraitIfExisting(key){
+      var exportName;
+      var exportValue = data[key];
+
+      if (typeof exportValue !== 'undefined') {
+        exportName = traitKeysMap[key];
+        exportValue = JSON.parse(JSON.stringify(exportValue));
+        ret.unshift({name: exportName, value: exportValue});
+      }
+    });
 
     return ret;
   };
