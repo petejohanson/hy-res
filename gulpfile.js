@@ -53,12 +53,22 @@ gulp.task('karma:server-stop', function(cb) {
   testServer = undefined;
 });
 
-function karmaPipe(action) {
+function karmaPipe(action, browsers, reporters) {
+  var cfg = {
+    configFile: 'karma.conf.js',
+    action: action
+  };
+
+  if (browsers) {
+    cfg.browsers = browsers;
+  }
+
+  if (reporters) {
+    cfg.reporters = reporters;
+  }
   return gulp.src('test/spec/**/*.js')
-    .pipe(karma({
-      configFile: 'karma.conf-ci.js',
-      action: action
-    })).on('error', function(err) {
+    .pipe(karma(cfg))
+    .on('error', function(err) {
       throw err;
     });
 }
@@ -69,6 +79,19 @@ gulp.task('karma:watch', ['karma:server-start'], function() {
 
 gulp.task('karma:run', function() {
   return karmaPipe('run');
+});
+
+gulp.task('karma:ci-run', function() {
+  return karmaPipe('run', ['SL_FireFox', 'SL_InternetExplorer', 'SL_Chrome'], ['mocha', 'coverage', 'saucelabs']);
+});
+
+gulp.task('karma:ci', function(cb) {
+  runSequence(
+    'karma:server-start',
+    'karma:ci-run',
+    'karma:server-stop',
+    cb
+  );
 });
 
 gulp.task('karma', function(cb) {
@@ -152,5 +175,5 @@ gulp.task('coverage', function() {
 });
 
 gulp.task('ci', function(cb) {
-  runSequence('default', ['coverage', 'jsdoc'], cb);
+  runSequence('jshint', 'karma:ci', ['coverage', 'jsdoc'], cb);
 });
