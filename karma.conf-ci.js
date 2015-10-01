@@ -47,13 +47,19 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'test/spec/**/*.js': ['webpack', 'sourcemap'],
+      'src/**/*.js': ['coverage']
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha', 'saucelabs'],
+    reporters: ['mocha', 'coverage', 'saucelabs'],
+
+    coverageReporter: {
+      type : 'lcov',
+      dir : 'coverage/'
+    },
 
     // web server port
     port: 9876,
@@ -69,7 +75,21 @@ module.exports = function(config) {
 
 
     webpack: {
-      devtool: 'inline-source-map'
+      devtool: 'inline-source-map',
+      module: {
+        loaders: [
+          {
+            test: /\.js$/,
+            loader: 'babel-loader',
+            exclude: /node_modules\/(axios|chai)/
+          }
+        ],
+        postLoaders: [ {
+          test: /\.js$/,
+           exclude: /(test|node_modules|bower_components)\//,
+           loader: 'istanbul-instrumenter'
+        } ]
+      }
     },
 
     browserNoActivityTimeout: 120000,

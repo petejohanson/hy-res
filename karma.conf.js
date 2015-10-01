@@ -66,6 +66,13 @@ module.exports = function(config) {
     webpack: {
       devtool: 'inline-source-map',
       module: {
+        loaders: [
+          {
+            test: /\.js$/,
+            loader: 'babel-loader',
+            exclude: /node_modules\/(axios|chai)/
+          }
+        ],
         postLoaders: [ {
           test: /\.js$/,
            exclude: /(test|node_modules|bower_components)\//,
@@ -82,6 +89,6 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: true
   });
 };
