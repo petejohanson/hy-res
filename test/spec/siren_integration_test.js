@@ -16,7 +16,7 @@ describe('Siren + axios to perform an action', function() {
   var root;
 
   beforeEach(function() {
-    var rootLink = new HyRes.Root('http://127.0.0.1:10000/', axios, [new HyRes.SirenExtension(), new HyRes.JsonExtension()]);
+    var rootLink = new HyRes.Root('/api', axios, [new HyRes.SirenExtension(), new HyRes.JsonExtension()]);
 
     root = rootLink.follow();
     return root.$promise;

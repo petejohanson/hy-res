@@ -56,7 +56,7 @@ gulp.task('karma:server-stop', function(cb) {
 function karmaPipe(action) {
   return gulp.src('test/spec/**/*.js')
     .pipe(karma({
-      configFile: 'karma.conf.js',
+      configFile: 'karma.conf-ci.js',
       action: action
     })).on('error', function(err) {
       throw err;
