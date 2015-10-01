@@ -6,15 +6,15 @@ module.exports = function(config) {
     'SL_Chrome': {
       base: 'SauceLabs',
       browserName: 'chrome'
-//    },
-//    'SL_InternetExplorer': {
-//      base: 'SauceLabs',
-//      browserName: 'internet explorer',
-//      version: '10'
-//    },
-//    'SL_FireFox': {
-//      base: 'SauceLabs',
-//      browserName: 'firefox',
+    },
+    'SL_InternetExplorer': {
+      base: 'SauceLabs',
+      browserName: 'internet explorer',
+      version: '10'
+    },
+    'SL_FireFox': {
+      base: 'SauceLabs',
+      browserName: 'firefox',
     }
   };
   config.set({
