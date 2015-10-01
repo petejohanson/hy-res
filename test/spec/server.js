@@ -5,16 +5,17 @@ var hal = require('express-hal');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var app = express();
+var api = express();
 
-app.use(hal.middleware);
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(bodyParser.json({ type: 'application/*+json' }));
-app.use(multer());
+api.use(hal.middleware);
+api.use(bodyParser.urlencoded({ extended: true }));
+api.use(bodyParser.json());
+api.use(bodyParser.json({ type: 'application/*+json' }));
+api.use(multer());
 
 var posts = [];
 
-app.route('/')
+api.route('/')
   .options(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
        .header('Access-Control-Allow-Methods', 'GET,OPTIONS,POST')
@@ -29,17 +30,17 @@ app.route('/')
       'application/hal+json': function() {
         res.hal({
           links: {
-            self: '/',
-            'thing-template': { href: '/things{/id}', templated: true }
+            self: req.url,
+            'thing-template': { href: api.mountpath + '/things{/id}', templated: true }
           }
         });
       },
       'application/vnd.collection+json': function () {
         res.json({
           collection: {
-            href: '/',
+            href: req.url,
             links: [
-              {rel: 'posts', href: '/posts'}
+              {rel: 'posts', href: api.mountpath + '/posts'}
             ],
 
             items: [
@@ -80,13 +81,13 @@ app.route('/')
       'application/vnd.siren+json': function() {
         res.json({
           links: [
-            { rel: ['self'], href: '/' }
+            { rel: ['self'], href: req.url }
           ],
           actions: [
             {
               name: 'search',
               title: 'Search Posts',
-              href: '/posts',
+              href: api.mountpath + '/posts',
               fields: [
                 { name: 'q', title: 'Search' }
               ]
@@ -94,7 +95,7 @@ app.route('/')
             {
               name: 'create-form',
               title: 'New Post',
-              href: '/posts',
+              href: api.mountpath + '/posts',
               method: 'POST',
               fields: [
                 { name: 'title', title: 'Title' },
@@ -104,7 +105,7 @@ app.route('/')
             {
               name: 'edit-form',
               title: 'Edit Post',
-              href: '/posts/1',
+              href: api.mountpath + '/posts/1',
               method: 'PUT',
               type: 'multipart/form-data',
               fields: [
@@ -115,7 +116,7 @@ app.route('/')
             {
               name: 'edit-form-json',
               title: 'Edit Post',
-              href: '/posts/1',
+              href: api.mountpath + '/posts/1',
               method: 'PUT',
               type: 'application/json',
               fields: [
@@ -129,7 +130,7 @@ app.route('/')
     });
   });
 
-app.route('/posts')
+api.route('/posts')
   .options(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
        .header('Access-Control-Allow-Methods', 'GET,OPTIONS,POST')
@@ -145,7 +146,7 @@ app.route('/posts')
       'application/vnd.collection+json': function () {
         res.json({
           collection: {
-            href: '/posts',
+            href: api.mountpath + '/posts',
 
 
             items: [
@@ -174,7 +175,7 @@ app.route('/posts')
 
       var idx = posts.unshift(req.body.template.data);
 
-      res.location('/posts/' + idx).sendStatus(201);
+      res.location(api.mountpath + '/posts/' + idx).sendStatus(201);
     } else if (req.is('application/x-www-form-urlencoded')) {
       res.send(req.body);
     } else {
@@ -182,7 +183,7 @@ app.route('/posts')
     }
   });
 
-app.route('/posts/:id')
+api.route('/posts/:id')
   .options(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
        .header('Access-Control-Allow-Methods', 'GET,OPTIONS,PUT')
@@ -219,7 +220,7 @@ app.route('/posts/:id')
        .json(req.body);
   });
 
-app.route('/things/:id')
+api.route('/things/:id')
   .options(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*')
        .header('Access-Control-Allow-Methods', 'GET,OPTIONS')
@@ -233,6 +234,8 @@ app.route('/things/:id')
       }
     });
   });
+
+app.use('/api', api);
 
 var server = app.listen(10000, function () {
 

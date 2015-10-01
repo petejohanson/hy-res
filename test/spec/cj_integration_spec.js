@@ -17,7 +17,7 @@ describe('Collection+JSON + axios to perform an action', function() {
   var root;
 
   beforeEach(function() {
-    var rootLink = new HyRes.Root('http://127.0.0.1:10000/', axios, [new CJExtension(), new HyRes.JsonExtension()]);
+    var rootLink = new HyRes.Root('/api', axios, [new CJExtension(), new HyRes.JsonExtension()]);
 
     root = rootLink.follow();
     return root.$promise;
@@ -32,7 +32,7 @@ describe('Collection+JSON + axios to perform an action', function() {
   });
 
   it('has the other links', function() {
-    expect(root).to.have.link('posts').with.property('href', '/posts');
+    expect(root).to.have.link('posts').with.property('href', '/api/posts');
   });
 
   describe('the embedded items', function() {

@@ -2,6 +2,21 @@
 // Generated on Sat Apr 26 2014 22:22:28 GMT-0400 (EDT)
 
 module.exports = function(config) {
+  var customLaunchers = {
+    'SL_Chrome': {
+      base: 'SauceLabs',
+      browserName: 'chrome'
+    },
+    'SL_InternetExplorer': {
+      base: 'SauceLabs',
+      browserName: 'internet explorer',
+      version: '10'
+    },
+    'SL_FireFox': {
+      base: 'SauceLabs',
+      browserName: 'firefox',
+    }
+  };
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -12,6 +27,9 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha', 'es5-shim', 'sinon'],
 
+    proxies: {
+      '/api': 'http://localhost:10000/api'
+    },
 
     // list of files / patterns to load in the browser
     files: [
@@ -36,7 +54,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha', 'coverage'],
+    reporters: ['mocha', 'coverage', 'saucelabs'],
 
     coverageReporter: {
       type : 'lcov',
@@ -50,18 +68,20 @@ module.exports = function(config) {
     // enable / disable colors in the output (reporters and logs)
     colors: true,
 
-
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_DEBUG,
-
-
-    // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    logLevel: config.LOG_INFO,
 
     webpack: {
       devtool: 'inline-source-map',
       module: {
+        loaders: [
+          {
+            test: /\.js$/,
+            loader: 'babel-loader',
+            exclude: /node_modules\/(axios|chai)/
+          }
+        ],
         postLoaders: [ {
           test: /\.js$/,
            exclude: /(test|node_modules|bower_components)\//,
@@ -70,14 +90,22 @@ module.exports = function(config) {
       }
     },
 
-    browserNoActivityTimeout: 30000,
+    browserNoActivityTimeout: 120000,
+    browserDisconnectTimeout: 120000,
+    captureTimeout: 120000,
+
+    sauceLabs: {
+      testName: 'petejohanson/hy-res'
+    },
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+
+    customLaunchers: customLaunchers,
     browsers: ['Firefox'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: true
   });
 };
