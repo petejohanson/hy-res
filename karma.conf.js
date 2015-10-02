@@ -14,7 +14,12 @@ module.exports = function(config) {
     },
     'SL_FireFox': {
       base: 'SauceLabs',
-      browserName: 'firefox',
+      browserName: 'firefox'
+    },
+    'SL_Android': {
+      base: 'SauceLabs',
+      browserName: 'android',
+      version: '4.4'
     }
   };
   config.set({
