@@ -56,7 +56,12 @@ gulp.task('karma:server-stop', function(cb) {
 function karmaPipe(action, browsers, reporters) {
   var cfg = {
     configFile: 'karma.conf.js',
-    action: action
+    action: action,
+    client: {
+      mocha: {
+        timeout: '5000'
+      }
+    }
   };
 
   if (browsers) {
