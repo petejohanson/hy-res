@@ -1,5 +1,7 @@
 # hy-res [![Build Status](https://travis-ci.org/petejohanson/hy-res.svg?branch=master)](https://travis-ci.org/petejohanson/hy-res) [![codecov.io](http://codecov.io/github/petejohanson/hy-res/coverage.svg?branch=master)](http://codecov.io/github/petejohanson/hy-res?branch=master)
 
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/petejohanson.svg)](https://saucelabs.com/u/petejohanson)
+
 A hypermedia client/library supporting several media formats. [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06), [Siren](https://github.com/kevinswiber/siren), and [Link header](https://tools.ietf.org/html/rfc5988) extensions are included by default, but support for other media types can be added. For the most part, the core library is not normally used directly, instead consumed by way of a small framework integration layer, e.g. [angular-hy-res](http://github.com/petejohanson/angular-hy-res).
 
 ## Support
