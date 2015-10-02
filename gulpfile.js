@@ -87,7 +87,7 @@ gulp.task('karma:run', function() {
 });
 
 gulp.task('karma:ci-run', function() {
-  return karmaPipe('run', ['SL_FireFox', 'SL_InternetExplorer', 'SL_Chrome', 'SL_Android'], ['mocha', 'coverage', 'saucelabs']);
+  return karmaPipe('run', ['SL_FireFox', 'SL_InternetExplorer', 'SL_Chrome'], ['mocha', 'coverage', 'saucelabs']);
 });
 
 gulp.task('karma:ci', function(cb) {
