@@ -52,19 +52,20 @@ var HyRes =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(1);
-	__webpack_require__(5);
-	__webpack_require__(17);
-	__webpack_require__(13);
-	__webpack_require__(14);
-	__webpack_require__(18);
-	__webpack_require__(19);
-	__webpack_require__(11);
-	__webpack_require__(20);
-	__webpack_require__(4);
-	__webpack_require__(22);
-	__webpack_require__(23);
-	module.exports = __webpack_require__(2);
+	
+	module.exports = {
+	  Root: __webpack_require__(1),
+	  WebLink: __webpack_require__(9),
+	  Resource: __webpack_require__(10),
+	  Form: __webpack_require__(13),
+	  FieldUtils: __webpack_require__(16),
+	  LinkCollection: __webpack_require__(11),
+	  HalExtension: __webpack_require__(17),
+	  JsonExtension: __webpack_require__(18),
+	  LinkHeaderExtension: __webpack_require__(19),
+	  SirenExtension: __webpack_require__(21),
+	  CollectionJsonExtension: __webpack_require__(22)
+	};
 
 
 /***/ },
@@ -73,647 +74,48 @@ var HyRes =
 
 	'use strict';
 
-	var _ = __webpack_require__(3);
-	var FieldUtils = __webpack_require__(13);
-	var Form = __webpack_require__(14);
-	var WebLink = __webpack_require__(2);
-	var Resource = __webpack_require__(4);
-	var LinkCollection = __webpack_require__(11);
-
-	var cjObjectLinkParser = function(obj, headers, context) {
-
-	  var links = (obj.links || []).concat([{ rel: 'self', href: obj.href }]);
-
-	  return _(links)
-	    .map(function(l) { return new WebLink(l, context); })
-	    .groupBy('rel')
-	    .value();
-	};
-
-	var CollectionJsonItemExtension = function(parentCollection) {
-	  this.applies = _.constant(true);
-
-	  this.linkParser = cjObjectLinkParser;
-
-	  this.dataParser = function(data) {
-	    return data.data || [];
-	  };
-
-	  this.formParser = function(data, headers, context) {
-	    var templateData = _.get(parentCollection, 'collection.template.data') || [];
-	    // Depend on indexBy using the *last* item to generate a key as the value to
-	    // have the item's data, if present, override the template's data.
-	    var fields = _(templateData.concat(data.data || [])).indexBy('name').values().value();
-
-	    return {
-	      'edit-form': [
-	        new Form({
-	          href: data.href,
-	          method: 'PUT',
-	          type: 'application/vnd.collection+json',
-	          fields: fields
-	        }, context)
-	      ]
-	    };
-	  };
-	};
+	var _ = __webpack_require__(2);
+	var Context = __webpack_require__(3);
+	var WebLink = __webpack_require__(9);
 
 	/**
-	 * Create the Collection+JSON extension
-	 *
+	 * Entrypoint to an API.
 	 * @constructor
-	 * @implements {Extension}
-	 * @arg {Array} [mediaTypes] Media types in addition to
-	 * `application/vnd.collection+json` that should be handled by this extensions.
-	 * This allows for custom media types based on Collection+JSON to be handled
-	 * properly.
-	 *
-	 * @classdesc
-	 * Extension for processing
-	 * [Collection+JSON](http://amundsen.com/media-types/collection/format/).
-	 * By default, the extension will only process links and embedded
-	 * resources in responses if the HTTP response `Content-Type` header
-	 * equals `application/vnd.collection+json`. If you have a custom media type that
-	 * extends C+J, you can register it by passing it in the `mediaTypes`
-	 * parameter.
-	 *
-	 * C+J queries are exposed as forms, and can be accessed using {@link Resource#$form}
-	 * or {@link Resource#$forms}. For adding items, a form is accessible using the
-	 * `create-form` IANA standard link relation.
-	 *
-	 * Collection items can be extracted using the `item` standard link relation using
-	 * {@link Resource#$sub} or {@link Resource#$subs}.
-	 *
-	 * A given embedded item can be edited by using the form with the `edit-form` standard
-	 * link relation.
-	 *
-	 * @example <caption>Example editing an existing item</caption>
-	 * new Root('http://localhost/posts', axios, [new CollectionJsonExtension()]).follow().then(function(coll) {
-	 *   var firstItem = coll.$subs('item')[0];
-	 *   var editForm = firstItem.$form('edit-form');
-	 *   editForm.field('title').value = 'Edited Title';
-	 *   var newFirstItem = editForm.submit().$followOne('item');
-	 * });
-	 *
+	 * @extends WebLink
+	 * @arg {string} url The URL of the root of the API
+	 * @arg http The ES6 promise based HTTP abstraction (e.g. AngularJS $http, or
+	 * [axios](https://www.npmjs.com/package/axios)
+	 * @arg {Array} extensions The extensions to use for processing responses
+	 * @arg {Object} [defaultOptions] Default options used when following links.
+	 * See {@link Context#withDefaults} and {@link WebLink#follow}
 	 */
-	var CollectionJsonExtension = function(mediaTypes) {
-	  var mediaTypeSet = { 'application/vnd.collection+json': true };
+	var Root = function(url, http, extensions, defaultOptions) {
+	  var ctx = new Context(http, extensions, defaultOptions);
 
-	  mediaTypes = mediaTypes || [];
-	  for (var i = 0; i < mediaTypes.length; i++) {
-	    mediaTypeSet[mediaTypes[i]] = true;
-	  }
-
-	  this.encoders = {
-	    'application/vnd.collection+json': function(data) {
-	      return JSON.stringify({
-	        template: {
-	          data: FieldUtils.extractFields(data)
-	        }
-	      });
-	    }
-	  };
-
-	  this.mediaTypes = _.keys(mediaTypeSet);
-
-	  this.applies = function(data, headers) {
-	    var h = headers['content-type'];
-	    if (!h) {
-	      return false;
-	    }
-
-	    // Handle parameters, e.g. application/vnd.collection+json; charset=UTF-8
-	    var type = h.split(';')[0];
-	    return mediaTypeSet[type] !==  undefined;
-	  };
-
-	  this.dataParser = function(data) {
-	    // The data parser really only applies when parsing
-	    // an included item for use as an embedded resource,
-	    // so here we don't expect to be nested under "collection".
-	    return data.data || [];
-	  };
-
-	  this.linkParser = function(data, headers, context) {
-	    return cjObjectLinkParser(data.collection, headers, context);
-	  };
-
-	  var queryFormDefaults = {
-	    method: 'GET',
-	    type: 'application/x-www-form-urlencoded'
-	  };
-
-	  this.formParser = function(data, headers, context) {
-	    var coll = data.collection;
-
-	    var formFactory = function(q) {
-	      var q2 = _.clone(q);
-	      q2.fields = q2.data;
-	      delete q2.data;
-	      return new Form(_.defaults(q2, queryFormDefaults), context);
-	    };
-
-	    var forms = _.groupBy(_.map((coll.queries || []), formFactory), 'rel');
-
-	    if (coll.template) {
-	      forms['create-form'] = [
-	        new Form({
-	          href: coll.href,
-	          method: 'POST',
-	          type: 'application/vnd.collection+json',
-	          fields: coll.template.data
-	        }, context)
-	      ];
-	    }
-	    return forms;
-	  };
-
-	  this.embeddedParser = function(data, headers, context) {
-	    return {
-	      item: Resource.embeddedCollection(
-	        _.cloneDeep(data.collection.items),
-	        headers,
-	        context.withExtensions([new CollectionJsonItemExtension(data)])
-	      )
-	    };
-	  };
+	  WebLink.call(this, { href: url }, ctx.forResource({url: url}));
 	};
 
-	module.exports = CollectionJsonExtension;
+	Root.prototype = _.create(WebLink.prototype, {
+	  'constructor': Root
+	});
+
+	module.exports = Root;
 
 
 /***/ },
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _ = __webpack_require__(3);
-	var Resource = __webpack_require__(4);
-	var UriTemplate = __webpack_require__(12);
-
-	/**
-	 * Create a new WebLink.
-	 * @constructor
-	 * @arg {Object} data the field values for the link
-	 * @arg {Context} context The resource context containing the link
-	 *
-	 * @classdesc
-	 * Currently, there is one implementation of the concept of a link,
-	 * {@link WebLink}, which encapsulates the data and concepts codified in
-	 * [RFC5988](http://tools.ietf.org/html/rfc5988). The standard data fields (if
-	 * defined for the specific link), such as `href`, `title`, `type`, etc are all
-	 * defined on the link.
-	 */
-	var WebLink = function(data, context) {
-	  _.extend(this, data);
-	  this.$$context = context;
-	};
-
-	/**
-	 * Dereference the link, returning an asynchronously
-	 * populated {@link Resource}.
-	 * @arg {Object} [options] The options for the request.
-	 * @arg {Object} [options.protocol] Options to pass to the underlying protocol,
-	 * @arg {Boolean} [options.preferContextMediaType] Whether to prefer the media type
-	 * that originated this WebLink in the Accept header of the request, e.g.
-	 * `Accept: application/vnd.collection+json, application/vnd.siren+json;q=0.5`
-	 * @arg {Object} [options.data] When following a link that is a URI Template,
-	 * this object will used as variables when resolving the template into the
-	 * final URI.
-	 * @tutorial uri-templates
-	 */
-	WebLink.prototype.follow = function(options) {
-	  options = this.$$context.withDefaults(options);
-	  var opts = _.get(options, 'protocol', {});
-	  opts.headers = (opts.headers || {});
-
-	  if(!opts.headers.Accept) {
-	    if (this.type) {
-	      opts.headers.Accept = this.type;
-	    } else {
-	      opts.headers.Accept = this.$$context.acceptHeader();
-	    }
-	  }
-
-	  var requestOptions = _.extend(opts, { url: this.resolvedUrl(_.get(options, 'data')) });
-	  return Resource.fromRequest(this.$$context.http(requestOptions), this.$$context);
-	};
-
-	/**
-	 * The `resolvedUrl` function of a `HyRes.WebLink` can be used to see what the final resolved URL will be for the link once processing:
-	 *
-	 * * URI Template parameters passed in the `data` argument.
-	 * * Converting any relative URLs to absolute ones given the context of the web link, i.e. the URL of the response that contained the link.
-	 * @arg {Object} data The values to optionally insert into any URI template used for the `href` value.
-	 */
-	WebLink.prototype.resolvedUrl = function(data) {
-	  var url = this.href;
-
-	  if (this.templated) {
-	    url = new UriTemplate(url).expand(data);
-	  }
-
-	  return this.$$context.resolveUrl(url);
-	};
-
-	module.exports = WebLink;
-
-
-/***/ },
-/* 3 */
 /***/ function(module, exports) {
 
 	module.exports = _;
 
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(3);
-	var Context = __webpack_require__(5);
-	var LinkCollection = __webpack_require__(11);
-
-	/**
-	 * @constructor
-	 *
-	 * @classdesc
-	 * {@link Resource} instaces behave like AngularJS' `ngResource`, in that
-	 * resources are returned directly from calls, and the values in the resource
-	 * will be merged into the object once the background request(s) complete.
-	 * Doing so allows a view layer to directly bind to the resource fields. Should
-	 * you need to do something once the resource is loaded, the `$promise`
-	 * property of the resource is available.
-	 *
-	 * {@link Resource} offers several functions you can use to interact with links,
-	 * embedded resources, and forms included in the resource.
-	 */
-	var Resource = function() {
-	  /**
-	   * This property is a ES6 promise that can be used to perform work once the
-	   * resource is resolved. For resources that were embedded, the promise may already
-	   * resolved when the resource is initially created.
-	   * @type {Promise}
-	   */
-	  this.$promise = null;
-
-	  /**
-	   * This property is a simple boolean `true/false` value indicating whether
-	   * the specific resource has been resolved or not.
-	   * @type {boolean}
-	   */
-	  this.$resolved = false;
-
-	  /**
-	   * If there is a problem resolving the {@link Resource}, this will contain
-	   * the error information.
-	   */
-	  this.$error = null;
-
-	  this.$$links = {};
-	  this.$$embedded = {};
-	  this.$$forms = {};
-
-	  /**
-	   * Get the single {@link WebLink} for the given relation.
-	   *
-	   * @arg {string} rel The link relation to look up.
-	   * @returns {WebLink} The link with the given link relation, or null if not found.
-	   * @throws An error if multiple links are present for the link relation.
-	   * @example
-	   * res.$link('next')
-	   * => WebLink { href: '/posts?page=2' }
-	   */
-	  this.$link = function(rel) {
-	    var ret = this.$links(rel);
-	    if (ret.length === 0) {
-	      return null;
-	    }
-	    if (ret.length > 1) {
-	      throw 'Multiple links present';
-	    }
-
-	    return ret[0];
-	  };
-
-	  /**
-	   * Return a {@link LinkCollection} for the given link relation.
-	   *
-	   * @arg {string} [rel] The link relation to look up. If not provided, all
-	   * links in the resource will be return.
-	   * @returns {LinkCollection} The links with the given link relation, or
-	   * all the links in the resource if a rel is not provided.
-	   * @example
-	   * res.$links('posts')
-	   * => LinkCollection [ WebLink { href: '/posts/123' }, WebLink { href: '/posts/345' } ]
-	   */
-	  this.$links = function(rel) {
-	    if (!rel) {
-	      return LinkCollection.fromArray(_.flatten(_.values(this.$$links)));
-	    }
-
-	    return _.get(this.$$links, rel, []);
-	  };
-
-	  /**
-	   * Get the single {@link Form} for the given relation. The returned form
-	   * is a cloned copy of the {@link Form} in the resource. Each call to
-	   * this function will return a new copy, so that multiple forms can be
-	   * created, modified, and submitted without reloading the containing
-	   * {@link Resource}.
-	   *
-	   * @arg {string} rel The link relation to look up.
-	   * @returns {Form} The copy of form with the given link relation, or null if not found.
-	   * @throws An error if multiple forms are present for the link relation.
-	   * @example
-	   * res.$form('create-form')
-	   * => Form { href: '/posts?page=2', method: 'POST', ... }
-	   */
-	  this.$form = function(rel) {
-	    var ret = _.get(this.$$forms, rel, []);
-
-	    if (ret.length === 0) {
-	      return null;
-	    }
-
-	    if (ret.length > 1) {
-	      throw 'Multiple forms present';
-	    }
-
-	    return ret[0].clone();
-	  };
-
-	  /**
-	   * Get the {@link Form} instances for the given relation. The returned forms
-	   * are a cloned copy of the {@link Form} instances in the resource. Each call
-	   * to this function will return new copies, so that multiple forms can be
-	   * created, modified, and submitted without reloading the containing
-	   * {@link Resource}.
-	   *
-	   * @arg {string} [rel] The link relation to look up. If omitted, returns all forms in the resource.
-	   * @returns {Array} An array of cloned forms, or an empty array if not found.
-	   * @example
-	   * res.$forms('create-form')
-	   * => [Form { href: '/posts?page=2', method: 'POST', ... }]
-	   * @example
-	   * res.$forms()
-	   * => [Form { href: '/posts?page=2, 'method: 'POST", ... }]
-	   */
-	  this.$forms = function(rel) {
-	    if (!rel) {
-	      return _.invoke(_.flatten(_.values(this.$$forms)), 'clone');
-	    }
-
-	    return _.invoke(_.get(this.$$forms, rel, []), 'clone');
-	  };
-
-	  /**
-	   * Follows a link relation, if present.  The link relation will be looked for
-	   * in the embedded resources first, and fall back to checking for the
-	   * presence of a link and loading those. Depending on whether an embedded
-	   * version is found, or only a link, will determine whether the resource will
-	   * already be resolved, or will be so in the future. The optional `options`
-	   * parameter can be used to pass additional options to the underlying http
-	   * request.
-	   *
-	   * @arg {string} rel The link relation to follow.
-	   * @arg {Object} [options] Options for following the link. For details, see {@link WebLink#follow}.
-	   * @returns {Resource} The linked/embedded resource, or null if the link relation is not found.
-	   * @throws Will throw an error if multiple instances of the relation are present.
-	   * @example
-	   * res.$followOne('next')
-	   * => Resource { $resolved: false, $promise: $q promise object }
-	   */
-	  this.$followOne = function(rel, options) {
-	    if (this.$resolved) {
-	      var res = this.$sub(rel);
-	      if (res !== null) {
-	        return res;
-	      }
-
-	      var l = this.$link(rel);
-	      if (l === null) {
-	        return null; // TODO: Return a resource w/ an error?s
-	      }
-
-	      return l.follow(options);
-	    }
-
-	    var ret = new Resource();
-	    ret.$promise =
-	        this.$promise.then(function(r) {
-	          return r.$followOne(rel, options).$promise;
-	        }).then(function(r) {
-	          var promise = ret.$promise;
-	          _.assign(ret, r);
-	          ret.$promise = promise;
-	          return ret;
-	        });
-
-	    return ret;
-	  };
-
-	  /**
-	   * Follow all links for the given relation and return an array of resources.
-	   * If the link relation is not present, then an empty array will be returned.
-	   * It will first attempt to locate the link relation in the embedded
-	   * resources, and fall back to checking for the presence of a link and
-	   * loading those. Depending on whether an embedded version is found, or only
-	   * links, will determine whether the resources will already be resolved, or
-	   * will be so in the future.
-	   *
-	   * @arg {string} rel The link relation to follow.
-	   * @arg {Object} [options] Options for following the link. For details, see {@link WebLink#follow}.
-	   * @returns {Array} The linked/embedded resources, or an enmpty array if the link relation is not found.
-	   * @example
-	   * res.$followAll('item')
-	   * => [Resource { $resolved: false, $promise: $q promise object }, Resource { $resolved: false, $promise: $q promise object }]
-	   */
-	  this.$followAll = function(rel, options) {
-	    if (this.$resolved) {
-	      var subs = this.$subs(rel);
-	      if (subs.length > 0) {
-	        return subs;
-	      }
-
-	      return LinkCollection.fromArray(this.$links(rel)).follow(options);
-	    }
-
-	    var ret = [];
-	    ret.$resolved = false;
-	    ret.$error = null;
-	    ret.$promise =
-	      this.$promise.then(function(r) {
-	        var resources = r.$followAll(rel, options);
-	        Array.prototype.push.apply(ret, resources);
-	        return resources.$promise.catch(function(err) {
-	          ret.$resolved = true;
-	          ret.$error = { message: 'One or more resources failed to load for $followAll(' + rel + ')', inner: err };
-	          throw ret;
-	        });
-	      }, function(err) {
-	        ret.$resolved = true;
-	        ret.$error = { message: 'Parent resolution failed, unable to $followAll(' + rel + ')', inner: err };
-	        throw ret;
-	      }).then(function() {
-	        ret.$resolved = true;
-	        return ret;
-	      });
-
-	    return ret;
-	  };
-	};
-
-	/**
-	 * Look up the embedded/sub resources for the given link relation.
-	 *
-	 * @arg {string} rel The link relation to follow.
-	 * @returns {Array} Array of embedded resources, or empty array if the link relation is not found.
-	 * @example
-	 * res.$subs('item')
-	 * => [Resource { $resolved: true, $promise: resolved $q promise, ... various properties }]
-	 */
-	Resource.prototype.$subs = function(rel) {
-	  if (!this.$$embedded.hasOwnProperty(rel)) {
-	    return [];
-	  }
-
-	  return this.$$embedded[rel];
-	};
-
-
-	/**
-	 * Look up the embedded/sub resource for the given link relation.
-	 *
-	 * @arg {string} rel The link relation to follow.
-	 * @returns {Resource} The embedded resource, or null if the link relation is not found.
-	 * @throws Will throw an error if multiple instances of the relation are present.
-	 * @example
-	 * res.$sub('item')
-	 * => Resource { $resolved: true, $promise: resolved $q promise, ... various properties }
-	 */
-	Resource.prototype.$sub = function(rel) {
-	  var ret = this.$subs(rel);
-	  if (ret.length === 0) {
-	    return null;
-	  }
-	  if (ret.length > 1) {
-	    throw 'Multiple sub-resources present';
-	  }
-
-	  return ret[0];
-	};
-
-	/**
-	 * Alias for {@link Resource#$sub}.
-	 * @function
-	 */
-	Resource.prototype.$embedded = Resource.prototype.$sub;
-
-	/**
-	 * Alias for {@link Resource#$subs}.
-	 * @function
-	 */
-	Resource.prototype.$embeddeds = Resource.prototype.$subs;
-
-	/**
-	 * Check for existence of a linked or embedded resource for the given link
-	 * relation. The function does _not_ take into account whether the resource is
-	 * resolved or not, so the return value may be different once the resource is
-	 * resolved.
-	 * @arg {string} rel The link relation to check for.
-	 * @return {boolean} True if the link relation is found in links or embedded, otherwise false.
-	 */
-	Resource.prototype.$has = function(rel) {
-	  return this.$links(rel).length > 0 || this.$subs(rel).length > 0;
-	};
-
-	/**
-	 * Send an HTTP DELETE request to the resource's 'self' link.
-	 * @return {Resource} A resources with the response of the DELETE request.
-	 */
-	Resource.prototype.$delete = function() {
-	  return this.$followOne('self', { protocol: {method: 'DELETE'} });
-	};
-
-	var defaultParser = _.constant({});
-
-	Resource.prototype.$$resolve = function(data, headers, context) {
-	  _.forEach(context.extensions, function(e) {
-	    if (!e.applies(data, headers, context)) {
-	      return;
-	    }
-
-	    var fields = (e.dataParser || _.constant([])).apply(e, [data, headers, context]);
-
-	    _.assign(this, _.reduce(fields, function(result, val) {
-	        result[val.name] = val.value;
-	        return result;
-	      }, {}));
-
-	    _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
-	    _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
-	    _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context]));
-	  }, this);
-
-	  this.$resolved = true;
-	};
-
-	Resource.prototype.$$reject = function(error) {
-	  this.$error = error;
-	  this.$resolved = true;
-	};
-
-	Resource.embedded = function(raw, headers, context) {
-	  var ret = new Resource();
-	  ret.$$resolve(raw, headers, context);
-	  ret.$promise = Promise.resolve(ret);
-	  return ret;
-	};
-
-	Resource.embeddedCollection = function(items, headers, context) {
-	  var embeds = items.map(function(e) { return Resource.embedded(e, headers, context); }, this);
-
-	  embeds.$promise = Promise.resolve(embeds);
-	  embeds.$resolved = true;
-
-	  return embeds;
-	};
-
-	Resource.fromRequest = function(request, context) {
-	  var res = new Resource();
-	  res.$promise =
-	    request.then(function(response) {
-	        context = context.baseline();
-	        if (response.config && response.config.url) {
-	          context = context.forResource({
-	            url: response.config.url,
-	            headers: response.headers
-	          });
-	        }
-	        res.$$resolve(response.data, response.headers, context);
-	        return res;
-	      }, function(response) {
-	        res.$$reject({message: 'HTTP request to load resource failed', inner: response });
-	        throw res;
-	      });
-
-	  return res;
-	};
-
-	module.exports = Resource;
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var URI = __webpack_require__(6);
-	var _ = __webpack_require__(3);
+	var URI = __webpack_require__(4);
+	var _ = __webpack_require__(2);
 
 	/**
 	 * Create a new context with the given http abstraction and set of
@@ -810,7 +212,7 @@ var HyRes =
 
 
 /***/ },
-/* 6 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -831,7 +233,7 @@ var HyRes =
 	  // https://github.com/umdjs/umd/blob/master/returnExports.js
 	  if (true) {
 	    // Node
-	    module.exports = factory(__webpack_require__(7), __webpack_require__(9), __webpack_require__(10));
+	    module.exports = factory(__webpack_require__(5), __webpack_require__(7), __webpack_require__(8));
 	  } else if (typeof define === 'function' && define.amd) {
 	    // AMD. Register as an anonymous module.
 	    define(['./punycode', './IPv6', './SecondLevelDomains'], factory);
@@ -2926,7 +2328,7 @@ var HyRes =
 
 
 /***/ },
-/* 7 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! http://mths.be/punycode v1.2.3 by @mathias */
@@ -3436,10 +2838,10 @@ var HyRes =
 
 	}(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)(module), (function() { return this; }())))
 
 /***/ },
-/* 8 */
+/* 6 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -3455,7 +2857,7 @@ var HyRes =
 
 
 /***/ },
-/* 9 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -3649,7 +3051,7 @@ var HyRes =
 
 
 /***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -3896,12 +3298,470 @@ var HyRes =
 
 
 /***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _ = __webpack_require__(2);
+	var Resource = __webpack_require__(10);
+	var UriTemplate = __webpack_require__(12);
+
+	/**
+	 * Create a new WebLink.
+	 * @constructor
+	 * @arg {Object} data the field values for the link
+	 * @arg {Context} context The resource context containing the link
+	 *
+	 * @classdesc
+	 * Currently, there is one implementation of the concept of a link,
+	 * {@link WebLink}, which encapsulates the data and concepts codified in
+	 * [RFC5988](http://tools.ietf.org/html/rfc5988). The standard data fields (if
+	 * defined for the specific link), such as `href`, `title`, `type`, etc are all
+	 * defined on the link.
+	 */
+	var WebLink = function(data, context) {
+	  _.extend(this, data);
+	  this.$$context = context;
+	};
+
+	/**
+	 * Dereference the link, returning an asynchronously
+	 * populated {@link Resource}.
+	 * @arg {Object} [options] The options for the request.
+	 * @arg {Object} [options.protocol] Options to pass to the underlying protocol,
+	 * @arg {Boolean} [options.preferContextMediaType] Whether to prefer the media type
+	 * that originated this WebLink in the Accept header of the request, e.g.
+	 * `Accept: application/vnd.collection+json, application/vnd.siren+json;q=0.5`
+	 * @arg {Object} [options.data] When following a link that is a URI Template,
+	 * this object will used as variables when resolving the template into the
+	 * final URI.
+	 * @tutorial uri-templates
+	 */
+	WebLink.prototype.follow = function(options) {
+	  options = this.$$context.withDefaults(options);
+	  var opts = _.get(options, 'protocol', {});
+	  opts.headers = (opts.headers || {});
+
+	  if(!opts.headers.Accept) {
+	    if (this.type) {
+	      opts.headers.Accept = this.type;
+	    } else {
+	      opts.headers.Accept = this.$$context.acceptHeader();
+	    }
+	  }
+
+	  var requestOptions = _.extend(opts, { url: this.resolvedUrl(_.get(options, 'data')) });
+	  return Resource.fromRequest(this.$$context.http(requestOptions), this.$$context);
+	};
+
+	/**
+	 * The `resolvedUrl` function of a `HyRes.WebLink` can be used to see what the final resolved URL will be for the link once processing:
+	 *
+	 * * URI Template parameters passed in the `data` argument.
+	 * * Converting any relative URLs to absolute ones given the context of the web link, i.e. the URL of the response that contained the link.
+	 * @arg {Object} data The values to optionally insert into any URI template used for the `href` value.
+	 */
+	WebLink.prototype.resolvedUrl = function(data) {
+	  var url = this.href;
+
+	  if (this.templated) {
+	    url = new UriTemplate(url).expand(data);
+	  }
+
+	  return this.$$context.resolveUrl(url);
+	};
+
+	module.exports = WebLink;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _ = __webpack_require__(2);
+	var Context = __webpack_require__(3);
+	var LinkCollection = __webpack_require__(11);
+
+	/**
+	 * @constructor
+	 *
+	 * @classdesc
+	 * {@link Resource} instaces behave like AngularJS' `ngResource`, in that
+	 * resources are returned directly from calls, and the values in the resource
+	 * will be merged into the object once the background request(s) complete.
+	 * Doing so allows a view layer to directly bind to the resource fields. Should
+	 * you need to do something once the resource is loaded, the `$promise`
+	 * property of the resource is available.
+	 *
+	 * {@link Resource} offers several functions you can use to interact with links,
+	 * embedded resources, and forms included in the resource.
+	 */
+	var Resource = function() {
+	  /**
+	   * This property is a ES6 promise that can be used to perform work once the
+	   * resource is resolved. For resources that were embedded, the promise may already
+	   * resolved when the resource is initially created.
+	   * @type {Promise}
+	   */
+	  this.$promise = null;
+
+	  /**
+	   * This property is a simple boolean `true/false` value indicating whether
+	   * the specific resource has been resolved or not.
+	   * @type {boolean}
+	   */
+	  this.$resolved = false;
+
+	  /**
+	   * If there is a problem resolving the {@link Resource}, this will contain
+	   * the error information.
+	   */
+	  this.$error = null;
+
+	  this.$$links = {};
+	  this.$$embedded = {};
+	  this.$$forms = {};
+
+	  /**
+	   * Get the single {@link WebLink} for the given relation.
+	   *
+	   * @arg {string} rel The link relation to look up.
+	   * @returns {WebLink} The link with the given link relation, or null if not found.
+	   * @throws An error if multiple links are present for the link relation.
+	   * @example
+	   * res.$link('next')
+	   * => WebLink { href: '/posts?page=2' }
+	   */
+	  this.$link = function(rel) {
+	    var ret = this.$links(rel);
+	    if (ret.length === 0) {
+	      return null;
+	    }
+	    if (ret.length > 1) {
+	      throw 'Multiple links present';
+	    }
+
+	    return ret[0];
+	  };
+
+	  /**
+	   * Return a {@link LinkCollection} for the given link relation.
+	   *
+	   * @arg {string} [rel] The link relation to look up. If not provided, all
+	   * links in the resource will be return.
+	   * @returns {LinkCollection} The links with the given link relation, or
+	   * all the links in the resource if a rel is not provided.
+	   * @example
+	   * res.$links('posts')
+	   * => LinkCollection [ WebLink { href: '/posts/123' }, WebLink { href: '/posts/345' } ]
+	   */
+	  this.$links = function(rel) {
+	    if (!rel) {
+	      return LinkCollection.fromArray(_.flatten(_.values(this.$$links)));
+	    }
+
+	    return _.get(this.$$links, rel, []);
+	  };
+
+	  /**
+	   * Get the single {@link Form} for the given relation. The returned form
+	   * is a cloned copy of the {@link Form} in the resource. Each call to
+	   * this function will return a new copy, so that multiple forms can be
+	   * created, modified, and submitted without reloading the containing
+	   * {@link Resource}.
+	   *
+	   * @arg {string} rel The link relation to look up.
+	   * @returns {Form} The copy of form with the given link relation, or null if not found.
+	   * @throws An error if multiple forms are present for the link relation.
+	   * @example
+	   * res.$form('create-form')
+	   * => Form { href: '/posts?page=2', method: 'POST', ... }
+	   */
+	  this.$form = function(rel) {
+	    var ret = _.get(this.$$forms, rel, []);
+
+	    if (ret.length === 0) {
+	      return null;
+	    }
+
+	    if (ret.length > 1) {
+	      throw 'Multiple forms present';
+	    }
+
+	    return ret[0].clone();
+	  };
+
+	  /**
+	   * Get the {@link Form} instances for the given relation. The returned forms
+	   * are a cloned copy of the {@link Form} instances in the resource. Each call
+	   * to this function will return new copies, so that multiple forms can be
+	   * created, modified, and submitted without reloading the containing
+	   * {@link Resource}.
+	   *
+	   * @arg {string} [rel] The link relation to look up. If omitted, returns all forms in the resource.
+	   * @returns {Array} An array of cloned forms, or an empty array if not found.
+	   * @example
+	   * res.$forms('create-form')
+	   * => [Form { href: '/posts?page=2', method: 'POST', ... }]
+	   * @example
+	   * res.$forms()
+	   * => [Form { href: '/posts?page=2, 'method: 'POST", ... }]
+	   */
+	  this.$forms = function(rel) {
+	    if (!rel) {
+	      return _.invoke(_.flatten(_.values(this.$$forms)), 'clone');
+	    }
+
+	    return _.invoke(_.get(this.$$forms, rel, []), 'clone');
+	  };
+
+	  /**
+	   * Follows a link relation, if present.  The link relation will be looked for
+	   * in the embedded resources first, and fall back to checking for the
+	   * presence of a link and loading those. Depending on whether an embedded
+	   * version is found, or only a link, will determine whether the resource will
+	   * already be resolved, or will be so in the future. The optional `options`
+	   * parameter can be used to pass additional options to the underlying http
+	   * request.
+	   *
+	   * @arg {string} rel The link relation to follow.
+	   * @arg {Object} [options] Options for following the link. For details, see {@link WebLink#follow}.
+	   * @returns {Resource} The linked/embedded resource, or null if the link relation is not found.
+	   * @throws Will throw an error if multiple instances of the relation are present.
+	   * @example
+	   * res.$followOne('next')
+	   * => Resource { $resolved: false, $promise: $q promise object }
+	   */
+	  this.$followOne = function(rel, options) {
+	    if (this.$resolved) {
+	      var res = this.$sub(rel);
+	      if (res !== null) {
+	        return res;
+	      }
+
+	      var l = this.$link(rel);
+	      if (l === null) {
+	        return null; // TODO: Return a resource w/ an error?s
+	      }
+
+	      return l.follow(options);
+	    }
+
+	    var ret = new Resource();
+	    ret.$promise =
+	        this.$promise.then(function(r) {
+	          return r.$followOne(rel, options).$promise;
+	        }).then(function(r) {
+	          var promise = ret.$promise;
+	          _.assign(ret, r);
+	          ret.$promise = promise;
+	          return ret;
+	        });
+
+	    return ret;
+	  };
+
+	  /**
+	   * Follow all links for the given relation and return an array of resources.
+	   * If the link relation is not present, then an empty array will be returned.
+	   * It will first attempt to locate the link relation in the embedded
+	   * resources, and fall back to checking for the presence of a link and
+	   * loading those. Depending on whether an embedded version is found, or only
+	   * links, will determine whether the resources will already be resolved, or
+	   * will be so in the future.
+	   *
+	   * @arg {string} rel The link relation to follow.
+	   * @arg {Object} [options] Options for following the link. For details, see {@link WebLink#follow}.
+	   * @returns {Array} The linked/embedded resources, or an enmpty array if the link relation is not found.
+	   * @example
+	   * res.$followAll('item')
+	   * => [Resource { $resolved: false, $promise: $q promise object }, Resource { $resolved: false, $promise: $q promise object }]
+	   */
+	  this.$followAll = function(rel, options) {
+	    if (this.$resolved) {
+	      var subs = this.$subs(rel);
+	      if (subs.length > 0) {
+	        return subs;
+	      }
+
+	      return LinkCollection.fromArray(this.$links(rel)).follow(options);
+	    }
+
+	    var ret = [];
+	    ret.$resolved = false;
+	    ret.$error = null;
+	    ret.$promise =
+	      this.$promise.then(function(r) {
+	        var resources = r.$followAll(rel, options);
+	        Array.prototype.push.apply(ret, resources);
+	        return resources.$promise.catch(function(err) {
+	          ret.$resolved = true;
+	          ret.$error = { message: 'One or more resources failed to load for $followAll(' + rel + ')', inner: err };
+	          throw ret;
+	        });
+	      }, function(err) {
+	        ret.$resolved = true;
+	        ret.$error = { message: 'Parent resolution failed, unable to $followAll(' + rel + ')', inner: err };
+	        throw ret;
+	      }).then(function() {
+	        ret.$resolved = true;
+	        return ret;
+	      });
+
+	    return ret;
+	  };
+	};
+
+	/**
+	 * Look up the embedded/sub resources for the given link relation.
+	 *
+	 * @arg {string} rel The link relation to follow.
+	 * @returns {Array} Array of embedded resources, or empty array if the link relation is not found.
+	 * @example
+	 * res.$subs('item')
+	 * => [Resource { $resolved: true, $promise: resolved $q promise, ... various properties }]
+	 */
+	Resource.prototype.$subs = function(rel) {
+	  if (!this.$$embedded.hasOwnProperty(rel)) {
+	    return [];
+	  }
+
+	  return this.$$embedded[rel];
+	};
+
+
+	/**
+	 * Look up the embedded/sub resource for the given link relation.
+	 *
+	 * @arg {string} rel The link relation to follow.
+	 * @returns {Resource} The embedded resource, or null if the link relation is not found.
+	 * @throws Will throw an error if multiple instances of the relation are present.
+	 * @example
+	 * res.$sub('item')
+	 * => Resource { $resolved: true, $promise: resolved $q promise, ... various properties }
+	 */
+	Resource.prototype.$sub = function(rel) {
+	  var ret = this.$subs(rel);
+	  if (ret.length === 0) {
+	    return null;
+	  }
+	  if (ret.length > 1) {
+	    throw 'Multiple sub-resources present';
+	  }
+
+	  return ret[0];
+	};
+
+	/**
+	 * Alias for {@link Resource#$sub}.
+	 * @function
+	 */
+	Resource.prototype.$embedded = Resource.prototype.$sub;
+
+	/**
+	 * Alias for {@link Resource#$subs}.
+	 * @function
+	 */
+	Resource.prototype.$embeddeds = Resource.prototype.$subs;
+
+	/**
+	 * Check for existence of a linked or embedded resource for the given link
+	 * relation. The function does _not_ take into account whether the resource is
+	 * resolved or not, so the return value may be different once the resource is
+	 * resolved.
+	 * @arg {string} rel The link relation to check for.
+	 * @return {boolean} True if the link relation is found in links or embedded, otherwise false.
+	 */
+	Resource.prototype.$has = function(rel) {
+	  return this.$links(rel).length > 0 || this.$subs(rel).length > 0;
+	};
+
+	/**
+	 * Send an HTTP DELETE request to the resource's 'self' link.
+	 * @return {Resource} A resources with the response of the DELETE request.
+	 */
+	Resource.prototype.$delete = function() {
+	  return this.$followOne('self', { protocol: {method: 'DELETE'} });
+	};
+
+	var defaultParser = _.constant({});
+
+	Resource.prototype.$$resolve = function(data, headers, context) {
+	  _.forEach(context.extensions, function(e) {
+	    if (!e.applies(data, headers, context)) {
+	      return;
+	    }
+
+	    var fields = (e.dataParser || _.constant([])).apply(e, [data, headers, context]);
+
+	    _.assign(this, _.reduce(fields, function(result, val) {
+	        result[val.name] = val.value;
+	        return result;
+	      }, {}));
+
+	    _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
+	    _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
+	    _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context]));
+	  }, this);
+
+	  this.$resolved = true;
+	};
+
+	Resource.prototype.$$reject = function(error) {
+	  this.$error = error;
+	  this.$resolved = true;
+	};
+
+	Resource.embedded = function(raw, headers, context) {
+	  var ret = new Resource();
+	  ret.$$resolve(raw, headers, context);
+	  ret.$promise = Promise.resolve(ret);
+	  return ret;
+	};
+
+	Resource.embeddedCollection = function(items, headers, context) {
+	  var embeds = items.map(function(e) { return Resource.embedded(e, headers, context); }, this);
+
+	  embeds.$promise = Promise.resolve(embeds);
+	  embeds.$resolved = true;
+
+	  return embeds;
+	};
+
+	Resource.fromRequest = function(request, context) {
+	  var res = new Resource();
+	  res.$promise =
+	    request.then(function(response) {
+	        context = context.baseline();
+	        if (response.config && response.config.url) {
+	          context = context.forResource({
+	            url: response.config.url,
+	            headers: response.headers
+	          });
+	        }
+	        res.$$resolve(response.data, response.headers, context);
+	        return res;
+	      }, function(response) {
+	        res.$$reject({message: 'HTTP request to load resource failed', inner: response });
+	        throw res;
+	      });
+
+	  return res;
+	};
+
+	module.exports = Resource;
+
+
+/***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(3);
+	var _ = __webpack_require__(2);
 
 	/**
 	 * A collection of {@link WebLink} instances.
@@ -3980,7 +3840,7 @@ var HyRes =
 	  // https://github.com/umdjs/umd/blob/master/returnExports.js
 	  if (true) {
 	    // Node
-	    module.exports = factory(__webpack_require__(6));
+	    module.exports = factory(__webpack_require__(4));
 	  } else if (typeof define === 'function' && define.amd) {
 	    // AMD. Register as an anonymous module.
 	    define(['./URI'], factory);
@@ -4468,24 +4328,9 @@ var HyRes =
 
 	'use strict';
 
-	var _ = __webpack_require__(3);
-
-	module.exports.extractFields = function(data) {
-	  return _.transform(data, function(res, val, key) {
-	    res.unshift({ name: key, value: val });
-	  }, []);
-	};
-
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _ = __webpack_require__(3);
-	var FormUrlEncoded = __webpack_require__(15);
-	var Resouce = __webpack_require__(4);
+	var _ = __webpack_require__(2);
+	var FormUrlEncoded = __webpack_require__(14);
+	var Resouce = __webpack_require__(10);
 
 	/**
 	 * Forms should not be created on their own, they are normally
@@ -4601,13 +4446,13 @@ var HyRes =
 
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(16);
+	module.exports = __webpack_require__(15);
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {// Filename: formurlencoded.js
@@ -4694,97 +4539,34 @@ var HyRes =
 
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)(module)))
 
 /***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	/**
-	 * Interface for a media type extension
-	 *
-	 * @interface Extension
-	 * @property {Array.<String>} mediaTypes The media types this extension can process.
-	 * Used to generate the HTTP Accept header for requests.
-	 * @property {Object.<String, Extension~encoder>} encoders Encoders for creating request bodies, keyed by media type.
-	 */
-
-	/**
-	 * @callback Extension~encoder
-	 * @arg {Object} data The data to encode
-	 * @returns {String} The data encoded to a request body string.
-	 */
-
-	/**
-	 * Determine whether this extension should be used to process
-	 * a particular response
-	 *
-	 * @function
-	 * @name Extension#applies
-	 * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
-	 * @arg {Object} headers The HTTP headers of the response
-	 * @arg {Integer} status The HTTP status of the response.
-	 * @returns {Boolean} True if the extension should be used to process the response.
-	 */
-
-	/**
-	 * Parse any links found in the resources.
-	 *
-	 * @function
-	 * @name Extension#linkParser
-	 * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
-	 * @arg {Object} headers The HTTP headers of the response
-	 * @arg {Integer} status The HTTP status of the response.
-	 * @returns {Object.<String, LinkCollection>} The links, aggregated by the link relation.
-	 */
-
-	/**
-	 * Parse any field data that is part of the resource.
-	 *
-	 * @function
-	 * @name Extension#dataParser
-	 * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
-	 * @arg {Object} headers The HTTP headers of the response
-	 * @arg {Integer} status The HTTP status of the response.
-	 * @returns {Array.<{name: String, value: Object}>} The fields, as an array of name/value pairs.
-	 */
-
-	/**
-	 * Parse any embedded resources found in this resource.
-	 *
-	 * @function
-	 * @name Extension#embeddedParser
-	 * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
-	 * @arg {Object} headers The HTTP headers of the response
-	 * @arg {Integer} status The HTTP status of the response.
-	 * @returns {Object.<String, Resource[]>} The embedded resources, aggregated by the link relation.
-	 */
-
-	/**
-	 * Parse any hypemedia forms found in this resource.
-	 *
-	 * @function
-	 * @name Extension#formParser
-	 * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
-	 * @arg {Object} headers The HTTP headers of the response
-	 * @arg {Integer} status The HTTP status of the response.
-	 * @returns {Object.<String, Form[]>} The hypermedia forms, aggregated by the link relation.
-	 */
-
-
-/***/ },
-/* 18 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(3);
-	var FieldUtils = __webpack_require__(13);
-	var WebLink = __webpack_require__(2);
+	var _ = __webpack_require__(2);
+
+	module.exports.extractFields = function(data) {
+	  return _.transform(data, function(res, val, key) {
+	    res.unshift({ name: key, value: val });
+	  }, []);
+	};
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _ = __webpack_require__(2);
+	var FieldUtils = __webpack_require__(16);
+	var WebLink = __webpack_require__(9);
 	var LinkCollection = __webpack_require__(11);
-	var Resource = __webpack_require__(4);
+	var Resource = __webpack_require__(10);
 
 	/**
 	 * Create the HAL extension
@@ -4878,12 +4660,12 @@ var HyRes =
 
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var fieldUtils = __webpack_require__(13);
+	var fieldUtils = __webpack_require__(16);
 
 	/**
 	 * Create a new JSON extension.
@@ -4916,15 +4698,15 @@ var HyRes =
 
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var httpLink = __webpack_require__(21);
+	var httpLink = __webpack_require__(20);
 
-	var _ = __webpack_require__(3);
-	var WebLink = __webpack_require__(2);
+	var _ = __webpack_require__(2);
+	var WebLink = __webpack_require__(9);
 
 	/**
 	 * Create a new link header extension.
@@ -4965,7 +4747,7 @@ var HyRes =
 
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function() {
@@ -5138,49 +4920,15 @@ var HyRes =
 
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(3);
-	var Context = __webpack_require__(5);
-	var WebLink = __webpack_require__(2);
-
-	/**
-	 * Entrypoint to an API.
-	 * @constructor
-	 * @extends WebLink
-	 * @arg {string} url The URL of the root of the API
-	 * @arg http The ES6 promise based HTTP abstraction (e.g. AngularJS $http, or
-	 * [axios](https://www.npmjs.com/package/axios)
-	 * @arg {Array} extensions The extensions to use for processing responses
-	 * @arg {Object} [defaultOptions] Default options used when following links.
-	 * See {@link Context#withDefaults} and {@link WebLink#follow}
-	 */
-	var Root = function(url, http, extensions, defaultOptions) {
-	  var ctx = new Context(http, extensions, defaultOptions);
-
-	  WebLink.call(this, { href: url }, ctx.forResource({url: url}));
-	};
-
-	Root.prototype = _.create(WebLink.prototype, {
-	  'constructor': Root
-	});
-
-	module.exports = Root;
-
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _ = __webpack_require__(3);
-	var Form = __webpack_require__(14);
-	var Resource = __webpack_require__(4);
-	var WebLink = __webpack_require__(2);
+	var _ = __webpack_require__(2);
+	var Form = __webpack_require__(13);
+	var Resource = __webpack_require__(10);
+	var WebLink = __webpack_require__(9);
 	var LinkCollection = __webpack_require__(11);
 
 	/**
@@ -5315,6 +5063,181 @@ var HyRes =
 	};
 
 	module.exports = SirenExtension;
+
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _ = __webpack_require__(2);
+	var FieldUtils = __webpack_require__(16);
+	var Form = __webpack_require__(13);
+	var WebLink = __webpack_require__(9);
+	var Resource = __webpack_require__(10);
+	var LinkCollection = __webpack_require__(11);
+
+	var cjObjectLinkParser = function(obj, headers, context) {
+
+	  var links = (obj.links || []).concat([{ rel: 'self', href: obj.href }]);
+
+	  return _(links)
+	    .map(function(l) { return new WebLink(l, context); })
+	    .groupBy('rel')
+	    .value();
+	};
+
+	var CollectionJsonItemExtension = function(parentCollection) {
+	  this.applies = _.constant(true);
+
+	  this.linkParser = cjObjectLinkParser;
+
+	  this.dataParser = function(data) {
+	    return data.data || [];
+	  };
+
+	  this.formParser = function(data, headers, context) {
+	    var templateData = _.get(parentCollection, 'collection.template.data') || [];
+	    // Depend on indexBy using the *last* item to generate a key as the value to
+	    // have the item's data, if present, override the template's data.
+	    var fields = _(templateData.concat(data.data || [])).indexBy('name').values().value();
+
+	    return {
+	      'edit-form': [
+	        new Form({
+	          href: data.href,
+	          method: 'PUT',
+	          type: 'application/vnd.collection+json',
+	          fields: fields
+	        }, context)
+	      ]
+	    };
+	  };
+	};
+
+	/**
+	 * Create the Collection+JSON extension
+	 *
+	 * @constructor
+	 * @implements {Extension}
+	 * @arg {Array} [mediaTypes] Media types in addition to
+	 * `application/vnd.collection+json` that should be handled by this extensions.
+	 * This allows for custom media types based on Collection+JSON to be handled
+	 * properly.
+	 *
+	 * @classdesc
+	 * Extension for processing
+	 * [Collection+JSON](http://amundsen.com/media-types/collection/format/).
+	 * By default, the extension will only process links and embedded
+	 * resources in responses if the HTTP response `Content-Type` header
+	 * equals `application/vnd.collection+json`. If you have a custom media type that
+	 * extends C+J, you can register it by passing it in the `mediaTypes`
+	 * parameter.
+	 *
+	 * C+J queries are exposed as forms, and can be accessed using {@link Resource#$form}
+	 * or {@link Resource#$forms}. For adding items, a form is accessible using the
+	 * `create-form` IANA standard link relation.
+	 *
+	 * Collection items can be extracted using the `item` standard link relation using
+	 * {@link Resource#$sub} or {@link Resource#$subs}.
+	 *
+	 * A given embedded item can be edited by using the form with the `edit-form` standard
+	 * link relation.
+	 *
+	 * @example <caption>Example editing an existing item</caption>
+	 * new Root('http://localhost/posts', axios, [new CollectionJsonExtension()]).follow().then(function(coll) {
+	 *   var firstItem = coll.$subs('item')[0];
+	 *   var editForm = firstItem.$form('edit-form');
+	 *   editForm.field('title').value = 'Edited Title';
+	 *   var newFirstItem = editForm.submit().$followOne('item');
+	 * });
+	 *
+	 */
+	var CollectionJsonExtension = function(mediaTypes) {
+	  var mediaTypeSet = { 'application/vnd.collection+json': true };
+
+	  mediaTypes = mediaTypes || [];
+	  for (var i = 0; i < mediaTypes.length; i++) {
+	    mediaTypeSet[mediaTypes[i]] = true;
+	  }
+
+	  this.encoders = {
+	    'application/vnd.collection+json': function(data) {
+	      return JSON.stringify({
+	        template: {
+	          data: FieldUtils.extractFields(data)
+	        }
+	      });
+	    }
+	  };
+
+	  this.mediaTypes = _.keys(mediaTypeSet);
+
+	  this.applies = function(data, headers) {
+	    var h = headers['content-type'];
+	    if (!h) {
+	      return false;
+	    }
+
+	    // Handle parameters, e.g. application/vnd.collection+json; charset=UTF-8
+	    var type = h.split(';')[0];
+	    return mediaTypeSet[type] !==  undefined;
+	  };
+
+	  this.dataParser = function(data) {
+	    // The data parser really only applies when parsing
+	    // an included item for use as an embedded resource,
+	    // so here we don't expect to be nested under "collection".
+	    return data.data || [];
+	  };
+
+	  this.linkParser = function(data, headers, context) {
+	    return cjObjectLinkParser(data.collection, headers, context);
+	  };
+
+	  var queryFormDefaults = {
+	    method: 'GET',
+	    type: 'application/x-www-form-urlencoded'
+	  };
+
+	  this.formParser = function(data, headers, context) {
+	    var coll = data.collection;
+
+	    var formFactory = function(q) {
+	      var q2 = _.clone(q);
+	      q2.fields = q2.data;
+	      delete q2.data;
+	      return new Form(_.defaults(q2, queryFormDefaults), context);
+	    };
+
+	    var forms = _.groupBy(_.map((coll.queries || []), formFactory), 'rel');
+
+	    if (coll.template) {
+	      forms['create-form'] = [
+	        new Form({
+	          href: coll.href,
+	          method: 'POST',
+	          type: 'application/vnd.collection+json',
+	          fields: coll.template.data
+	        }, context)
+	      ];
+	    }
+	    return forms;
+	  };
+
+	  this.embeddedParser = function(data, headers, context) {
+	    return {
+	      item: Resource.embeddedCollection(
+	        _.cloneDeep(data.collection.items),
+	        headers,
+	        context.withExtensions([new CollectionJsonItemExtension(data)])
+	      )
+	    };
+	  };
+	};
+
+	module.exports = CollectionJsonExtension;
 
 
 /***/ }

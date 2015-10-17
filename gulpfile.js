@@ -185,7 +185,7 @@ gulp.task('default', function(cb) {
 });
 
 gulp.task('dist', function() {
-  return jsSourcePipe()
+  return gulp.src('./index.js')
     .pipe(gwebpack({
       output: {
         library: 'HyRes',
