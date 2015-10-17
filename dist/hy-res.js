@@ -1,6 +1,6 @@
 /**
  * hy-res - Generic hypermedia client supporting several formats
- * @version v0.0.20 - 2015-10-16
+ * @version v0.0.21 - 2015-10-16
  * @link https://github.com/petejohanson/hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
