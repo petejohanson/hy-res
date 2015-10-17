@@ -154,9 +154,9 @@ gulp.task('bump', function() {
     .pipe(gulp.dest('./'));
 });
 
-gulp.task('bump-commit', function() {
+gulp.task('bump-commit', ['dist'], function() {
   var version = require('./package.json').version;
-  return gulp.src(['package.json', 'bower.json'])
+  return gulp.src(['dist/*.js', 'package.json', 'bower.json'])
     .pipe(git.commit('Release v' + version));
 });
 
