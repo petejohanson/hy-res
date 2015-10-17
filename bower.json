@@ -1,0 +1,28 @@
+{
+  "name": "hy-res",
+  "main": "dist/hy-res.js",
+  "version": "0.0.20",
+  "homepage": "https://github.com/petejohanson/hy-res",
+  "authors": [
+    "Peter Johason <peter@peterjohanson.com>"
+  ],
+  "description": "Hypermedia client library supporting multiple media types",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "hypermedia",
+    "rest"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lodash": "~3.10.1"
+  }
+}

@@ -4,6 +4,9 @@ var gulp = require('gulp'),
   lazypipe = require('lazypipe'),
   runSequence = require('run-sequence'),
   bump = require('gulp-bump'),
+  gwebpack = require('gulp-webpack'),
+  webpack = require('webpack'),
+  header = require('gulp-header'),
   watch = require('gulp-watch'),
   karma = require('gulp-karma'),
   coveralls = require('gulp-coveralls'),
@@ -14,7 +17,17 @@ var gulp = require('gulp'),
   mocha = require('gulp-mocha'),
   git = require('gulp-git'),
   tagVersion = require('gulp-tag-version'),
+  util = require('gulp-util'),
   jshint = require('gulp-jshint');
+
+var banner = ['/**',
+  ' * <%= pkg.name %> - <%= pkg.description %>',
+  ' * @version v<%= pkg.version %> - <%= now %>',
+  ' * @link <%= pkg.homepage %>',
+  ' * @author <%= pkg.author.name %> <<%= pkg.author.email %>>',
+  ' * @license MIT License, http://www.opensource.org/licenses/MIT',
+  ' */',
+  ''].join('\n');
 
 var testServer;
 
@@ -136,14 +149,14 @@ gulp.task('jsdoc:watch', function() {
 gulp.task('jsdoc', shell.task(['./node_modules/jsdoc/jsdoc.js . -c ./conf.json']));
 
 gulp.task('bump', function() {
-  return gulp.src('package.json')
+  return gulp.src(['package.json', 'bower.json'])
     .pipe(bump({ type: gulp.env.type || 'patch' }))
     .pipe(gulp.dest('./'));
 });
 
 gulp.task('bump-commit', function() {
   var version = require('./package.json').version;
-  return gulp.src(['package.json'])
+  return gulp.src(['package.json', 'bower.json'])
     .pipe(git.commit('Release v' + version));
 });
 
@@ -171,6 +184,22 @@ gulp.task('default', function(cb) {
   runSequence('jshint', 'karma', cb);
 });
 
+gulp.task('dist', function() {
+  return jsSourcePipe()
+    .pipe(gwebpack({
+      output: {
+        library: 'HyRes',
+        filename: 'hy-res.js',
+        libraryTarget: 'var'
+      },
+      externals: {
+        'lodash': '_'
+      }
+    }))
+    .pipe(header(banner, { pkg: require('./package.json'), now: (util.date(new Date(), 'yyyy-mm-dd')) }))
+    .pipe(gulp.dest('./dist'));
+});
+
 gulp.task('coverage', function() {
   gulp.src('coverage/**/lcov.info')
     //.pipe(coveralls())
@@ -180,5 +209,5 @@ gulp.task('coverage', function() {
 });
 
 gulp.task('ci', function(cb) {
-  runSequence('jshint', 'karma:ci', ['coverage', 'jsdoc'], cb);
+  runSequence('jshint', 'karma:ci', ['coverage', 'jsdoc', 'dist'], cb);
 });

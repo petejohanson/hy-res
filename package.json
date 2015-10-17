@@ -75,7 +75,10 @@
     "webpack-dev-server": "^1.7.0",
     "karma-sauce-launcher": "~0.2.11",
     "minami": "~1.1.0",
-    "babel-loader": "~5.3.2"
+    "babel-loader": "~5.3.2",
+    "gulp-webpack": "~1.5.0",
+    "gulp-header": "~1.7.1",
+    "gulp-util": "~3.0.6"
   },
   "dependencies": {
     "URIjs": "^1.15.0",
