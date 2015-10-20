@@ -43,6 +43,7 @@ var Resource = function() {
   this.$$links = {};
   this.$$embedded = {};
   this.$$forms = {};
+  this.$$formatSpecific = {};
 
   /**
    * Get the single {@link WebLink} for the given relation.
@@ -324,6 +325,7 @@ Resource.prototype.$$resolve = function(data, headers, context) {
     _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context]));
+    _.assign(this.$$formatSpecific, (e.formatSpecificParser || defaultParser).apply(e, [data, headers, context]));
   }, this);
 
   this.$resolved = true;
