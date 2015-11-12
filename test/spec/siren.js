@@ -117,7 +117,6 @@ describe('SirenExtension', function () {
       }, { 'content-type': 'application/vnd.siren+json' }, new Context({}, [ext]));
 
       expect(embedded.order).to.all.be.instanceof(Resource);
-      expect(embedded.order[0].title).to.eql('My Order #123');
     });
 
     it('should ignore embedded links', function() {
@@ -149,9 +148,11 @@ describe('SirenExtension', function () {
         {name: 'id', value: '123' }
       ]);
     });
+  });
 
+  describe('format specific parser', function() {
     it('should include the title, if present', function() {
-      var data = ext.dataParser({
+      var data = ext.formatSpecificParser({
         links: [ { rel: ['self'], href: '/orders/123' } ],
         properties: {
           name: 'John Doe',
@@ -161,9 +162,42 @@ describe('SirenExtension', function () {
       }, {});
 
       expect(data).to.deep.include.members([
-        {name: 'name', value: 'John Doe' },
-        {name: 'id', value: '123' },
         {name: 'title', value: 'My Order #123' }
+      ]);
+    });
+
+    it('should include the class, if present as $$formatSpecific.class, type string', function() {
+      var singleTypedSiren = {
+        links: [ { rel: ['self'], href: '/orders/123' } ],
+        properties: {
+          name: 'John Doe',
+          id: '123'
+        },
+        title: 'My Order #123',
+        class: 'order'
+      };
+
+      var data = ext.formatSpecificParser(singleTypedSiren, {});
+      expect(data).to.deep.include.members([
+        {name: 'title', value: 'My Order #123' },
+        {name: 'class', value: 'order'}
+      ]);
+    });
+
+    it('should include the class, if present and class is array', function() {
+      var multiTypedSiren = {
+        links: [ { rel: ['self'], href: '/orders/123' } ],
+        properties: {
+          name: 'John Doe',
+          id: '123'
+        },
+        title: 'Orders',
+        class: ['order', 'collection']
+      };
+
+      var collectionData = ext.formatSpecificParser(multiTypedSiren, {});
+      expect(collectionData).to.deep.include.members([
+        {name: 'class', value:['order', 'collection']}
       ]);
     });
   });

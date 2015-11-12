@@ -70,3 +70,14 @@
  * @arg {Integer} status The HTTP status of the response.
  * @returns {Object.<String, Form[]>} The hypermedia forms, aggregated by the link relation.
  */
+
+/**
+ * Parse and assign hypermedia format specific attributes in this resource.
+ *
+ * @function
+ * @name Extension#formatSpecificParser
+ * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
+ * @arg {Object} headers The HTTP headers of the response
+ * @arg {Integer} status The HTTP status of the response.
+ * @returns {Object.<String, Form[]>} The hypermedia forms, aggregated by the link relation.
+ */
