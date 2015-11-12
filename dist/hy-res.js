@@ -1,6 +1,6 @@
 /**
  * hy-res - Generic hypermedia client supporting several formats
- * @version v0.0.21 - 2015-10-16
+ * @version v0.0.21 - 2015-11-11
  * @link https://github.com/petejohanson/hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -3389,7 +3389,7 @@ var HyRes =
 	 * @constructor
 	 *
 	 * @classdesc
-	 * {@link Resource} instaces behave like AngularJS' `ngResource`, in that
+	 * {@link Resource} instances behave like AngularJS' `ngResource`, in that
 	 * resources are returned directly from calls, and the values in the resource
 	 * will be merged into the object once the background request(s) complete.
 	 * Doing so allows a view layer to directly bind to the resource fields. Should
@@ -3414,6 +3414,14 @@ var HyRes =
 	   * @type {boolean}
 	   */
 	  this.$resolved = false;
+
+	  /**
+	   * This property will be populated by the HTTP response information when
+	   * the resource is resolved. For embedded resources, the data portion will
+	   * be the subsection of the response used to created the embedded resource.
+	   * @type {?{data: Object, headers: Object.<String, String>, status: number}}
+	   */
+	  this.$response = null;
 
 	  /**
 	   * If there is a problem resolving the {@link Resource}, this will contain
@@ -3689,7 +3697,10 @@ var HyRes =
 
 	var defaultParser = _.constant({});
 
-	Resource.prototype.$$resolve = function(data, headers, context) {
+	Resource.prototype.$$resolve = function(response, context) {
+	  var data = response.data, headers = response.headers;
+	  this.$response = response;
+
 	  _.forEach(context.extensions, function(e) {
 	    if (!e.applies(data, headers, context)) {
 	      return;
@@ -3717,7 +3728,7 @@ var HyRes =
 
 	Resource.embedded = function(raw, headers, context) {
 	  var ret = new Resource();
-	  ret.$$resolve(raw, headers, context);
+	  ret.$$resolve({ data: raw, headers: headers }, context);
 	  ret.$promise = Promise.resolve(ret);
 	  return ret;
 	};
@@ -3742,7 +3753,7 @@ var HyRes =
 	            headers: response.headers
 	          });
 	        }
-	        res.$$resolve(response.data, response.headers, context);
+	        res.$$resolve(response, context);
 	        return res;
 	      }, function(response) {
 	        res.$$reject({message: 'HTTP request to load resource failed', inner: response });
