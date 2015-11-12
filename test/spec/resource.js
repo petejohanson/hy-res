@@ -232,6 +232,10 @@ describe('Resource', function () {
         expect(resource.type).to.eql('promo');
       });
 
+      it('should have $response populated', function () {
+        expect(resource.$response).to.have.property('data').eql(rawOrder);
+      });
+
       describe('$delete-ing it', function() {
         var deleteResp;
 
