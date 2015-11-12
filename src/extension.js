@@ -22,7 +22,7 @@
  * @function
  * @name Extension#applies
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
- * @arg {Object} headers The HTTP headers of the response
+ * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Integer} status The HTTP status of the response.
  * @returns {Boolean} True if the extension should be used to process the response.
  */
@@ -33,7 +33,7 @@
  * @function
  * @name Extension#linkParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
- * @arg {Object} headers The HTTP headers of the response
+ * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Integer} status The HTTP status of the response.
  * @returns {Object.<String, LinkCollection>} The links, aggregated by the link relation.
  */
@@ -44,7 +44,7 @@
  * @function
  * @name Extension#dataParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
- * @arg {Object} headers The HTTP headers of the response
+ * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Integer} status The HTTP status of the response.
  * @returns {Array.<{name: String, value: Object}>} The fields, as an array of name/value pairs.
  */
@@ -55,7 +55,7 @@
  * @function
  * @name Extension#embeddedParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
- * @arg {Object} headers The HTTP headers of the response
+ * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Integer} status The HTTP status of the response.
  * @returns {Object.<String, Resource[]>} The embedded resources, aggregated by the link relation.
  */
@@ -66,7 +66,7 @@
  * @function
  * @name Extension#formParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
- * @arg {Object} headers The HTTP headers of the response
+ * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Integer} status The HTTP status of the response.
  * @returns {Object.<String, Form[]>} The hypermedia forms, aggregated by the link relation.
  */
@@ -77,7 +77,7 @@
  * @function
  * @name Extension#formatSpecificParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
- * @arg {Object} headers The HTTP headers of the response
+ * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Integer} status The HTTP status of the response.
  * @returns {Object} The object containing any format specific properties.
  */
