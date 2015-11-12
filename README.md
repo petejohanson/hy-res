@@ -132,5 +132,4 @@ And the view:
 * Differentiate between embedded link vs embedded representation (See Siren spec)
 * Handling or error types, e.g. application/problem+json
 * Store resource's own URL somewhere accessible, perhaps `res.$href`?
-* Store raw http response data in resource property, e.g. `res.$raw`
 * Support for PUT of modified resource to replace server state?
