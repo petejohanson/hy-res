@@ -97,7 +97,8 @@ var SirenExtension = function(mediaTypes) {
         }
       });
     }
-    return ret;
+
+    return _.mapValues(ret, LinkCollection.fromArray);
   };
 
   this.embeddedParser = function(data, headers, context) {
@@ -119,7 +120,7 @@ var SirenExtension = function(mediaTypes) {
         ret[r].unshift(val);
       }
     });
-    return _.mapValues(ret, function(items) { return Resource.embeddedCollection(items, headers, context); });
+    return _.mapValues(ret, _.partialRight(Resource.embeddedCollection, headers, context));
   };
 
 
