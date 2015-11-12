@@ -3429,6 +3429,13 @@ var HyRes =
 	   */
 	  this.$error = null;
 
+	  /**
+	   * Object containing any format specific properties that don't fall under
+	   * the standard categories such as forms, fields, or links.
+	   * @type {Object}
+	     */
+	  this.$formatSpecific = {};
+
 	  this.$$links = {};
 	  this.$$embedded = {};
 	  this.$$forms = {};
@@ -3716,6 +3723,7 @@ var HyRes =
 	    _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
 	    _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
 	    _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context]));
+	    _.assign(this.$formatSpecific, (e.formatSpecificParser || defaultParser).apply(e, [data, headers, context]));
 	  }, this);
 
 	  this.$resolved = true;
@@ -4993,15 +5001,10 @@ var HyRes =
 	    return mediaTypeSet[type] !==  undefined;
 	  };
 
-	  this.dataParser = function(data, headers) {
-	    var ret = _.transform(data.properties, function(res, val, key) {
+	  this.dataParser = function (data) {
+	    return _.transform(data.properties, function (res, val, key) {
 	      res.unshift({ name: key, value: val });
 	    }, []);
-	    if (data.title) {
-	      ret.unshift({ name: 'title', value: data.title });
-	    }
-
-	    return ret;
 	  };
 
 	  this.linkParser = function(data, headers, context) {
@@ -5071,6 +5074,30 @@ var HyRes =
 
 	    return _.groupBy(_.map(data.actions, formFactory), 'name');
 	  };
+
+	  this.formatSpecificParser = function(data, headers, status) {
+	    var traitKeysMap = {'title':'title', 'class':'class'};
+	    var sirenTraits  = Object.keys(traitKeysMap);
+
+	    var ret = _.transform(data.properties, function (res, val, key) {
+	      res.unshift({ name: key, value: val });
+	    }, []);
+
+	    // bring SIREN specific attributes to resources object
+	    sirenTraits.forEach(function addTraitIfExisting(key){
+	      var exportName;
+	      var exportValue = data[key];
+
+	      if (typeof exportValue !== 'undefined') {
+	        exportName = traitKeysMap[key];
+	        exportValue = JSON.parse(JSON.stringify(exportValue));
+	        ret.unshift({name: exportName, value: exportValue});
+	      }
+	    });
+
+	    return ret;
+	  };
+
 	};
 
 	module.exports = SirenExtension;

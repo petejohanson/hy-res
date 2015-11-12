@@ -166,7 +166,7 @@ describe('SirenExtension', function () {
       ]);
     });
 
-    it('should include the class, if present as $$formatSpecific.class, type string', function() {
+    it('should include the class, if present as $formatSpecific.class, type string', function() {
       var singleTypedSiren = {
         links: [ { rel: ['self'], href: '/orders/123' } ],
         properties: {

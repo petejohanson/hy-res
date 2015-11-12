@@ -58,11 +58,9 @@ var SirenExtension = function(mediaTypes) {
   };
 
   this.dataParser = function (data) {
-    var ret = _.transform(data.properties, function (res, val, key) {
+    return _.transform(data.properties, function (res, val, key) {
       res.unshift({ name: key, value: val });
     }, []);
-
-    return ret;
   };
 
   this.linkParser = function(data, headers, context) {

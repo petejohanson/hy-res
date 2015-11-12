@@ -48,10 +48,16 @@ var Resource = function() {
    */
   this.$error = null;
 
+  /**
+   * Object containing any format specific properties that don't fall under
+   * the standard categories such as forms, fields, or links.
+   * @type {Object}
+     */
+  this.$formatSpecific = {};
+
   this.$$links = {};
   this.$$embedded = {};
   this.$$forms = {};
-  this.$$formatSpecific = {};
 
   /**
    * Get the single {@link WebLink} for the given relation.
@@ -336,7 +342,7 @@ Resource.prototype.$$resolve = function(response, context) {
     _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context]));
-    _.assign(this.$$formatSpecific, (e.formatSpecificParser || defaultParser).apply(e, [data, headers, context]));
+    _.assign(this.$formatSpecific, (e.formatSpecificParser || defaultParser).apply(e, [data, headers, context]));
   }, this);
 
   this.$resolved = true;

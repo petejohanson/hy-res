@@ -79,5 +79,5 @@
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object} headers The HTTP headers of the response
  * @arg {Integer} status The HTTP status of the response.
- * @returns {Object.<String, Form[]>} The hypermedia forms, aggregated by the link relation.
+ * @returns {Object} The object containing any format specific properties.
  */
