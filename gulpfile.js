@@ -104,9 +104,10 @@ gulp.task('karma:ci-run', function() {
 });
 
 gulp.task('karma:ci', function(cb) {
+  var runTask = process.env.SAUCE_ACCESS_KEY ? 'karma:ci-run' : 'karma:run';
   runSequence(
     'karma:server-start',
-    'karma:ci-run',
+    runTask,
     'karma:server-stop',
     cb
   );
