@@ -148,6 +148,10 @@ describe('Resource', function () {
         stores: [
           { href: '/stores/123' },
           { href: '/stores/456' }
+        ],
+        action: [
+          { name: 'new', href: '/orders/123/new' },
+          { name: 'edit', href: '/orders/123/edit' }
         ]
       },
       _embedded: {
@@ -165,12 +169,14 @@ describe('Resource', function () {
         },
         discounts: [
           {
+            type: 'new_user',
             name: 'New User Discount',
             _links: {
               self: { href: '/discounts/123' }
             }
           },
           {
+            type: 'seasonal',
             name: 'SPRING20 Coupon Code',
             _links: {
               self: { href: '/discounts/321' }
@@ -262,6 +268,22 @@ describe('Resource', function () {
         it('should return true if an embedded resource is present', function() {
           expect(resource.$has('payment')).to.be.true;
         });
+
+        it('with a matching link filter object', function() {
+          expect(resource.$has('action', { linkFilter: { name: 'edit' } })).to.be.true;
+        });
+
+        it('with a non-matching link filter object', function() {
+          expect(resource.$has('action', { linkFilter: { name: 'notthere'} })).to.be.false;
+        });
+
+        it('with a matching link filter function', function() {
+          expect(resource.$has('action', { linkFilter: function(l) { return l.name === 'edit'; } })).to.be.true;
+        });
+
+        it('with a non-matching link filter function', function() {
+          expect(resource.$has('action', { linkFilter: function(l) { return l.name === 'yargh'; } })).to.be.false;
+        });
       });
 
       describe('$link', function() {
@@ -275,6 +297,14 @@ describe('Resource', function () {
 
         it('should throw an exception for a multiple valued rel', function() {
           expect(function() { resource.$link('stores'); }).to.throw();
+        });
+
+        it('should use the filter object to select the requested link', function() {
+          expect(resource.$link('action', { name: 'edit' })).to.have.property('href', '/orders/123/edit');
+        });
+
+        it('should use the filter predicate to select the requested link', function() {
+          expect(resource.$link('action', function(l) { return l.name === 'edit'; })).to.have.property('href', '/orders/123/edit');
         });
       });
 
@@ -294,9 +324,21 @@ describe('Resource', function () {
           expect(links.length).to.eql(2);
         });
 
+        it('should use the filter object to find matching links', function() {
+          var links = resource.$links('action', { name: 'edit' });
+          expect(links.length).to.eql(1);
+          expect(links[0]).to.have.property('href', '/orders/123/edit');
+        });
+
+        it('should use the filter function to find matching links', function() {
+          var links = resource.$links('action', function(l) { return l.name === 'edit'; });
+          expect(links.length).to.eql(1);
+          expect(links[0]).to.have.property('href', '/orders/123/edit');
+        });
+
         it('should return all links when no rel is provided', function() {
           var links = resource.$links();
-          expect(links.length).to.be.equal(6);
+          expect(links.length).to.be.equal(8);
           expect(links).to.all.be.instanceof(HyRes.WebLink);
           expect(_.find(links, 'rel', 'self')).to.have.property('href', '/orders/123');
           expect(_.filter(links, 'rel', 'stores').length).to.equal(2);
@@ -306,6 +348,16 @@ describe('Resource', function () {
       describe('$sub called when multiple embedded resources present', function() {
         it('should throw an error', function() {
           expect(function() { resource.$sub('discounts'); }).to.throw();
+        });
+      });
+
+      describe('$sub called with a filter', function() {
+        it('should work with a matching object', function() {
+          expect(resource.$sub('discounts', { type: 'new_user' })).to.exist;
+        });
+
+        it('should work with a matching predicate', function() {
+          expect(resource.$sub('discounts', function(r) { return r.type === 'new_user'; })).to.exist;
         });
       });
 
@@ -329,6 +381,18 @@ describe('Resource', function () {
 
         it('should have the included links', function() {
           expect(payment).to.have.link('self').with.property('href','/orders/123/payment');
+        });
+      });
+
+      describe('$subs with filtering', function() {
+        it('with a match object', function() {
+          var discounts = resource.$subs('discounts', { type: 'new_user' });
+          expect(discounts.length).to.eql(1);
+        });
+
+        it('with a filter function', function() {
+          var discounts = resource.$subs('discounts', function(r) { return r.type === 'new_user'; });
+          expect(discounts.length).to.eql(1);
         });
       });
 
@@ -407,6 +471,26 @@ describe('Resource', function () {
           });
         });
 
+        describe('with a filter object and multiple links', function () {
+
+          var customerResource;
+          var customerResolve;
+
+          beforeEach(function () {
+            var customerPromise = new Promise(function (res, rej) {
+              customerResolve = res;
+            });
+
+            http.withArgs(sinon.match({url: '/orders/123/new'})).returns(customerPromise);
+
+            customerResource = resource.$followOne('action', { linkFilter: { name: 'new' } });
+          });
+
+          it('is an unresolved resource', function () {
+            expect(customerResource).to.be.an.unresolved.resource;
+          });
+        });
+
         describe('following a link relation when embedded present', function() {
           var shippingResource;
 
@@ -425,6 +509,35 @@ describe('Resource', function () {
       });
 
       describe('$followAll', function() {
+        describe('following an link relation that is an array with a filter', function () {
+          var actions;
+          var requestsPromise;
+          var firstActionResolved;
+
+          beforeEach(function () {
+            var firstPromise = new Promise(function (res, rej) {
+              firstActionResolved = res;
+            });
+
+            http.withArgs(sinon.match({url: '/orders/123/new'})).returns(firstPromise);
+
+            requestsPromise = Promise.all([firstPromise]);
+            actions = resource.$followAll('action', { linkFilter: { name: 'new' } });
+          });
+
+          it('has a false $resolved', function () {
+            expect(actions.$resolved).to.be.false;
+          });
+
+          it('has a length of 1', function () {
+            expect(actions.length).to.eql(1);
+          });
+
+          it('is an array of unresolved resources', function () {
+            return expect(actions).to.all.have.property('$resolved', false);
+          });
+        });
+
         describe('following an link relation that is an array', function () {
           var stores;
           var requestsPromise;
