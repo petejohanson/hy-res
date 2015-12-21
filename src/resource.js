@@ -1,8 +1,21 @@
 'use strict';
 
 var _ = require('lodash');
-var Context = require('./context');
 var LinkCollection = require('./link_collection');
+
+/**
+ * A predicate to inspect a given {@link Resource} to decide to include or not.
+ * @callback Resource~linkPredicate
+ * @param {WebLink} link The candidate link
+ * @returns {boolean} Whether to include the link in the response(s) or not.
+ */
+
+/**
+ * A predicate to inspect a given {@link Resource} to decide to include or not.
+ * @callback Resource~resourcePredicate
+ * @param {Resouce} resource The candidate resource
+ * @returns {boolean} Whether to include the resource in the response(s) or not.
+ */
 
 /**
  * @constructor
@@ -63,14 +76,15 @@ var Resource = function() {
    * Get the single {@link WebLink} for the given relation.
    *
    * @arg {string} rel The link relation to look up.
+   * @arg {Object|Resource~linkPredicate} [filter] The filter object/predicate to filter links to desired one.
    * @returns {WebLink} The link with the given link relation, or null if not found.
    * @throws An error if multiple links are present for the link relation.
    * @example
    * res.$link('next')
    * => WebLink { href: '/posts?page=2' }
    */
-  this.$link = function(rel) {
-    var ret = this.$links(rel);
+  this.$link = function(rel, filter) {
+    var ret = this.$links(rel, filter);
     if (ret.length === 0) {
       return null;
     }
@@ -86,18 +100,25 @@ var Resource = function() {
    *
    * @arg {string} [rel] The link relation to look up. If not provided, all
    * links in the resource will be return.
+   * @arg {Object|Resource~linkPredicate} [filter] The filter object/predicate to filter matching links.
    * @returns {LinkCollection} The links with the given link relation, or
    * all the links in the resource if a rel is not provided.
    * @example
    * res.$links('posts')
    * => LinkCollection [ WebLink { href: '/posts/123' }, WebLink { href: '/posts/345' } ]
    */
-  this.$links = function(rel) {
+  this.$links = function(rel, filter) {
     if (!rel) {
       return LinkCollection.fromArray(_.flatten(_.values(this.$$links)));
     }
 
-    return _.get(this.$$links, rel, []);
+    var links = _.get(this.$$links, rel, []);
+
+    if (filter) {
+      links = _.filter(links, filter);
+    }
+
+    return links;
   };
 
   /**
@@ -163,6 +184,8 @@ var Resource = function() {
    *
    * @arg {string} rel The link relation to follow.
    * @arg {Object} [options] Options for following the link. For details, see {@link WebLink#follow}.
+   * @arg {Object|Resource~linkPredicate} [options.linkFilter] A matching object or filter function when inspecting links.
+   * @arg {Object|Resource~resourcePredicate} [options.subFilter] A matching object or filter function when inspecting sub/embedded resources.
    * @returns {Resource} The linked/embedded resource, or null if the link relation is not found.
    * @throws Will throw an error if multiple instances of the relation are present.
    * @example
@@ -170,13 +193,15 @@ var Resource = function() {
    * => Resource { $resolved: false, $promise: $q promise object }
    */
   this.$followOne = function(rel, options) {
+    options = options || {};
+
     if (this.$resolved) {
-      var res = this.$sub(rel);
+      var res = this.$sub(rel, options.subFilter);
       if (res !== null) {
         return res;
       }
 
-      var l = this.$link(rel);
+      var l = this.$link(rel, options.linkFilter);
       if (l === null) {
         return null; // TODO: Return a resource w/ an error?s
       }
@@ -209,19 +234,22 @@ var Resource = function() {
    *
    * @arg {string} rel The link relation to follow.
    * @arg {Object} [options] Options for following the link. For details, see {@link WebLink#follow}.
+   * @arg {Object|Resource~linkPredicate} [options.linkFilter] Filter object/predicate for filtering candidate links to follow.
+   * @arg {Object|Resource~resourcePredicate} [options.subFilter] A matching object or filter function when inspecting sub/embedded resources.
    * @returns {Array} The linked/embedded resources, or an enmpty array if the link relation is not found.
    * @example
    * res.$followAll('item')
    * => [Resource { $resolved: false, $promise: $q promise object }, Resource { $resolved: false, $promise: $q promise object }]
    */
   this.$followAll = function(rel, options) {
+    options = options || {};
     if (this.$resolved) {
-      var subs = this.$subs(rel);
+      var subs = this.$subs(rel, options.subFilter);
       if (subs.length > 0) {
         return subs;
       }
 
-      return LinkCollection.fromArray(this.$links(rel)).follow(options);
+      return LinkCollection.fromArray(this.$links(rel, options.linkFilter)).follow(options);
     }
 
     var ret = [];
@@ -253,17 +281,23 @@ var Resource = function() {
  * Look up the embedded/sub resources for the given link relation.
  *
  * @arg {string} rel The link relation to follow.
+ * @arg {Object|Resource~resourcePredicate} [filter] A match object/predicate to limit returned sub-resources.
  * @returns {Array} Array of embedded resources, or empty array if the link relation is not found.
  * @example
  * res.$subs('item')
  * => [Resource { $resolved: true, $promise: resolved $q promise, ... various properties }]
  */
-Resource.prototype.$subs = function(rel) {
+Resource.prototype.$subs = function(rel, filter) {
   if (!this.$$embedded.hasOwnProperty(rel)) {
     return [];
   }
 
-  return this.$$embedded[rel];
+  var subs = this.$$embedded[rel];
+  if (filter) {
+    subs = _.filter(subs, filter);
+  }
+
+  return subs;
 };
 
 
@@ -271,14 +305,15 @@ Resource.prototype.$subs = function(rel) {
  * Look up the embedded/sub resource for the given link relation.
  *
  * @arg {string} rel The link relation to follow.
+ * @arg {Object|Resource~resourcePredicate} [filter} The matching object/predicate to filter sub-resources.
  * @returns {Resource} The embedded resource, or null if the link relation is not found.
  * @throws Will throw an error if multiple instances of the relation are present.
  * @example
  * res.$sub('item')
  * => Resource { $resolved: true, $promise: resolved $q promise, ... various properties }
  */
-Resource.prototype.$sub = function(rel) {
-  var ret = this.$subs(rel);
+Resource.prototype.$sub = function(rel, filter) {
+  var ret = this.$subs(rel, filter);
   if (ret.length === 0) {
     return null;
   }
@@ -301,16 +336,24 @@ Resource.prototype.$embedded = Resource.prototype.$sub;
  */
 Resource.prototype.$embeddeds = Resource.prototype.$subs;
 
+
 /**
  * Check for existence of a linked or embedded resource for the given link
  * relation. The function does _not_ take into account whether the resource is
  * resolved or not, so the return value may be different once the resource is
  * resolved.
  * @arg {string} rel The link relation to check for.
+ * @arg {Object} [filter] The link/sub-resource filter
+ * @arg {Object|Resource~linkPredicate} [filter.linkFilter] A matching object or filter function when inspecting links.
+ * @arg {Object|Resource~resourcePredicate} [filter.subFilter] A matching object or filter function when inspecting sub/embedded resources.
  * @return {boolean} True if the link relation is found in links or embedded, otherwise false.
  */
-Resource.prototype.$has = function(rel) {
-  return this.$links(rel).length > 0 || this.$subs(rel).length > 0;
+Resource.prototype.$has = function(rel, filter) {
+  var links = this.$links(rel);
+  if (filter && filter.linkFilter) {
+    links = _.filter(links, filter.linkFilter);
+  }
+  return links.length > 0 || this.$subs(rel).length > 0;
 };
 
 /**
