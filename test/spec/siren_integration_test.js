@@ -13,6 +13,7 @@ var expect = chai.expect;
 var axios = require('axios');
 
 describe('Siren + axios to perform an action', function() {
+  this.timeout(10000);
   var root;
 
   beforeEach(function() {

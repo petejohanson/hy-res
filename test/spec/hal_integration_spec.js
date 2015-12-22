@@ -10,6 +10,7 @@ var expect = chai.expect;
 var axios = require('axios');
 
 describe('HyRes + axios to consume HALTalk', function() {
+  this.timeout(10000);
   var root;
 
   beforeEach(function() {
