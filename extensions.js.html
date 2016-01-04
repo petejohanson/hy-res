@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>extensions.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CollectionJsonExtension.html">CollectionJsonExtension</a></li><li><a href="Context.html">Context</a><ul class='methods'><li data-type='method'><a href="Context.html#acceptHeader">acceptHeader</a></li><li data-type='method'><a href="Context.html#baseline">baseline</a></li><li data-type='method'><a href="Context.html#forResource">forResource</a></li><li data-type='method'><a href="Context.html#resolveUrl">resolveUrl</a></li><li data-type='method'><a href="Context.html#withDefaults">withDefaults</a></li><li data-type='method'><a href="Context.html#withExtensions">withExtensions</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#clone">clone</a></li><li data-type='method'><a href="Form.html#field">field</a></li><li data-type='method'><a href="Form.html#submit">submit</a></li></ul></li><li><a href="HalExtension.html">HalExtension</a><ul class='methods'><li data-type='method'><a href="HalExtension.html#applies">applies</a></li><li data-type='method'><a href="HalExtension.html#dataParser">dataParser</a></li><li data-type='method'><a href="HalExtension.html#embeddedParser">embeddedParser</a></li><li data-type='method'><a href="HalExtension.html#linkParser">linkParser</a></li></ul></li><li><a href="LinkCollection.html">LinkCollection</a><ul class='methods'><li data-type='method'><a href="LinkCollection.html#follow">follow</a></li></ul></li><li><a href="Resource.html">Resource</a><ul class='methods'><li data-type='method'><a href="Resource.html#$delete">$delete</a></li><li data-type='method'><a href="Resource.html#$embedded">$embedded</a></li><li data-type='method'><a href="Resource.html#$embeddeds">$embeddeds</a></li><li data-type='method'><a href="Resource.html#$followAll">$followAll</a></li><li data-type='method'><a href="Resource.html#$followOne">$followOne</a></li><li data-type='method'><a href="Resource.html#$form">$form</a></li><li data-type='method'><a href="Resource.html#$forms">$forms</a></li><li data-type='method'><a href="Resource.html#$has">$has</a></li><li data-type='method'><a href="Resource.html#$link">$link</a></li><li data-type='method'><a href="Resource.html#$links">$links</a></li><li data-type='method'><a href="Resource.html#$sub">$sub</a></li><li data-type='method'><a href="Resource.html#$subs">$subs</a></li></ul></li><li><a href="Root.html">Root</a><ul class='methods'><li data-type='method'><a href="Root.html#follow">follow</a></li><li data-type='method'><a href="Root.html#resolvedUrl">resolvedUrl</a></li></ul></li><li><a href="SirenExtension.html">SirenExtension</a><ul class='methods'><li data-type='method'><a href="SirenExtension.html#applies">applies</a></li><li data-type='method'><a href="SirenExtension.html#dataParser">dataParser</a></li><li data-type='method'><a href="SirenExtension.html#embeddedParser">embeddedParser</a></li><li data-type='method'><a href="SirenExtension.html#formParser">formParser</a></li><li data-type='method'><a href="SirenExtension.html#linkParser">linkParser</a></li></ul></li><li><a href="WebLink.html">WebLink</a><ul class='methods'><li data-type='method'><a href="WebLink.html#follow">follow</a></li><li data-type='method'><a href="WebLink.html#resolvedUrl">resolvedUrl</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-forms.html">Forms</a></li><li><a href="tutorial-uri-templates.html">URI Templates</a></li></ul><h3>Interfaces</h3><ul><li><a href="Extension.html">Extension</a><ul class='methods'><li data-type='method'><a href="Extension.html#applies">applies</a></li><li data-type='method'><a href="Extension.html#dataParser">dataParser</a></li><li data-type='method'><a href="Extension.html#embeddedParser">embeddedParser</a></li><li data-type='method'><a href="Extension.html#formParser">formParser</a></li><li data-type='method'><a href="Extension.html#linkParser">linkParser</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">extensions.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+/**
+ * Interface for a media type extension
+ *
+ * @interface Extension
+ * @property {Array.&lt;String>} mediaTypes The media types this extension can process.
+ * Used to generate the HTTP Accept header for requests.
+ * @property {Object.&lt;String, Extension~encoder>} encoders Encoders for creating request bodies, keyed by media type.
+ */
+
+/**
+ * @callback Extension~encoder
+ * @arg {Object} data The data to encode
+ * @returns {String} The data encoded to a request body string.
+ */
+
+/**
+ * Determine whether this extension should be used to process
+ * a particular response
+ *
+ * @function
+ * @name Extension#applies
+ * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
+ * @arg {Object} headers The HTTP headers of the response
+ * @arg {Integer} status The HTTP status of the response.
+ * @returns {Boolean} True if the extension should be used to process the response.
+ */
+
+/**
+ * Parse any links found in the resources.
+ *
+ * @function
+ * @name Extension#linkParser
+ * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
+ * @arg {Object} headers The HTTP headers of the response
+ * @arg {Integer} status The HTTP status of the response.
+ * @returns {Object.&lt;String, LinkCollection>} The links, aggregated by the link relation.
+ */
+
+/**
+ * Parse any field data that is part of the resource.
+ *
+ * @function
+ * @name Extension#dataParser
+ * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
+ * @arg {Object} headers The HTTP headers of the response
+ * @arg {Integer} status The HTTP status of the response.
+ * @returns {Array} TODO: Description of return value.
+ */
+
+/**
+ * Parse any embedded resources found in this resource.
+ *
+ * @function
+ * @name Extension#embeddedParser
+ * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
+ * @arg {Object} headers The HTTP headers of the response
+ * @arg {Integer} status The HTTP status of the response.
+ * @returns {Object.&lt;String, Resource[]>} The embedded resources, aggregated by the link relation.
+ */
+
+/**
+ * Parse any hypemedia forms found in this resource.
+ *
+ * @function
+ * @name Extension#formParser
+ * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
+ * @arg {Object} headers The HTTP headers of the response
+ * @arg {Integer} status The HTTP status of the response.
+ * @returns {Object.&lt;String, Form[]>} The hypermedia forms, aggregated by the link relation.
+ */
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Tue Aug 04 2015 12:34:24 GMT-0400 (EDT) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

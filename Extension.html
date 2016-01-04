@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>SirenExtension - Documentation</title>
+    <title>Extension - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">SirenExtension</h1>
+    <h1 class="page-title">Extension</h1>
     
 
     
@@ -41,20 +41,8 @@
 <header>
     
         <h2>
-        SirenExtension
+        Extension
         </h2>
-        
-            <div class="class-description"><p>Extension for processing
-<a href="https://github.com/kevinswiber/siren">Siren</a> responses.  By default,
-the extension will only process links and embedded resources in
-responses if the HTTP response <code>Content-Type</code> header equals
-<code>application/vnd.siren+json</code>. If you have a custom media type that
-extends SIren, you can register it by passing it in the <code>mediaTypes</code>
-parameter.</p>
-<p>At this point, the Siren extension includes both the Siren <code>links</code> and
-the sub-entity embedded links in the set queried by the <a href="Resource.html#$link">Resource#$link</a>/<a href="Resource.html#$links">Resource#$links</a> functions.</p>
-<p>Siren's <a href="https://github.com/kevinswiber/siren#actions-1">actions</a> are
-exposed through <a href="Resource.html#$form">Resource#$form</a> and <a href="Resource.html#$forms">Resource#$forms</a>.</p></div>
         
     
 </header>
@@ -63,33 +51,17 @@ exposed through <a href="Resource.html#$form">Resource#$form</a> and <a href="Re
     <div class="container-overview">
     
         
+            <div class="description"><p>Interface for a media type extension</p></div>
+        
+
+        
+
+
+    <h5 class="subsection-title">Properties:</h5>
 
     
-    <h2>Constructor</h2>
-    
 
-    <h4 class="name" id="SirenExtension"><span class="type-signature"></span>new SirenExtension<span class="signature">(mediaTypes)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    <p>Create the Siren extension</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
+<table class="props">
     <thead>
     <tr>
         
@@ -117,7 +89,7 @@ exposed through <a href="Resource.html#$form">Resource#$form</a> and <a href="Re
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Array.&lt;String></span>
 
 
             
@@ -127,16 +99,36 @@ exposed through <a href="Resource.html#$form">Resource#$form</a> and <a href="Re
 
             
 
-            <td class="description last"><p>Media types in addition to <code>application/vnd.siren+json</code>
-that should be handled by this extensions. This allows for custom media
-types based on Siren to be handled properly.</p></td>
+            <td class="description last"><p>The media types this extension can process.
+Used to generate the HTTP Accept header for requests.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>encoders</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;String, <a href="Extension.html#~encoder">Extension~encoder</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Encoders for creating request bodies, keyed by media type.</p></td>
         </tr>
 
     
     </tbody>
 </table>
-
-
 
 
 
@@ -154,13 +146,6 @@ types based on Siren to be handled properly.</p></td>
     
 
     
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Extension.html">Extension</a></li>
-        
-    </ul></dd>
-    
 
     
 
@@ -177,7 +162,7 @@ types based on Siren to be handled properly.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="siren.js.html">siren.js</a>, <a href="siren.js.html#line34">line 34</a>
+        <a href="extension.js.html">extension.js</a>, <a href="extension.js.html#line3">line 3</a>
     </li></ul></dd>
     
 
@@ -189,20 +174,7 @@ types based on Siren to be handled properly.</p></td>
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
     
     </div>
 
@@ -356,13 +328,6 @@ a particular response</p>
 
     
 
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Extension.html#applies">Extension#applies</a></li>
-        
-    </ul></dd>
     
 
     
@@ -563,13 +528,6 @@ a particular response</p>
     
 
     
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Extension.html#dataParser">Extension#dataParser</a></li>
-        
-    </ul></dd>
-    
 
     
 
@@ -768,13 +726,6 @@ a particular response</p>
 
     
 
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Extension.html#embeddedParser">Extension#embeddedParser</a></li>
-        
-    </ul></dd>
     
 
     
@@ -975,13 +926,6 @@ a particular response</p>
     
 
     
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Extension.html#formatSpecificParser">Extension#formatSpecificParser</a></li>
-        
-    </ul></dd>
-    
 
     
 
@@ -1180,13 +1124,6 @@ a particular response</p>
 
     
 
-    
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Extension.html#formParser">Extension#formParser</a></li>
-        
-    </ul></dd>
     
 
     
@@ -1387,13 +1324,6 @@ a particular response</p>
     
 
     
-    <dt class="implements">Implements:</dt>
-    <dd class="implements"><ul>
-        
-            <li><a href="Extension.html#linkParser">Extension#linkParser</a></li>
-        
-    </ul></dd>
-    
 
     
 
@@ -1461,6 +1391,159 @@ a particular response</p>
         
     
 
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+
+    
+
+    <h4 class="name" id="~encoder"><span class="type-signature"></span>encoder<span class="signature">(data)</span><span class="type-signature"> &rarr; {String}</span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The data to encode</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="extension.js.html">extension.js</a>, <a href="extension.js.html#line12">line 12</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The data encoded to a request body string.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+            
     
 
     

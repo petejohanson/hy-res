@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Root - Documentation</title>
+    <title>LinkHeaderExtension - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Root</h1>
+    <h1 class="page-title">LinkHeaderExtension</h1>
     
 
     
@@ -41,8 +41,11 @@
 <header>
     
         <h2>
-        Root
+        LinkHeaderExtension
         </h2>
+        
+            <div class="class-description"><p>Extension for parsing <a href="http://tools.ietf.org/html/rfc5988#section-5">HTTP Link Headers</a>
+in responses</p></div>
         
     
 </header>
@@ -53,15 +56,17 @@
         
 
     
+    <h2>Constructor</h2>
+    
 
-    <h4 class="name" id="Root"><span class="type-signature"></span>new Root<span class="signature">(url, http, extensions, defaultOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="LinkHeaderExtension"><span class="type-signature"></span>new LinkHeaderExtension<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Entrypoint to an API.</p>
+    <p>Create a new link header extension.</p>
 </div>
 
 
@@ -70,157 +75,6 @@
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>url</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>The URL of the root of the API</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>http</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>The ES6 promise based HTTP abstraction (e.g. AngularJS $http, or
-<a href="https://www.npmjs.com/package/axios">axios</a></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>extensions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>The extensions to use for processing responses</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>defaultOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Default options used when following links.
-See <a href="Context.html#withDefaults">Context#withDefaults</a> and <a href="WebLink.html#follow">WebLink#follow</a></p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -240,6 +94,13 @@ See <a href="Context.html#withDefaults">Context#withDefaults</a> and <a href="We
     
 
     
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Extension.html">Extension</a></li>
+        
+    </ul></dd>
+    
 
     
 
@@ -256,7 +117,7 @@ See <a href="Context.html#withDefaults">Context#withDefaults</a> and <a href="We
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="root.js.html">root.js</a>, <a href="root.js.html#line18">line 18</a>
+        <a href="link_header.js.html">link_header.js</a>, <a href="link_header.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -286,17 +147,6 @@ See <a href="Context.html#withDefaults">Context#withDefaults</a> and <a href="We
     </div>
 
     
-        <h3 class="subsection-title">Extends</h3>
-
-        
-
-
-    <ul>
-        <li><a href="WebLink.html">WebLink</a></li>
-    </ul>
-
-
-    
 
     
 
@@ -316,15 +166,15 @@ See <a href="Context.html#withDefaults">Context#withDefaults</a> and <a href="We
 
     
 
-    <h4 class="name" id="follow"><span class="type-signature"></span>follow<span class="signature">(options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="applies"><span class="type-signature"></span>applies<span class="signature">(data, headers, status)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Dereference the link, returning an asynchronously
-populated <a href="Resource.html">Resource</a>.</p>
+    <p>Determine whether this extension should be used to process
+a particular response</p>
 </div>
 
 
@@ -348,8 +198,6 @@ populated <a href="Resource.html">Resource</a>.</p>
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -362,7 +210,7 @@ populated <a href="Resource.html">Resource</a>.</p>
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
@@ -375,226 +223,148 @@ populated <a href="Resource.html">Resource</a>.</p>
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last"><p>The options for the request.</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>protocol</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Options to pass to the underlying protocol,</p></td>
+            <td class="description last"><p>The body of the response, pre-parsed if some form of JSON.</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>preferContextMediaType</code></td>
+                <td class="name"><code>headers</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type">Object.&lt;string, string></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The HTTP headers of the response</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>status</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The HTTP status of the response.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Extension.html#applies">Extension#applies</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="extension.js.html">extension.js</a>, <a href="extension.js.html#line18">line 18</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>True if the extension should be used to process the response.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
 <span class="param-type">Boolean</span>
 
 
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Whether to prefer the media type
-that originated this WebLink in the Accept header of the request, e.g.
-<code>Accept: application/vnd.collection+json, application/vnd.siren+json;q=0.5</code></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>When following a link that is a URI Template,
-this object will used as variables when resolving the template into the
-final URI.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="WebLink.html#follow">WebLink#follow</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web_link.js.html">web_link.js</a>, <a href="web_link.js.html#line38">line 38</a>
-    </li></ul></dd>
-    
-
-    
-    <dt class="tag-tutorial">Tutorials:</dt>
-    <dd class="tag-tutorial">
-        <ul>
-            <li><a href="tutorial-uri-templates.html">URI Templates</a></li>
-        </ul>
     </dd>
-    
-
-    
-
-    
 </dl>
 
-
-
-
-
-
-
-
-
-
-
-
-
+    
 
 
 
@@ -603,18 +373,14 @@ final URI.</p></td>
 
     
 
-    <h4 class="name" id="resolvedUrl"><span class="type-signature"></span>resolvedUrl<span class="signature">(data)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="linkParser"><span class="type-signature"></span>linkParser<span class="signature">(data, headers, status)</span><span class="type-signature"> &rarr; {Object.&lt;String, <a href="LinkCollection.html">LinkCollection</a>>}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>The <code>resolvedUrl</code> function of a <code>HyRes.WebLink</code> can be used to see what the final resolved URL will be for the link once processing:</p>
-<ul>
-<li>URI Template parameters passed in the <code>data</code> argument.</li>
-<li>Converting any relative URLs to absolute ones given the context of the web link, i.e. the URL of the response that contained the link.</li>
-</ul>
+    <p>Parse any links found in the resources.</p>
 </div>
 
 
@@ -666,7 +432,53 @@ final URI.</p></td>
 
             
 
-            <td class="description last"><p>The values to optionally insert into any URI template used for the <code>href</code> value.</p></td>
+            <td class="description last"><p>The body of the response, pre-parsed if some form of JSON.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>headers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;string, string></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The HTTP headers of the response</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>status</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Integer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The HTTP status of the response.</p></td>
         </tr>
 
     
@@ -685,16 +497,18 @@ final URI.</p></td>
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="WebLink.html#resolvedUrl">WebLink#resolvedUrl</a>
-    </li></ul></dd>
-    
 
     
 
     
 
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Extension.html#linkParser">Extension#linkParser</a></li>
+        
+    </ul></dd>
     
 
     
@@ -712,7 +526,7 @@ final URI.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web_link.js.html">web_link.js</a>, <a href="web_link.js.html#line62">line 62</a>
+        <a href="extension.js.html">extension.js</a>, <a href="extension.js.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -735,6 +549,28 @@ final URI.</p></td>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The links, aggregated by the link relation.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object.&lt;String, <a href="LinkCollection.html">LinkCollection</a>></span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
