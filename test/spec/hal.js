@@ -48,6 +48,22 @@ describe('HalExtension', function () {
     });
   });
 
+  describe('curie binding parser', function() {
+    var bindings;
+
+    beforeEach(function() {
+      bindings = extension.curieBindingParser({_links: { curies: [{name: 'ea', templated: true, href: 'http://api.co/rel/{rel}'}]}}, {}, new Context());
+    });
+
+    it('should return the curies', function() {
+      expect(bindings['ea']).to.not.be.null;
+    });
+
+    it('should have curies that can expand curie literals', function() {
+      expect(bindings['ea'].expand('find')).to.eql('http://api.co/rel/find');
+    });
+  });
+
   describe('data parser', function() {
     it('should return the properties without _links or _embedded', function() {
       var data = extension.dataParser({

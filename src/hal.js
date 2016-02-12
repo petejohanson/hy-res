@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var FieldUtils = require('./field_utils');
 var WebLink = require('./web_link');
+var HalCurieBinding = require('./hal_curie_binding');
 var LinkCollection = require('./link_collection');
 var Resource = require('./resource');
 
@@ -77,6 +78,19 @@ var HalExtension = function(mediaTypes) {
       ret[key] = LinkCollection.fromArray(linkArray);
     }, this);
     return ret;
+  };
+
+  this.curieBindingParser = function(data, headers, context) {
+    var curies = this.linkParser(data, headers, context)['curies'];
+
+    if (!curies) {
+      return {};
+    }
+
+
+    return _(curies).map(function(c) {
+      return new HalCurieBinding(c);
+    }).indexBy('prefix').value();
   };
 
   this.embeddedParser = function(data, headers, context, parent) {
