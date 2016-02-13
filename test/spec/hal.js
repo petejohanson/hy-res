@@ -56,11 +56,11 @@ describe('HalExtension', function () {
     });
 
     it('should return the curies', function() {
-      expect(bindings['ea']).to.not.be.null;
+      expect(bindings.ea).to.not.be.null;
     });
 
     it('should have curies that can expand curie literals', function() {
-      expect(bindings['ea'].expand('find')).to.eql('http://api.co/rel/find');
+      expect(bindings.ea.expand('find')).to.eql('http://api.co/rel/find');
     });
   });
 

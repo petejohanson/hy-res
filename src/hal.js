@@ -81,7 +81,7 @@ var HalExtension = function(mediaTypes) {
   };
 
   this.curieBindingParser = function(data, headers, context) {
-    var curies = this.linkParser(data, headers, context)['curies'];
+    var curies = this.linkParser(data, headers, context).curies;
 
     if (!curies) {
       return {};
