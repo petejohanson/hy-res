@@ -132,3 +132,8 @@ And the view:
 * Differentiate between embedded link vs embedded representation (See Siren spec)
 * Handling or error types, e.g. application/problem+json
 * Support for PUT of modified resource to replace server state?
+
+## Thanks
+
+Many thanks goes to [JetBrains](https://www.jetbrains.com/) for their contribution of a 
+[WebStorm](https://www.jetbrains.com/webstorm/) license to speed up development.
