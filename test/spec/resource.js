@@ -134,6 +134,52 @@ describe('Resource', function () {
 
   });
 
+  describe('curies', function() {
+    var resource;
+    var http;
+    var promise;
+    var raw = {
+      _links: {
+        curies: [
+          {
+            name: 'ea',
+            href: 'http://api.co/rels{/rel}',
+            templated: true
+          }
+        ]
+      }
+    };
+
+    beforeEach(function() {
+      http = sinon.stub();
+      promise = new Promise(function(res) {
+        res({
+          data: raw,
+          headers: { 'content-type': 'application/hal+json' },
+          config: { url: 'http://api.co/' }
+        });
+      });
+      http.withArgs(sinon.match({ url: 'http://api.co/' })).returns(promise);
+      resource = new HyRes.Root('http://api.co/', http, extensions).follow();
+
+      return promise;
+    });
+
+    describe('$expandCurie', function() {
+      describe('for a known prefix', function() {
+        it('returns the expanded URI', function() {
+          expect(resource.$expandCurie('ea:find')).to.eql('http://api.co/rels/find');
+        });
+      });
+
+      describe('for an unknown prefix', function() {
+        it('should raise an exception', function() {
+          expect(function() { resource.$expandCurie('foo:bar'); }).to.throw(Error, 'Unknown CURIE prefix');
+        });
+      });
+    });
+  });
+
   describe('an unresolved root resource', function() {
     var resource;
     var http;

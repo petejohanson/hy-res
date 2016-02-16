@@ -57,7 +57,7 @@ var HalExtension = function(mediaTypes) {
 
   this.linkParser = function(data, headers, context) {
     if (!_.isObject(data._links)) {
-      return null;
+      return {};
     }
 
     var ret = {};

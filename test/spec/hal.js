@@ -49,18 +49,34 @@ describe('HalExtension', function () {
   });
 
   describe('curie binding parser', function() {
-    var bindings;
+    describe('with no curie prefixes', function() {
+      it('should return an empty map', function() {
+        var bindings = extension.curieBindingParser({_links: { }}, {}, new Context());
 
-    beforeEach(function() {
-      bindings = extension.curieBindingParser({_links: { curies: [{name: 'ea', templated: true, href: 'http://api.co/rel/{rel}'}]}}, {}, new Context());
+        expect(bindings).to.eql({});
+      });
+
+      it('should handle no _links at all', function() {
+        var bindings = extension.curieBindingParser({title: 'Blah blah'}, {}, new Context());
+
+        expect(bindings).to.eql({});
+      });
     });
 
-    it('should return the curies', function() {
-      expect(bindings.ea).to.not.be.null;
-    });
+    describe('with curie prefixes in the response', function() {
+      var bindings;
 
-    it('should have curies that can expand curie literals', function() {
-      expect(bindings.ea.expand('find')).to.eql('http://api.co/rel/find');
+      beforeEach(function() {
+        bindings = extension.curieBindingParser({_links: { curies: [{name: 'ea', templated: true, href: 'http://api.co/rel/{rel}'}]}}, {}, new Context());
+      });
+
+      it('should return the curies', function() {
+        expect(bindings.ea).to.not.be.null;
+      });
+
+      it('should have curies that can expand curie literals', function() {
+        expect(bindings.ea.expand('find')).to.eql('http://api.co/rel/find');
+      });
     });
   });
 
