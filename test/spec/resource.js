@@ -147,6 +147,15 @@ describe('Resource', function () {
             templated: true
           }
         ]
+      },
+
+      _embedded: {
+        item: {
+          _links: {
+            self: { href: 'http://api.co/item/123' },
+            'ea:owner': { href: 'http://api.co/owners/321' }
+          }
+        }
       }
     };
 
@@ -175,6 +184,12 @@ describe('Resource', function () {
       describe('for an unknown prefix', function() {
         it('should raise an exception', function() {
           expect(function() { resource.$expandCurie('foo:bar'); }).to.throw(Error, 'Unknown CURIE prefix');
+        });
+      });
+
+      describe('from sub-resources', function() {
+        xit('uses parent scope', function() {
+          expect(resource.$sub('item').$expandCurie('ea:owner')).to.eql('http://api.co/rels/owner');
         });
       });
     });
