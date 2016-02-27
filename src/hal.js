@@ -79,14 +79,14 @@ var HalExtension = function(mediaTypes) {
     return ret;
   };
 
-  this.embeddedParser = function(data, headers, context) {
+  this.embeddedParser = function(data, headers, context, parent) {
     var ret = {};
     _.forEach(data._embedded || {}, function(val, key) {
       if (!_.isArray(val)) {
         val = [val];
       }
 
-      ret[key] = Resource.embeddedCollection(val, headers, context);
+      ret[key] = Resource.embeddedCollection(val, headers, context, parent);
     });
 
     return ret;

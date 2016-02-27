@@ -57,6 +57,7 @@
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Integer} status The HTTP status of the response.
+ * @arg {Resource} the parent resource that contains the parsed resources.
  * @returns {Object.<String, Resource[]>} The embedded resources, aggregated by the link relation.
  */
 
