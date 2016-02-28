@@ -188,7 +188,7 @@ describe('Resource', function () {
       });
 
       describe('from sub-resources', function() {
-        xit('uses parent scope', function() {
+        it('uses parent scope', function() {
           expect(resource.$sub('item').$expandCurie('ea:owner')).to.eql('http://api.co/rels/owner');
         });
       });

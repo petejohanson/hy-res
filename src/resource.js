@@ -297,7 +297,13 @@ var Resource = function() {
 Resource.prototype.$expandCurie = function(curie) {
   var pieces = curie.split(':', 2);
 
-  var prefix = this.$$curiePrefixes[pieces[0]];
+  var res = this;
+  var prefix = null;
+
+  while (!prefix && res) {
+    prefix = res.$$curiePrefixes[pieces[0]];
+    res = res.$parent;
+  }
 
   if (!prefix) {
     throw new Error('Unknown CURIE prefix');
