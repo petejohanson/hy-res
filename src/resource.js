@@ -48,6 +48,13 @@ var Resource = function() {
   this.$resolved = false;
 
   /**
+   * For embedded/sub-resources, this will point to the immediate parent
+   * resource containing this one.
+   * @type {?Resource}
+   */
+  this.$parent = null;
+
+  /**
    * This property will be populated by the HTTP response information when
    * the resource is resolved. For embedded resources, the data portion will
    * be the subsection of the response used to created the embedded resource.
@@ -384,7 +391,7 @@ Resource.prototype.$$resolve = function(response, context) {
 
     _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
-    _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context]));
+    _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context, this]));
     _.assign(this.$formatSpecific, (e.formatSpecificParser || defaultParser).apply(e, [data, headers, context]));
   }, this);
 
@@ -396,15 +403,16 @@ Resource.prototype.$$reject = function(error) {
   this.$resolved = true;
 };
 
-Resource.embedded = function(raw, headers, context) {
+Resource.embedded = function(raw, headers, context, parent) {
   var ret = new Resource();
   ret.$$resolve({ data: raw, headers: headers }, context);
+  ret.$parent = parent;
   ret.$promise = Promise.resolve(ret);
   return ret;
 };
 
-Resource.embeddedCollection = function(items, headers, context) {
-  var embeds = items.map(function(e) { return Resource.embedded(e, headers, context); }, this);
+Resource.embeddedCollection = function(items, headers, context, parent) {
+  var embeds = items.map(function(e) { return Resource.embedded(e, headers, context, parent); }, this);
 
   embeds.$promise = Promise.resolve(embeds);
   embeds.$resolved = true;

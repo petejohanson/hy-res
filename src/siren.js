@@ -101,7 +101,7 @@ var SirenExtension = function(mediaTypes) {
     return _.mapValues(ret, LinkCollection.fromArray);
   };
 
-  this.embeddedParser = function(data, headers, context) {
+  this.embeddedParser = function(data, headers, context, parent) {
     var ret = {};
     if (!_.isArray(data.entities)) {
       return ret;
@@ -120,7 +120,7 @@ var SirenExtension = function(mediaTypes) {
         ret[r].unshift(val);
       }
     });
-    return _.mapValues(ret, _.partialRight(Resource.embeddedCollection, headers, context));
+    return _.mapValues(ret, _.partialRight(Resource.embeddedCollection, headers, context, parent));
   };
 
 

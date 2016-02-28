@@ -242,6 +242,10 @@ describe('Resource', function () {
         expect(resource.$response).to.have.property('data').eql(rawOrder);
       });
 
+      it('should have a null $parent', function() {
+        expect(resource.$parent).to.be.null;
+      });
+
       describe('$delete-ing it', function() {
         var deleteResp;
 
@@ -373,6 +377,10 @@ describe('Resource', function () {
 
         it('should not be null', function () {
           expect(payment).to.not.be.null;
+        });
+
+        it('should have $parent set properly', function() {
+          expect(payment.$parent).to.eql(resource);
         });
 
         it('should have the basic properties', function () {

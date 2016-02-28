@@ -155,12 +155,13 @@ var CollectionJsonExtension = function(mediaTypes) {
     return forms;
   };
 
-  this.embeddedParser = function(data, headers, context) {
+  this.embeddedParser = function(data, headers, context, parent) {
     return {
       item: Resource.embeddedCollection(
         _.cloneDeep(data.collection.items),
         headers,
-        context.withExtensions([new CollectionJsonItemExtension(data)])
+        context.withExtensions([new CollectionJsonItemExtension(data)]),
+        parent
       )
     };
   };
