@@ -19,8 +19,7 @@
  * Determine whether this extension should be used to process
  * a particular response
  *
- * @function
- * @name Extension#applies
+ * @function Extension#applies
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Context} context The context of the current resource/operation.
@@ -30,8 +29,7 @@
 /**
  * Parse any links found in the resources.
  *
- * @function
- * @name Extension#linkParser
+ * @function Extension#linkParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Context} context The context of the current resource/operation.
@@ -41,8 +39,7 @@
 /**
  * Parse any field data that is part of the resource.
  *
- * @function
- * @name Extension#dataParser
+ * @function Extension#dataParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Context} context The context of the current resource/operation.
@@ -52,8 +49,7 @@
 /**
  * Parse any embedded resources found in this resource.
  *
- * @function
- * @name Extension#embeddedParser
+ * @function Extension#embeddedParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Context} context The context of the current resource/operation.
@@ -62,10 +58,9 @@
  */
 
 /**
- * Parse any hypemedia forms found in this resource.
+ * Parse any hypermedia forms found in this resource.
  *
- * @function
- * @name Extension#formParser
+ * @function Extension#formParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Context} context The context of the current resource/operation.
@@ -75,8 +70,7 @@
 /**
  * Parse any CURIE prefixes defined in this resource.
  *
- * @function
- * @name Extension#curiePrefixParser
+ * @function Extension#curiePrefixParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Context} context The context of the current resource/operation.
@@ -86,8 +80,7 @@
 /**
  * Parse and assign hypermedia format specific attributes in this resource.
  *
- * @function
- * @name Extension#formatSpecificParser
+ * @function Extension#formatSpecificParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
  * @arg {Context} context The context of the current resource/operation.

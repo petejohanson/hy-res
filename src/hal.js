@@ -49,7 +49,7 @@ var HalExtension = function(mediaTypes) {
     return mediaTypeSet[type] !==  undefined;
   };
 
-  this.dataParser = function(data, headers) {
+  this.dataParser = function(data) {
     return FieldUtils.extractFields(_.omit(data, function(val, key) {
       return key === '_links' || key === '_embedded';
     }));
