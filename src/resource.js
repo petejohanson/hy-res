@@ -244,7 +244,7 @@ var Resource = function() {
    * @arg {Object} [options] Options for following the link. For details, see {@link WebLink#follow}.
    * @arg {Object|Resource~linkPredicate} [options.linkFilter] Filter object/predicate for filtering candidate links to follow.
    * @arg {Object|Resource~resourcePredicate} [options.subFilter] A matching object or filter function when inspecting sub/embedded resources.
-   * @returns {Array} The linked/embedded resources, or an enmpty array if the link relation is not found.
+   * @returns {Array} The linked/embedded resources, or an empty array if the link relation is not found.
    * @example
    * res.$followAll('item')
    * => [Resource { $resolved: false, $promise: $q promise object }, Resource { $resolved: false, $promise: $q promise object }]
@@ -413,9 +413,9 @@ Resource.prototype.$$resolve = function(response, context) {
     var fields = (e.dataParser || _.constant([])).apply(e, [data, headers, context]);
 
     _.assign(this, _.reduce(fields, function(result, val) {
-        result[val.name] = val.value;
-        return result;
-      }, {}));
+      result[val.name] = val.value;
+      return result;
+    }, {}));
 
     _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
@@ -453,19 +453,19 @@ Resource.fromRequest = function(request, context) {
   var res = new Resource();
   res.$promise =
     request.then(function(response) {
-        context = context.baseline();
-        if (response.config && response.config.url) {
-          context = context.forResource({
-            url: response.config.url,
-            headers: response.headers
-          });
-        }
-        res.$$resolve(response, context);
-        return res;
-      }, function(response) {
-        res.$$reject({message: 'HTTP request to load resource failed', inner: response });
-        throw res;
-      });
+      context = context.baseline();
+      if (response.config && response.config.url) {
+        context = context.forResource({
+          url: response.config.url,
+          headers: response.headers
+        });
+      }
+      res.$$resolve(response, context);
+      return res;
+    }, function(response) {
+      res.$$reject({message: 'HTTP request to load resource failed', inner: response });
+      throw res;
+    });
 
   return res;
 };

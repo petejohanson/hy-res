@@ -227,7 +227,7 @@ api.route('/things/:id')
        .header('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type')
        .sendStatus(204);
   })
- .get(function(req, res) {
+  .get(function(req, res) {
     res.header('Access-Control-Allow-Origin', '*').type('application/hal+json').hal({
       links: {
         self: req.url

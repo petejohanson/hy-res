@@ -2,8 +2,6 @@
 
 require('es6-promise').polyfill();
 
-var _ = require('lodash');
-
 var chai = require('chai');
 var expect = chai.expect;
 chai.use(require('sinon-chai'));
@@ -45,12 +43,12 @@ describe('Form', function () {
     });
 
     it('can access fields by name', function() {
-     var titleField = form.field('title');
-     expect(titleField).to.have.property('type', 'text');
-     expect(titleField).to.have.property('title', 'Title');
-     var parentField = form.field('parent');
-     expect(parentField).to.have.property('type', 'hidden');
-     expect(parentField).to.have.property('value', '123');
+      var titleField = form.field('title');
+      expect(titleField).to.have.property('type', 'text');
+      expect(titleField).to.have.property('title', 'Title');
+      var parentField = form.field('parent');
+      expect(parentField).to.have.property('type', 'hidden');
+      expect(parentField).to.have.property('value', '123');
     });
 
     describe('cloning the form', function() {
@@ -183,7 +181,7 @@ describe('Form', function () {
         href: '/posts',
         method: 'GET',
         fields: [
-          { name: 'q', type: 'text', title: 'Search', value: 'First Query!' },
+          { name: 'q', type: 'text', title: 'Search', value: 'First Query!' }
         ]
       };
 

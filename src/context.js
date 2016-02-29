@@ -80,8 +80,6 @@ Context.prototype.forResource = function(resource) {
  * @returns {Object} The merged options.
  */
 Context.prototype.withDefaults = function(options) {
-  var ret = {};
-
   return _.merge({}, this.defaultOptions, options || {});
 };
 

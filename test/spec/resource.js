@@ -57,7 +57,7 @@ describe('Resource', function () {
 
     beforeEach(function() {
       http = sinon.stub();
-      promise = new Promise(function(res,rej) {
+      promise = new Promise(function(res) {
         res({
           data: raw,
           headers: { 'content-type': 'application/vnd.siren+json' },
@@ -501,7 +501,7 @@ describe('Resource', function () {
           var customerResolve;
 
           beforeEach(function () {
-            var customerPromise = new Promise(function(res,rej) {
+            var customerPromise = new Promise(function(res) {
               customerResolve = res;
             });
 
@@ -543,12 +543,9 @@ describe('Resource', function () {
         describe('with a filter object and multiple links', function () {
 
           var customerResource;
-          var customerResolve;
 
           beforeEach(function () {
-            var customerPromise = new Promise(function (res, rej) {
-              customerResolve = res;
-            });
+            var customerPromise = new Promise(function () {});
 
             http.withArgs(sinon.match({url: '/orders/123/new'})).returns(customerPromise);
 
@@ -580,17 +577,12 @@ describe('Resource', function () {
       describe('$followAll', function() {
         describe('following an link relation that is an array with a filter', function () {
           var actions;
-          var requestsPromise;
-          var firstActionResolved;
 
           beforeEach(function () {
-            var firstPromise = new Promise(function (res, rej) {
-              firstActionResolved = res;
-            });
+            var firstPromise = new Promise(function () {});
 
             http.withArgs(sinon.match({url: '/orders/123/new'})).returns(firstPromise);
 
-            requestsPromise = Promise.all([firstPromise]);
             actions = resource.$followAll('action', { linkFilter: { name: 'new' } });
           });
 
@@ -609,22 +601,20 @@ describe('Resource', function () {
 
         describe('following an link relation that is an array', function () {
           var stores;
-          var requestsPromise;
           var firstStoreResolved, secondStoreResolved;
 
           beforeEach(function() {
-            var firstPromise = new Promise(function(res,rej) {
+            var firstPromise = new Promise(function(res) {
               firstStoreResolved = res;
             });
 
             http.withArgs(sinon.match({url: '/stores/123' })).returns(firstPromise);
-            var secondPromise = new Promise(function(res,rej) {
+            var secondPromise = new Promise(function(res) {
               secondStoreResolved = res;
             });
 
             http.withArgs(sinon.match({url: '/stores/456' })).returns(secondPromise);
 
-            requestsPromise = Promise.all([firstPromise, secondPromise]);
             stores = resource.$followAll('stores');
           });
 
@@ -664,12 +654,9 @@ describe('Resource', function () {
 
         describe('following an link relation with some failures', function () {
           var stores;
-          var requestsPromise;
-          var firstStoreResolved, secondStoreResolved;
 
           beforeEach(function() {
-            var firstPromise = new Promise(function(res,rej) {
-            });
+            var firstPromise = new Promise(function() {});
 
             http.withArgs(sinon.match({url: '/stores/123' })).returns(firstPromise);
             var secondPromise = Promise.reject({
@@ -680,7 +667,6 @@ describe('Resource', function () {
 
             http.withArgs(sinon.match({url: '/stores/456' })).returns(secondPromise);
 
-            requestsPromise = Promise.all([firstPromise, secondPromise]);
             stores = resource.$followAll('stores');
           });
 
@@ -695,7 +681,7 @@ describe('Resource', function () {
         var customerResolve;
 
         beforeEach(function () {
-          var customerPromise = new Promise(function(res,rej) {
+          var customerPromise = new Promise(function(res) {
             customerResolve = res;
           });
 
@@ -737,7 +723,7 @@ describe('Resource', function () {
         var customerResolve;
 
         beforeEach(function() {
-          http.withArgs(sinon.match({ url: '/customers/666' })).returns(new Promise(function(res,rej) {
+          http.withArgs(sinon.match({ url: '/customers/666' })).returns(new Promise(function(res) {
             customerResolve = res;
           }));
 
@@ -778,11 +764,11 @@ describe('Resource', function () {
       var profileResolve, customerResolve;
 
       beforeEach(function() {
-        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res, rej) {
+        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
           customerResolve = res;
         }));
 
-        http.withArgs(sinon.match({ url: '/customers/321/profile' })).returns(new Promise(function(res, rej) {
+        http.withArgs(sinon.match({ url: '/customers/321/profile' })).returns(new Promise(function(res) {
           profileResolve = res;
         }));
 
@@ -833,7 +819,7 @@ describe('Resource', function () {
       var profileResource;
 
       beforeEach(function() {
-        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res, rej) {
+        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
           customerResolve = res;
         }));
 
@@ -883,11 +869,11 @@ describe('Resource', function () {
       var profileResolve, customerResolve;
 
       beforeEach(function() {
-        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res, rej) {
+        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
           customerResolve = res;
         }));
 
-        http.withArgs(sinon.match({ url: '/customers/321/profile' })).returns(new Promise(function(res, rej) {
+        http.withArgs(sinon.match({ url: '/customers/321/profile' })).returns(new Promise(function(res) {
           profileResolve = res;
         }));
 
@@ -947,7 +933,7 @@ describe('Resource', function () {
       var customerResolve;
 
       beforeEach(function() {
-        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res, rej) {
+        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
           customerResolve = res;
         }));
 
