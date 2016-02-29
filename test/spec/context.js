@@ -2,8 +2,6 @@
 
 require('es6-promise').polyfill();
 
-var _ = require('lodash');
-
 var chai = require('chai');
 var expect = chai.expect;
 

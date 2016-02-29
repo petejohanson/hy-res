@@ -5,20 +5,15 @@ var gulp = require('gulp'),
   runSequence = require('run-sequence'),
   bump = require('gulp-bump'),
   gwebpack = require('gulp-webpack'),
-  webpack = require('webpack'),
   header = require('gulp-header'),
-  watch = require('gulp-watch'),
   karma = require('gulp-karma'),
-  coveralls = require('gulp-coveralls'),
   shell = require('gulp-shell'),
   ghpages = require('gulp-gh-pages'),
   gls = require('gulp-live-server'),
-  exit = require('gulp-exit'),
-  mocha = require('gulp-mocha'),
   git = require('gulp-git'),
   tagVersion = require('gulp-tag-version'),
   util = require('gulp-util'),
-  jshint = require('gulp-jshint');
+  eslint = require('gulp-eslint');
 
 var banner = ['/**',
   ' * <%= pkg.name %> - <%= pkg.description %>',
@@ -31,11 +26,11 @@ var banner = ['/**',
 
 var testServer;
 
-function getJSHintPipe(rc) {
+function getLintPipe(rc) {
   return lazypipe()
-    .pipe(jshint, rc || '.jshintrc')
-    .pipe(jshint.reporter, 'jshint-stylish')
-    .pipe(jshint.reporter, 'fail');
+    .pipe(eslint, rc || '.eslintrc.json')
+    .pipe(eslint.format)
+    .pipe(eslint.failAfterError);
 }
 
 function jsSourcePipe() {
@@ -45,7 +40,7 @@ function jsSourcePipe() {
 gulp.task('karma:server-start', function(cb) {
   testServer = gls.new('test/spec/server.js');
 
-  testServer.start().then(function(s) {
+  testServer.start().then(function() {
     cb();
   }, function(err) {
     cb(err);
@@ -122,21 +117,21 @@ gulp.task('karma', function(cb) {
   );
 });
 
-gulp.task('jshint', ['jshint:src', 'jshint:test', 'jshint:gulpfile']);
+gulp.task('lint', ['lint:src', 'lint:test', 'lint:gulpfile']);
 
-gulp.task('jshint:src', function() {
+gulp.task('lint:src', function() {
   return jsSourcePipe()
-    .pipe(getJSHintPipe()());
+    .pipe(getLintPipe('src/.eslintrc.json')());
 });
 
-gulp.task('jshint:test', function() {
+gulp.task('lint:test', function() {
   return gulp.src('test/**/*.js')
-    .pipe(getJSHintPipe('test/.jshintrc')());
+    .pipe(getLintPipe('test/.eslintrc.json')());
 });
 
-gulp.task('jshint:gulpfile', function() {
+gulp.task('lint:gulpfile', function() {
   return gulp.src('gulpfile.js')
-    .pipe(getJSHintPipe()());
+    .pipe(getLintPipe()());
 });
 
 gulp.task('test:watch', function() {
@@ -168,7 +163,7 @@ gulp.task('tag', function() {
 
 gulp.task('release', function(cb) {
   runSequence(
-    'jshint',
+    'lint',
     'bump',
     'bump-commit',
     'tag',
@@ -182,7 +177,7 @@ gulp.task('gh-pages', ['jsdoc'], function() {
 });
 
 gulp.task('default', function(cb) {
-  runSequence('jshint', 'karma', cb);
+  runSequence('lint', 'karma', cb);
 });
 
 gulp.task('dist', function() {
@@ -210,5 +205,5 @@ gulp.task('coverage', function() {
 });
 
 gulp.task('ci', function(cb) {
-  runSequence('jshint', 'karma:ci', ['coverage', 'jsdoc', 'dist'], cb);
+  runSequence('lint', 'karma:ci', ['coverage', 'jsdoc', 'dist'], cb);
 });

@@ -2,8 +2,6 @@
 
 require('es6-promise').polyfill();
 
-var _ = require('lodash');
-
 var chai = require('chai');
 var expect = chai.expect;
 chai.use(require('sinon-chai'));
@@ -55,7 +53,7 @@ describe('WebLink', function () {
       var httpPromise;
 
       beforeEach(function() {
-        httpPromise = new Promise(function(resolve, reject) {
+        httpPromise = new Promise(function(resolve) {
           httpResolve = resolve;
         });
         http
@@ -91,7 +89,6 @@ describe('WebLink', function () {
 
     describe('following a link that returns an error', function() {
       var resource;
-      var httpResolve;
       var httpPromise;
 
       beforeEach(function() {
@@ -175,8 +172,7 @@ describe('WebLink', function () {
 
     describe('following the link with no options provided', function() {
       it('sends the type in the Accept header', function() {
-        httpPromise = new Promise(function(resolve, reject) {
-        });
+        httpPromise = new Promise(function() {});
         http.withArgs(sinon.match.has('headers', { 'Accept': 'application/json' })).returns(httpPromise);
 
         var res = link.follow();
@@ -186,8 +182,7 @@ describe('WebLink', function () {
 
     describe('following the link with explicit Accept header in options', function() {
       it('sends the provided Accept header', function() {
-        httpPromise = new Promise(function(resolve, reject) {
-        });
+        httpPromise = new Promise(function() {});
         http.withArgs(sinon.match.has('headers', { 'Accept': 'text/plain' })).returns(httpPromise);
 
         var res = link.follow({ protocol: { headers: { 'Accept': 'text/plain' } }});

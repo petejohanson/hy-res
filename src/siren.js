@@ -132,7 +132,7 @@ var SirenExtension = function(mediaTypes) {
     return _.groupBy(_.map(data.actions, formFactory), 'name');
   };
 
-  this.formatSpecificParser = function(data, headers, status) {
+  this.formatSpecificParser = function(data) {
     var traitKeysMap = {'title':'title', 'class':'class'};
     var sirenTraits  = Object.keys(traitKeysMap);
 

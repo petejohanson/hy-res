@@ -43,7 +43,7 @@ LinkCollection.prototype.follow = function(options) {
   res.$promise = Promise.all(_.pluck(res, '$promise'));
   res.$resolved = false;
   res.$error = null;
-  res.$promise.then(function(r) {
+  res.$promise.then(function() {
     res.$resolved = true;
   }, function(err) {
     res.$resolved = true;
