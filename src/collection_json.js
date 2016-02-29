@@ -14,6 +14,7 @@ var cjObjectLinkParser = function(obj, headers, context) {
   return _(links)
     .map(function(l) { return new WebLink(l, context); })
     .groupBy('rel')
+    .mapValues(function(links) { return LinkCollection.fromArray(links); })
     .value();
 };
 
