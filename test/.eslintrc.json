@@ -31,6 +31,8 @@
         "sinon": true,
         "describe": true,
         "beforeEach": true,
+        "before": true,
+        "after": true,
         "it": true
     }
 }
