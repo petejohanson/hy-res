@@ -3,7 +3,7 @@
 /**
  *
  * @constructor
- * @implements {CurieBinding}
+ * @implements {CuriePrefix}
  * @arg {WebLink} link The web link including the name/prefix and URI Template
  *
  * @classdesc
@@ -12,13 +12,13 @@
  * processing rules for using a [URI Template](http://tools.ietf.org/html/rfc6570)
  * to create the final URIs.
  */
-var HalCurieBinding = function(link) {
+var HalCuriePrefix = function(link) {
   this.$$link = link;
   this.prefix = link.name;
 };
 
-HalCurieBinding.prototype.expand = function(reference) {
+HalCuriePrefix.prototype.expand = function(reference) {
   return this.$$link.resolvedUrl({rel: reference});
 };
 
-module.exports = HalCurieBinding;
+module.exports = HalCuriePrefix;

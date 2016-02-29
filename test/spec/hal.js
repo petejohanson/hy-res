@@ -48,16 +48,16 @@ describe('HalExtension', function () {
     });
   });
 
-  describe('curie binding parser', function() {
+  describe('curie prefix parser', function() {
     describe('with no curie prefixes', function() {
       it('should return an empty map', function() {
-        var bindings = extension.curieBindingParser({_links: { }}, {}, new Context());
+        var bindings = extension.curiePrefixParser({_links: { }}, {}, new Context());
 
         expect(bindings).to.eql({});
       });
 
       it('should handle no _links at all', function() {
-        var bindings = extension.curieBindingParser({title: 'Blah blah'}, {}, new Context());
+        var bindings = extension.curiePrefixParser({title: 'Blah blah'}, {}, new Context());
 
         expect(bindings).to.eql({});
       });
@@ -67,7 +67,7 @@ describe('HalExtension', function () {
       var bindings;
 
       beforeEach(function() {
-        bindings = extension.curieBindingParser({_links: { curies: [{name: 'ea', templated: true, href: 'http://api.co/rel/{rel}'}]}}, {}, new Context());
+        bindings = extension.curiePrefixParser({_links: { curies: [{name: 'ea', templated: true, href: 'http://api.co/rel/{rel}'}]}}, {}, new Context());
       });
 
       it('should return the curies', function() {

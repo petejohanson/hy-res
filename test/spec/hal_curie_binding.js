@@ -2,14 +2,14 @@
 
 require('es6-promise').polyfill();
 
-var HalCurie = require('../../src/hal_curie_binding');
+var HalCurie = require('../../src/hal_curie_prefix');
 var WebLink = require('../../src/web_link');
 var Context = require('../../src/context');
 var chai = require('chai');
 chai.use(require('chai-things'));
 var expect = chai.expect;
 
-describe('HalCurieBinding', function () {
+describe('HalCuriePrefix', function () {
   var curie;
 
   beforeEach(function() {

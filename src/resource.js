@@ -420,7 +420,7 @@ Resource.prototype.$$resolve = function(response, context) {
     _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context, this]));
-    _.assign(this.$$curiePrefixes, (e.curieBindingParser || defaultParser).apply(e, [data, headers, context]));
+    _.assign(this.$$curiePrefixes, (e.curiePrefixParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$formatSpecific, (e.formatSpecificParser || defaultParser).apply(e, [data, headers, context]));
   }, this);
 
