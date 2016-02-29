@@ -23,7 +23,7 @@
  * @name Extension#applies
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
- * @arg {Integer} status The HTTP status of the response.
+ * @arg {Context} context The context of the current resource/operation.
  * @returns {Boolean} True if the extension should be used to process the response.
  */
 
@@ -34,7 +34,7 @@
  * @name Extension#linkParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
- * @arg {Integer} status The HTTP status of the response.
+ * @arg {Context} context The context of the current resource/operation.
  * @returns {Object.<String, LinkCollection>} The links, aggregated by the link relation.
  */
 
@@ -45,7 +45,7 @@
  * @name Extension#dataParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
- * @arg {Integer} status The HTTP status of the response.
+ * @arg {Context} context The context of the current resource/operation.
  * @returns {Array.<{name: String, value: Object}>} The fields, as an array of name/value pairs.
  */
 
@@ -56,7 +56,7 @@
  * @name Extension#embeddedParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
- * @arg {Integer} status The HTTP status of the response.
+ * @arg {Context} context The context of the current resource/operation.
  * @arg {Resource} the parent resource that contains the parsed resources.
  * @returns {Object.<String, Resource[]>} The embedded resources, aggregated by the link relation.
  */
@@ -68,18 +68,18 @@
  * @name Extension#formParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
- * @arg {Integer} status The HTTP status of the response.
+ * @arg {Context} context The context of the current resource/operation.
  * @returns {Object.<String, Form[]>} The hypermedia forms, aggregated by the link relation.
  */
 
 /**
- * Parse any CURIE prefixes dfined in this resource.
+ * Parse any CURIE prefixes defined in this resource.
  *
  * @function
  * @name Extension#curiePrefixParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
- * @arg {Integer} status The HTTP status of the response.
+ * @arg {Context} context The context of the current resource/operation.
  * @returns {Object.<String, CuriePrefix>} The curie prefixes, indexed by the prefix identifier.
  */
 
@@ -90,6 +90,6 @@
  * @name Extension#formatSpecificParser
  * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
  * @arg {Object.<string, string>} headers The HTTP headers of the response
- * @arg {Integer} status The HTTP status of the response.
+ * @arg {Context} context The context of the current resource/operation.
  * @returns {Object} The object containing any format specific properties.
  */
