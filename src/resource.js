@@ -78,6 +78,7 @@ var Resource = function() {
   this.$$links = {};
   this.$$embedded = {};
   this.$$forms = {};
+  this.$$curiePrefixes = {};
 
   /**
    * Get the single {@link WebLink} for the given relation.
@@ -285,6 +286,33 @@ var Resource = function() {
 };
 
 /**
+ * Expand a CURIE (compact URI) by looking up a prefix binding
+ * and processing it according to the media type specific CURIE
+ * processing rules.
+ * @param {String} curie The compact URI to expand.
+ * @returns {String} The CURIE expanded into a final URI.
+ * @throws {Error} Raises an error when trying to expand using
+ * an unknown CURIE prefix.
+ */
+Resource.prototype.$expandCurie = function(curie) {
+  var pieces = curie.split(':', 2);
+
+  var res = this;
+  var prefix = null;
+
+  while (!prefix && res) {
+    prefix = res.$$curiePrefixes[pieces[0]];
+    res = res.$parent;
+  }
+
+  if (!prefix) {
+    throw new Error('Unknown CURIE prefix');
+  }
+
+  return prefix.expand(pieces[1]);
+};
+
+/**
  * Look up the embedded/sub resources for the given link relation.
  *
  * @arg {string} rel The link relation to follow.
@@ -392,6 +420,7 @@ Resource.prototype.$$resolve = function(response, context) {
     _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context, this]));
+    _.assign(this.$$curiePrefixes, (e.curiePrefixParser || defaultParser).apply(e, [data, headers, context]));
     _.assign(this.$formatSpecific, (e.formatSpecificParser || defaultParser).apply(e, [data, headers, context]));
   }, this);
 

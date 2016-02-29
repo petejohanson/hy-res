@@ -73,6 +73,17 @@
  */
 
 /**
+ * Parse any CURIE prefixes dfined in this resource.
+ *
+ * @function
+ * @name Extension#curiePrefixParser
+ * @arg {Object} data The body of the response, pre-parsed if some form of JSON.
+ * @arg {Object.<string, string>} headers The HTTP headers of the response
+ * @arg {Integer} status The HTTP status of the response.
+ * @returns {Object.<String, CuriePrefix>} The curie prefixes, indexed by the prefix identifier.
+ */
+
+/**
  * Parse and assign hypermedia format specific attributes in this resource.
  *
  * @function

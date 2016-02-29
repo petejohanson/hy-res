@@ -48,6 +48,38 @@ describe('HalExtension', function () {
     });
   });
 
+  describe('curie prefix parser', function() {
+    describe('with no curie prefixes', function() {
+      it('should return an empty map', function() {
+        var bindings = extension.curiePrefixParser({_links: { }}, {}, new Context());
+
+        expect(bindings).to.eql({});
+      });
+
+      it('should handle no _links at all', function() {
+        var bindings = extension.curiePrefixParser({title: 'Blah blah'}, {}, new Context());
+
+        expect(bindings).to.eql({});
+      });
+    });
+
+    describe('with curie prefixes in the response', function() {
+      var bindings;
+
+      beforeEach(function() {
+        bindings = extension.curiePrefixParser({_links: { curies: [{name: 'ea', templated: true, href: 'http://api.co/rel/{rel}'}]}}, {}, new Context());
+      });
+
+      it('should return the curies', function() {
+        expect(bindings.ea).to.not.be.null;
+      });
+
+      it('should have curies that can expand curie literals', function() {
+        expect(bindings.ea.expand('find')).to.eql('http://api.co/rel/find');
+      });
+    });
+  });
+
   describe('data parser', function() {
     it('should return the properties without _links or _embedded', function() {
       var data = extension.dataParser({
