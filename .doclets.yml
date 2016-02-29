@@ -1,0 +1,6 @@
+dir: src
+packageJson: package.json
+articles:
+  - Forms: tutorials/forms.md
+  - URI Templates: tutorials/uri-templates.md
+
