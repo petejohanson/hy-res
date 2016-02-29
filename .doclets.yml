@@ -1,6 +1,7 @@
 dir: src
 packageJson: package.json
 articles:
+  - Overview: README.md
   - Forms: tutorials/forms.md
   - URI Templates: tutorials/uri-templates.md
 
