@@ -48,7 +48,7 @@ paging through the collection, and the `item` relation for each item in the coll
         "self": { "href": "/page/2" },
         "next": { "href": "/page/3" },
         "prev": { "href": "/page/1" }
-    }
+    },
     "_embedded": {
         "item": [
           {
