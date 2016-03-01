@@ -1,4 +1,4 @@
-# hy-res [![Build Status](https://travis-ci.org/petejohanson/hy-res.svg?branch=master)](https://travis-ci.org/petejohanson/hy-res) [![codecov.io](http://codecov.io/github/petejohanson/hy-res/coverage.svg?branch=master)](http://codecov.io/github/petejohanson/hy-res?branch=master)
+# hy-res [![Build Status](https://travis-ci.org/petejohanson/hy-res.svg?branch=master)](https://travis-ci.org/petejohanson/hy-res) [![Coverage Status](https://coveralls.io/repos/github/petejohanson/hy-res/badge.svg?branch=master)](https://coveralls.io/github/petejohanson/hy-res?branch=master)
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/petejohanson.svg)](https://saucelabs.com/u/petejohanson)
 

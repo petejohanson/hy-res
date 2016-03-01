@@ -32,7 +32,6 @@
     "chai-as-promised": "^5.0.0",
     "chai-hy-res": "0.0.3",
     "chai-things": "^0.2.0",
-    "codecov.io": "^0.1.2",
     "es6-promise": "^2.0.1",
     "express": "^4.10.6",
     "express-hal": "0.0.1",

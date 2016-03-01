@@ -10,6 +10,7 @@ var gulp = require('gulp'),
   header = require('gulp-header'),
   shell = require('gulp-shell'),
   ghpages = require('gulp-gh-pages'),
+  coveralls = require('gulp-coveralls'),
   gls = require('gulp-live-server'),
   git = require('gulp-git'),
   tagVersion = require('gulp-tag-version'),
@@ -82,12 +83,6 @@ function runKarma(done, action, browsers, reporters) {
   }
 
   new karmaServer(cfg, done).start();
-
-  //return gulp.src('test/spec/**/*.js')
-  //  .pipe(karma(cfg))
-  //  .on('error', function(err) {
-  //    throw err;
-  //  });
 }
 
 gulp.task('karma:watch', ['karma:server-start'], function(done) {
@@ -202,10 +197,7 @@ gulp.task('dist', function() {
 
 gulp.task('coverage', function() {
   gulp.src('coverage/**/lcov.info')
-    //.pipe(coveralls())
-    .pipe(shell([
-      'cat "<%= file.path %>" | ./node_modules/.bin/codecov'
-    ]));
+    .pipe(coveralls());
 });
 
 gulp.task('ci', function(cb) {
