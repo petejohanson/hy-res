@@ -47,6 +47,8 @@ module.exports = function(config) {
       'test/spec/server.js'
     ],
 
+    // Limit to 5 to match current SauceLabs account limit.
+    concurrency: 5,
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
@@ -89,8 +91,8 @@ module.exports = function(config) {
         ],
         postLoaders: [ {
           test: /\.js$/,
-           exclude: /(test|node_modules|bower_components)\//,
-           loader: 'istanbul-instrumenter'
+          exclude: /(test|node_modules|bower_components)\//,
+          loader: 'istanbul-instrumenter'
         } ]
       }
     },
