@@ -1,12 +1,13 @@
 'use strict';
 
 var gulp = require('gulp'),
+  path = require('path'),
   lazypipe = require('lazypipe'),
+  karmaServer = require('karma').Server,
   runSequence = require('run-sequence'),
   bump = require('gulp-bump'),
   gwebpack = require('gulp-webpack'),
   header = require('gulp-header'),
-  karma = require('gulp-karma'),
   shell = require('gulp-shell'),
   ghpages = require('gulp-gh-pages'),
   gls = require('gulp-live-server'),
@@ -61,9 +62,9 @@ gulp.task('karma:server-stop', function(cb) {
   testServer = undefined;
 });
 
-function karmaPipe(action, browsers, reporters) {
+function runKarma(done, action, browsers, reporters) {
   var cfg = {
-    configFile: 'karma.conf.js',
+    configFile: path.join(__dirname, 'karma.conf.js'),
     action: action,
     client: {
       mocha: {
@@ -79,23 +80,26 @@ function karmaPipe(action, browsers, reporters) {
   if (reporters) {
     cfg.reporters = reporters;
   }
-  return gulp.src('test/spec/**/*.js')
-    .pipe(karma(cfg))
-    .on('error', function(err) {
-      throw err;
-    });
+
+  new karmaServer(cfg, done).start();
+
+  //return gulp.src('test/spec/**/*.js')
+  //  .pipe(karma(cfg))
+  //  .on('error', function(err) {
+  //    throw err;
+  //  });
 }
 
-gulp.task('karma:watch', ['karma:server-start'], function() {
-  return karmaPipe('watch');
+gulp.task('karma:watch', ['karma:server-start'], function(done) {
+  return runKarma(done, 'watch');
 });
 
-gulp.task('karma:run', function() {
-  return karmaPipe('run');
+gulp.task('karma:run', function(done) {
+  return runKarma(done, 'run');
 });
 
-gulp.task('karma:ci-run', function() {
-  return karmaPipe('run', ['SL_FireFox', 'SL_InternetExplorer', 'SL_Chrome'], ['mocha', 'coverage', 'saucelabs']);
+gulp.task('karma:ci-run', function(done) {
+  return runKarma(done, 'run', ['SL_FireFox', 'SL_InternetExplorer', 'SL_Chrome'], ['mocha', 'coverage', 'saucelabs']);
 });
 
 gulp.task('karma:ci', function(cb) {
