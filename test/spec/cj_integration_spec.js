@@ -14,7 +14,7 @@ var expect = chai.expect;
 var axios = require('axios');
 
 describe('Collection+JSON + axios to perform an action', function() {
-  this.timeout(10000);
+  this.timeout(30000);
   var root;
 
   beforeEach(function() {
