@@ -104,6 +104,13 @@ describe('Form', function () {
         expect(http).to.have.been.calledWith(sinon.match({ headers: { 'Prefer': 'return=representation'}}));
       });
     });
+
+    describe('Form#$getRequestData', function() {
+      it('should return the fields and values', function() {
+        var data = form.getRequestData();
+        expect(data).to.eql({ title: 'First Post!', parent: '123' });
+      });
+    });
   });
 
   describe('form submission that results in 201 Created response', function() {

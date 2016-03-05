@@ -50,6 +50,22 @@ var ContentTypeDataTransformers = {
 };
 
 /**
+ * Get the name/value data for all the fields of the form.
+ *
+ * @returns {?Object.<string, *>} The name/value data for the fields of the form.
+ */
+Form.prototype.getRequestData = function() {
+  if (!this.fields) {
+    return null;
+  }
+
+  return _(this.fields)
+    .indexBy('name')
+    .mapValues(_.property('value'))
+    .value();
+};
+
+/**
  * Perform an HTTP request to submit the form. The request itself
  * is created based on the URL, method, type, and field values.
  * @arg {Object} [options] The options for the request.
@@ -69,10 +85,12 @@ Form.prototype.submit = function(options) {
       if (h instanceof Function) {
         h = h();
       }
+
+      var ct = (h['content-type'] || h['Content-Type']);
+
       var extEncoders = _(this.$$context.extensions).pluck('encoders').compact();
       var encoders = _(ContentTypeDataTransformers).concat(extEncoders.flatten().value()).reduce(_.merge);
 
-      var ct = (h['content-type'] || h['Content-Type']);
       var trans = encoders[ct];
       return trans ? trans(d) : d;
     }.bind(this)],
@@ -84,11 +102,8 @@ Form.prototype.submit = function(options) {
   }
 
   if (this.fields) {
-    var fieldValues = _.map(this.fields, function(f) { var ret = {}; ret[f.name] = f.value; return ret; });
-    var vals = _.assign.apply(this,_.flatten([{}, fieldValues]));
-
     var prop = this.method === 'GET' ? 'params' : 'data';
-    config[prop] = vals;
+    config[prop] = this.getRequestData();
   }
 
   var ctx = this.$$context;
