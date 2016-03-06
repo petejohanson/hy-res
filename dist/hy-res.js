@@ -1,6 +1,6 @@
 /**
  * hy-res - Generic hypermedia client supporting several formats
- * @version v0.0.22 - 2016-01-04
+ * @version v0.0.23 - 2016-03-05
  * @link https://github.com/petejohanson/hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -61,10 +61,10 @@ var HyRes =
 	  FieldUtils: __webpack_require__(16),
 	  LinkCollection: __webpack_require__(11),
 	  HalExtension: __webpack_require__(17),
-	  JsonExtension: __webpack_require__(18),
-	  LinkHeaderExtension: __webpack_require__(19),
-	  SirenExtension: __webpack_require__(21),
-	  CollectionJsonExtension: __webpack_require__(22)
+	  JsonExtension: __webpack_require__(19),
+	  LinkHeaderExtension: __webpack_require__(20),
+	  SirenExtension: __webpack_require__(22),
+	  CollectionJsonExtension: __webpack_require__(23)
 	};
 
 
@@ -194,8 +194,6 @@ var HyRes =
 	 * @returns {Object} The merged options.
 	 */
 	Context.prototype.withDefaults = function(options) {
-	  var ret = {};
-
 	  return _.merge({}, this.defaultOptions, options || {});
 	};
 
@@ -218,7 +216,7 @@ var HyRes =
 	/*!
 	 * URI.js - Mutating URLs
 	 *
-	 * Version: 1.15.1
+	 * Version: 1.16.1
 	 *
 	 * Author: Rodney Rehm
 	 * Web: http://medialize.github.io/URI.js/
@@ -289,7 +287,7 @@ var HyRes =
 	    return this;
 	  }
 
-	  URI.version = '1.15.1';
+	  URI.version = '1.16.1';
 
 	  var p = URI.prototype;
 	  var hasOwn = Object.prototype.hasOwnProperty;
@@ -733,6 +731,13 @@ var HyRes =
 	    return parts;
 	  };
 	  URI.parseHost = function(string, parts) {
+	    // Copy chrome, IE, opera backslash-handling behavior.
+	    // Back slashes before the query string get converted to forward slashes
+	    // See: https://github.com/joyent/node/blob/386fd24f49b0e9d1a8a076592a404168faeecc34/lib/url.js#L115-L124
+	    // See: https://code.google.com/p/chromium/issues/detail?id=25916
+	    // https://github.com/medialize/URI.js/pull/233
+	    string = string.replace(/\\/g, '/');
+
 	    // extract host:port
 	    var pos = string.indexOf('/');
 	    var bracketPos;
@@ -823,7 +828,7 @@ var HyRes =
 	      value = v.length ? URI.decodeQuery(v.join('='), escapeQuerySpace) : null;
 
 	      if (hasOwn.call(items, name)) {
-	        if (typeof items[name] === 'string') {
+	        if (typeof items[name] === 'string' || items[name] === null) {
 	          items[name] = [items[name]];
 	        }
 
@@ -1417,7 +1422,11 @@ var HyRes =
 
 	    if (v !== undefined) {
 	      var x = {};
-	      URI.parseHost(v, x);
+	      var res = URI.parseHost(v, x);
+	      if (res !== '/') {
+	        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-]');
+	      }
+
 	      v = x.hostname;
 	    }
 	    return _hostname.call(this, v, build);
@@ -1432,7 +1441,11 @@ var HyRes =
 	    if (v === undefined) {
 	      return this._parts.hostname ? URI.buildHost(this._parts) : '';
 	    } else {
-	      URI.parseHost(v, this._parts);
+	      var res = URI.parseHost(v, this._parts);
+	      if (res !== '/') {
+	        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-]');
+	      }
+
 	      this.build(!build);
 	      return this;
 	    }
@@ -1445,7 +1458,11 @@ var HyRes =
 	    if (v === undefined) {
 	      return this._parts.hostname ? URI.buildAuthority(this._parts) : '';
 	    } else {
-	      URI.parseAuthority(v, this._parts);
+	      var res = URI.parseAuthority(v, this._parts);
+	      if (res !== '/') {
+	        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-]');
+	      }
+
 	      this.build(!build);
 	      return this;
 	    }
@@ -1841,7 +1858,7 @@ var HyRes =
 	      v = (typeof v === 'string' || v instanceof String) ? URI.encode(v) : v;
 	    } else {
 	      for (i = 0, l = v.length; i < l; i++) {
-	        v[i] = URI.decode(v[i]);
+	        v[i] = URI.encode(v[i]);
 	      }
 	    }
 
@@ -1996,6 +2013,11 @@ var HyRes =
 	    if (_path.charAt(0) !== '/') {
 	      _was_relative = true;
 	      _path = '/' + _path;
+	    }
+
+	    // handle relative files (as opposed to directories)
+	    if (_path.slice(-3) === '/..' || _path.slice(-2) === '/.') {
+	      _path += '/';
 	    }
 
 	    // resolve simples
@@ -2233,7 +2255,7 @@ var HyRes =
 	    }
 
 	    // determine common sub path
-	    common = URI.commonPath(relative.path(), base.path());
+	    common = URI.commonPath(relativePath, basePath);
 
 	    // If the paths have nothing in common, return a relative URL with the absolute path.
 	    if (!common) {
@@ -2245,7 +2267,7 @@ var HyRes =
 	      .replace(/[^\/]*$/, '')
 	      .replace(/.*?\//g, '../');
 
-	    relativeParts.path = parents + relativeParts.path.substring(common.length);
+	    relativeParts.path = (parents + relativeParts.path.substring(common.length)) || './';
 
 	    return relative.build();
 	  };
@@ -2864,7 +2886,7 @@ var HyRes =
 	 * URI.js - Mutating URLs
 	 * IPv6 Support
 	 *
-	 * Version: 1.15.1
+	 * Version: 1.16.1
 	 *
 	 * Author: Rodney Rehm
 	 * Web: http://medialize.github.io/URI.js/
@@ -3058,7 +3080,7 @@ var HyRes =
 	 * URI.js - Mutating URLs
 	 * Second Level Domain (SLD) Support
 	 *
-	 * Version: 1.15.1
+	 * Version: 1.16.1
 	 *
 	 * Author: Rodney Rehm
 	 * Web: http://medialize.github.io/URI.js/
@@ -3429,6 +3451,13 @@ var HyRes =
 	  this.$resolved = false;
 
 	  /**
+	   * For embedded/sub-resources, this will point to the immediate parent
+	   * resource containing this one.
+	   * @type {?Resource}
+	   */
+	  this.$parent = null;
+
+	  /**
 	   * This property will be populated by the HTTP response information when
 	   * the resource is resolved. For embedded resources, the data portion will
 	   * be the subsection of the response used to created the embedded resource.
@@ -3452,6 +3481,7 @@ var HyRes =
 	  this.$$links = {};
 	  this.$$embedded = {};
 	  this.$$forms = {};
+	  this.$$curiePrefixes = {};
 
 	  /**
 	   * Get the single {@link WebLink} for the given relation.
@@ -3617,7 +3647,7 @@ var HyRes =
 	   * @arg {Object} [options] Options for following the link. For details, see {@link WebLink#follow}.
 	   * @arg {Object|Resource~linkPredicate} [options.linkFilter] Filter object/predicate for filtering candidate links to follow.
 	   * @arg {Object|Resource~resourcePredicate} [options.subFilter] A matching object or filter function when inspecting sub/embedded resources.
-	   * @returns {Array} The linked/embedded resources, or an enmpty array if the link relation is not found.
+	   * @returns {Array} The linked/embedded resources, or an empty array if the link relation is not found.
 	   * @example
 	   * res.$followAll('item')
 	   * => [Resource { $resolved: false, $promise: $q promise object }, Resource { $resolved: false, $promise: $q promise object }]
@@ -3656,6 +3686,33 @@ var HyRes =
 
 	    return ret;
 	  };
+	};
+
+	/**
+	 * Expand a CURIE (compact URI) by looking up a prefix binding
+	 * and processing it according to the media type specific CURIE
+	 * processing rules.
+	 * @param {String} curie The compact URI to expand.
+	 * @returns {String} The CURIE expanded into a final URI.
+	 * @throws {Error} Raises an error when trying to expand using
+	 * an unknown CURIE prefix.
+	 */
+	Resource.prototype.$expandCurie = function(curie) {
+	  var pieces = curie.split(':', 2);
+
+	  var res = this;
+	  var prefix = null;
+
+	  while (!prefix && res) {
+	    prefix = res.$$curiePrefixes[pieces[0]];
+	    res = res.$parent;
+	  }
+
+	  if (!prefix) {
+	    throw new Error('Unknown CURIE prefix');
+	  }
+
+	  return prefix.expand(pieces[1]);
 	};
 
 	/**
@@ -3759,13 +3816,14 @@ var HyRes =
 	    var fields = (e.dataParser || _.constant([])).apply(e, [data, headers, context]);
 
 	    _.assign(this, _.reduce(fields, function(result, val) {
-	        result[val.name] = val.value;
-	        return result;
-	      }, {}));
+	      result[val.name] = val.value;
+	      return result;
+	    }, {}));
 
 	    _.assign(this.$$links, (e.linkParser || defaultParser).apply(e, [data, headers, context]));
 	    _.assign(this.$$forms, (e.formParser || defaultParser).apply(e, [data, headers, context]));
-	    _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context]));
+	    _.assign(this.$$embedded, (e.embeddedParser || defaultParser).apply(e, [data, headers, context, this]));
+	    _.assign(this.$$curiePrefixes, (e.curiePrefixParser || defaultParser).apply(e, [data, headers, context]));
 	    _.assign(this.$formatSpecific, (e.formatSpecificParser || defaultParser).apply(e, [data, headers, context]));
 	  }, this);
 
@@ -3777,15 +3835,16 @@ var HyRes =
 	  this.$resolved = true;
 	};
 
-	Resource.embedded = function(raw, headers, context) {
+	Resource.embedded = function(raw, headers, context, parent) {
 	  var ret = new Resource();
 	  ret.$$resolve({ data: raw, headers: headers }, context);
+	  ret.$parent = parent;
 	  ret.$promise = Promise.resolve(ret);
 	  return ret;
 	};
 
-	Resource.embeddedCollection = function(items, headers, context) {
-	  var embeds = items.map(function(e) { return Resource.embedded(e, headers, context); }, this);
+	Resource.embeddedCollection = function(items, headers, context, parent) {
+	  var embeds = items.map(function(e) { return Resource.embedded(e, headers, context, parent); }, this);
 
 	  embeds.$promise = Promise.resolve(embeds);
 	  embeds.$resolved = true;
@@ -3797,19 +3856,19 @@ var HyRes =
 	  var res = new Resource();
 	  res.$promise =
 	    request.then(function(response) {
-	        context = context.baseline();
-	        if (response.config && response.config.url) {
-	          context = context.forResource({
-	            url: response.config.url,
-	            headers: response.headers
-	          });
-	        }
-	        res.$$resolve(response, context);
-	        return res;
-	      }, function(response) {
-	        res.$$reject({message: 'HTTP request to load resource failed', inner: response });
-	        throw res;
-	      });
+	      context = context.baseline();
+	      if (response.config && response.config.url) {
+	        context = context.forResource({
+	          url: response.config.url,
+	          headers: response.headers
+	        });
+	      }
+	      res.$$resolve(response, context);
+	      return res;
+	    }, function(response) {
+	      res.$$reject({message: 'HTTP request to load resource failed', inner: response });
+	      throw res;
+	    });
 
 	  return res;
 	};
@@ -3866,7 +3925,7 @@ var HyRes =
 	  res.$promise = Promise.all(_.pluck(res, '$promise'));
 	  res.$resolved = false;
 	  res.$error = null;
-	  res.$promise.then(function(r) {
+	  res.$promise.then(function() {
 	    res.$resolved = true;
 	  }, function(err) {
 	    res.$resolved = true;
@@ -3887,7 +3946,7 @@ var HyRes =
 	 * URI.js - Mutating URLs
 	 * URI Template Support - http://tools.ietf.org/html/rfc6570
 	 *
-	 * Version: 1.15.1
+	 * Version: 1.16.1
 	 *
 	 * Author: Rodney Rehm
 	 * Web: http://medialize.github.io/URI.js/
@@ -4440,6 +4499,22 @@ var HyRes =
 	};
 
 	/**
+	 * Get the name/value data for all the fields of the form.
+	 *
+	 * @returns {?Object.<string, *>} The name/value data for the fields of the form.
+	 */
+	Form.prototype.getRequestData = function() {
+	  if (!this.fields) {
+	    return null;
+	  }
+
+	  return _(this.fields)
+	    .indexBy('name')
+	    .mapValues(_.property('value'))
+	    .value();
+	};
+
+	/**
 	 * Perform an HTTP request to submit the form. The request itself
 	 * is created based on the URL, method, type, and field values.
 	 * @arg {Object} [options] The options for the request.
@@ -4459,10 +4534,12 @@ var HyRes =
 	      if (h instanceof Function) {
 	        h = h();
 	      }
+
+	      var ct = (h['content-type'] || h['Content-Type']);
+
 	      var extEncoders = _(this.$$context.extensions).pluck('encoders').compact();
 	      var encoders = _(ContentTypeDataTransformers).concat(extEncoders.flatten().value()).reduce(_.merge);
 
-	      var ct = (h['content-type'] || h['Content-Type']);
 	      var trans = encoders[ct];
 	      return trans ? trans(d) : d;
 	    }.bind(this)],
@@ -4474,11 +4551,8 @@ var HyRes =
 	  }
 
 	  if (this.fields) {
-	    var fieldValues = _.map(this.fields, function(f) { var ret = {}; ret[f.name] = f.value; return ret; });
-	    var vals = _.assign.apply(this,_.flatten([{}, fieldValues]));
-
 	    var prop = this.method === 'GET' ? 'params' : 'data';
-	    config[prop] = vals;
+	    config[prop] = this.getRequestData();
 	  }
 
 	  var ctx = this.$$context;
@@ -4522,7 +4596,7 @@ var HyRes =
 	// Author(s): Bumblehead (www.bumblehead.com), JBlashill (james@blashill.com)
 
 
-	var formurlencoded = ((true) ? module : {}).exports = {
+	var formurlencoded = (( true) ? module : {}).exports = {
 	  
 	  // input: {one:1,two:2} return: '[one]=1&[two]-2'
 
@@ -4627,6 +4701,7 @@ var HyRes =
 	var _ = __webpack_require__(2);
 	var FieldUtils = __webpack_require__(16);
 	var WebLink = __webpack_require__(9);
+	var HalCuriePrefix = __webpack_require__(18);
 	var LinkCollection = __webpack_require__(11);
 	var Resource = __webpack_require__(10);
 
@@ -4672,7 +4747,7 @@ var HyRes =
 	    return mediaTypeSet[type] !==  undefined;
 	  };
 
-	  this.dataParser = function(data, headers) {
+	  this.dataParser = function(data) {
 	    return FieldUtils.extractFields(_.omit(data, function(val, key) {
 	      return key === '_links' || key === '_embedded';
 	    }));
@@ -4680,7 +4755,7 @@ var HyRes =
 
 	  this.linkParser = function(data, headers, context) {
 	    if (!_.isObject(data._links)) {
-	      return null;
+	      return {};
 	    }
 
 	    var ret = {};
@@ -4703,14 +4778,27 @@ var HyRes =
 	    return ret;
 	  };
 
-	  this.embeddedParser = function(data, headers, context) {
+	  this.curiePrefixParser = function(data, headers, context) {
+	    var curies = this.linkParser(data, headers, context).curies;
+
+	    if (!curies) {
+	      return {};
+	    }
+
+
+	    return _(curies).map(function(c) {
+	      return new HalCuriePrefix(c);
+	    }).indexBy('prefix').value();
+	  };
+
+	  this.embeddedParser = function(data, headers, context, parent) {
 	    var ret = {};
 	    _.forEach(data._embedded || {}, function(val, key) {
 	      if (!_.isArray(val)) {
 	        val = [val];
 	      }
 
-	      ret[key] = Resource.embeddedCollection(val, headers, context);
+	      ret[key] = Resource.embeddedCollection(val, headers, context, parent);
 	    });
 
 	    return ret;
@@ -4723,6 +4811,36 @@ var HyRes =
 
 /***/ },
 /* 18 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	/**
+	 *
+	 * @constructor
+	 * @implements {CuriePrefix}
+	 * @arg {WebLink} link The web link including the name/prefix and URI Template
+	 *
+	 * @classdesc
+	 * A CURIE prefix binding that encompasses the
+	 * [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-07)
+	 * processing rules for using a [URI Template](http://tools.ietf.org/html/rfc6570)
+	 * to create the final URIs.
+	 */
+	var HalCuriePrefix = function(link) {
+	  this.$$link = link;
+	  this.prefix = link.name;
+	};
+
+	HalCuriePrefix.prototype.expand = function(reference) {
+	  return this.$$link.resolvedUrl({rel: reference});
+	};
+
+	module.exports = HalCuriePrefix;
+
+
+/***/ },
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -4760,12 +4878,12 @@ var HyRes =
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var httpLink = __webpack_require__(20);
+	var httpLink = __webpack_require__(21);
 
 	var _ = __webpack_require__(2);
 	var WebLink = __webpack_require__(9);
@@ -4809,7 +4927,7 @@ var HyRes =
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function() {
@@ -4982,7 +5100,7 @@ var HyRes =
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5088,7 +5206,7 @@ var HyRes =
 	    return _.mapValues(ret, LinkCollection.fromArray);
 	  };
 
-	  this.embeddedParser = function(data, headers, context) {
+	  this.embeddedParser = function(data, headers, context, parent) {
 	    var ret = {};
 	    if (!_.isArray(data.entities)) {
 	      return ret;
@@ -5107,7 +5225,7 @@ var HyRes =
 	        ret[r].unshift(val);
 	      }
 	    });
-	    return _.mapValues(ret, _.partialRight(Resource.embeddedCollection, headers, context));
+	    return _.mapValues(ret, _.partialRight(Resource.embeddedCollection, headers, context, parent));
 	  };
 
 
@@ -5119,7 +5237,7 @@ var HyRes =
 	    return _.groupBy(_.map(data.actions, formFactory), 'name');
 	  };
 
-	  this.formatSpecificParser = function(data, headers, status) {
+	  this.formatSpecificParser = function(data) {
 	    var traitKeysMap = {'title':'title', 'class':'class'};
 	    var sirenTraits  = Object.keys(traitKeysMap);
 
@@ -5148,7 +5266,7 @@ var HyRes =
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5167,6 +5285,7 @@ var HyRes =
 	  return _(links)
 	    .map(function(l) { return new WebLink(l, context); })
 	    .groupBy('rel')
+	    .mapValues(function(links) { return LinkCollection.fromArray(links); })
 	    .value();
 	};
 
@@ -5308,12 +5427,13 @@ var HyRes =
 	    return forms;
 	  };
 
-	  this.embeddedParser = function(data, headers, context) {
+	  this.embeddedParser = function(data, headers, context, parent) {
 	    return {
 	      item: Resource.embeddedCollection(
 	        _.cloneDeep(data.collection.items),
 	        headers,
-	        context.withExtensions([new CollectionJsonItemExtension(data)])
+	        context.withExtensions([new CollectionJsonItemExtension(data)]),
+	        parent
 	      )
 	    };
 	  };
