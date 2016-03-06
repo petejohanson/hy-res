@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>json.js - Documentation</title>
+    <title>hal_curie_prefix.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">json.js</h1>
+    <h1 class="page-title">hal_curie_prefix.js</h1>
     
 
     
@@ -40,36 +40,28 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
-var fieldUtils = require('./field_utils');
-
 /**
- * Create a new JSON extension.
  *
  * @constructor
- * @implements {Extension}
+ * @implements {CuriePrefix}
+ * @arg {WebLink} link The web link including the name/prefix and URI Template
  *
  * @classdesc
- * Extension for parsing basic field data from `application/json` responses.
- *
+ * A CURIE prefix binding that encompasses the
+ * [HAL](https://tools.ietf.org/html/draft-kelly-json-hal-07)
+ * processing rules for using a [URI Template](http://tools.ietf.org/html/rfc6570)
+ * to create the final URIs.
  */
-var JsonExtension = function() {
-  this.mediaTypes = ['application/json'];
-
-  this.applies = function(data, headers) {
-    var h = headers['content-type'];
-    if (!h) {
-      return false;
-    }
-
-    // Handle parameters, e.g. application/json; charset=UTF-8
-    var type = h.split(';')[0];
-    return type === 'application/json';
-  };
-
-  this.dataParser = fieldUtils.extractFields;
+var HalCuriePrefix = function(link) {
+  this.$$link = link;
+  this.prefix = link.name;
 };
 
-module.exports = JsonExtension;
+HalCuriePrefix.prototype.expand = function(reference) {
+  return this.$$link.resolvedUrl({rel: reference});
+};
+
+module.exports = HalCuriePrefix;
 </code></pre>
         </article>
     </section>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>json.js - Documentation</title>
+    <title>curie_prefix.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">json.js</h1>
+    <h1 class="page-title">curie_prefix.js</h1>
     
 
     
@@ -40,36 +40,19 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
-var fieldUtils = require('./field_utils');
+/**
+ * Interface for a CURIE prefix binding.
+ *
+ * @interface CuriePrefix
+ */
 
 /**
- * Create a new JSON extension.
+ * Expand a CURIE reference to a full URI.
  *
- * @constructor
- * @implements {Extension}
- *
- * @classdesc
- * Extension for parsing basic field data from `application/json` responses.
- *
+ * @function CuriePrefix#expand
+ * @arg {String} reference The reference to expand
+ * @returns {String} The full URI after expansion.
  */
-var JsonExtension = function() {
-  this.mediaTypes = ['application/json'];
-
-  this.applies = function(data, headers) {
-    var h = headers['content-type'];
-    if (!h) {
-      return false;
-    }
-
-    // Handle parameters, e.g. application/json; charset=UTF-8
-    var type = h.split(';')[0];
-    return type === 'application/json';
-  };
-
-  this.dataParser = fieldUtils.extractFields;
-};
-
-module.exports = JsonExtension;
 </code></pre>
         </article>
     </section>

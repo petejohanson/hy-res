@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>json.js - Documentation</title>
+    <title>CuriePrefix - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,51 +28,257 @@
 
 <div id="main">
     
-    <h1 class="page-title">json.js</h1>
+    <h1 class="page-title">CuriePrefix</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>'use strict';
+        <h2>
+        CuriePrefix
+        </h2>
+        
+    
+</header>
 
-var fieldUtils = require('./field_utils');
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Interface for a CURIE prefix binding.</p></div>
+        
 
-/**
- * Create a new JSON extension.
- *
- * @constructor
- * @implements {Extension}
- *
- * @classdesc
- * Extension for parsing basic field data from `application/json` responses.
- *
- */
-var JsonExtension = function() {
-  this.mediaTypes = ['application/json'];
+        
 
-  this.applies = function(data, headers) {
-    var h = headers['content-type'];
-    if (!h) {
-      return false;
-    }
 
-    // Handle parameters, e.g. application/json; charset=UTF-8
-    var type = h.split(';')[0];
-    return type === 'application/json';
-  };
+<dl class="details">
 
-  this.dataParser = fieldUtils.extractFields;
-};
+    
 
-module.exports = JsonExtension;
-</code></pre>
-        </article>
-    </section>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="curie_prefix.js.html">curie_prefix.js</a>, <a href="curie_prefix.js.html#line3">line 3</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="expand"><span class="type-signature"></span>expand<span class="signature">(reference)</span><span class="type-signature"> &rarr; {String}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Expand a CURIE reference to a full URI.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>reference</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The reference to expand</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="curie_prefix.js.html">curie_prefix.js</a>, <a href="curie_prefix.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The full URI after expansion.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

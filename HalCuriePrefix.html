@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>json.js - Documentation</title>
+    <title>HalCuriePrefix - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,51 +28,355 @@
 
 <div id="main">
     
-    <h1 class="page-title">json.js</h1>
+    <h1 class="page-title">HalCuriePrefix</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>'use strict';
+        <h2>
+        HalCuriePrefix
+        </h2>
+        
+            <div class="class-description"><p>A CURIE prefix binding that encompasses the
+<a href="https://tools.ietf.org/html/draft-kelly-json-hal-07">HAL</a>
+processing rules for using a <a href="http://tools.ietf.org/html/rfc6570">URI Template</a>
+to create the final URIs.</p></div>
+        
+    
+</header>
 
-var fieldUtils = require('./field_utils');
+<article>
+    <div class="container-overview">
+    
+        
 
-/**
- * Create a new JSON extension.
- *
- * @constructor
- * @implements {Extension}
- *
- * @classdesc
- * Extension for parsing basic field data from `application/json` responses.
- *
- */
-var JsonExtension = function() {
-  this.mediaTypes = ['application/json'];
+    
+    <h2>Constructor</h2>
+    
 
-  this.applies = function(data, headers) {
-    var h = headers['content-type'];
-    if (!h) {
-      return false;
-    }
+    <h4 class="name" id="HalCuriePrefix"><span class="type-signature"></span>new HalCuriePrefix<span class="signature">(link)</span><span class="type-signature"></span></h4>
 
-    // Handle parameters, e.g. application/json; charset=UTF-8
-    var type = h.split(';')[0];
-    return type === 'application/json';
-  };
+    
 
-  this.dataParser = fieldUtils.extractFields;
-};
 
-module.exports = JsonExtension;
-</code></pre>
-        </article>
-    </section>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>link</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="WebLink.html">WebLink</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The web link including the name/prefix and URI Template</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="CuriePrefix.html">CuriePrefix</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="hal_curie_prefix.js.html">hal_curie_prefix.js</a>, <a href="hal_curie_prefix.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="expand"><span class="type-signature"></span>expand<span class="signature">(reference)</span><span class="type-signature"> &rarr; {String}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Expand a CURIE reference to a full URI.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>reference</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The reference to expand</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="CuriePrefix.html#expand">CuriePrefix#expand</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="curie_prefix.js.html">curie_prefix.js</a>, <a href="curie_prefix.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The full URI after expansion.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">String</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
