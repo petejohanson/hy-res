@@ -13,7 +13,7 @@ var LinkCollection = require('./link_collection');
 /**
  * A predicate to inspect a given {@link Resource} to decide to include or not.
  * @callback Resource~resourcePredicate
- * @param {Resouce} resource The candidate resource
+ * @param {Resource} resource The candidate resource
  * @returns {boolean} Whether to include the resource in the response(s) or not.
  */
 

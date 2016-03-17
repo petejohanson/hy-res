@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var FormUrlEncoded = require('form-urlencoded');
-var Resouce = require('./resource');
+var Resource = require('./resource');
 
 /**
  * Forms should not be created on their own, they are normally
@@ -116,7 +116,7 @@ Form.prototype.submit = function(options) {
     ctx = ctx.forResource({url: config.url});
     return ctx.http({method: 'GET', url: ctx.resolveUrl(loc), headers: config.headers });
   });
-  return Resouce.fromRequest(resp, ctx);
+  return Resource.fromRequest(resp, ctx);
 };
 
 /**
