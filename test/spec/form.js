@@ -19,7 +19,7 @@ describe('Form', function () {
     var data;
 
     beforeEach(function() {
-      http = sinon.stub();
+      http = this.sinon.stub();
 
       data = {
         name: 'create-form',
@@ -77,7 +77,7 @@ describe('Form', function () {
       });
 
       it('should request the absolute form URL', function() {
-        expect(http).to.have.been.calledWith(sinon.match({ url: 'http://localhost/posts' }));
+        expect(http).to.have.been.calledWith(this.sinon.match({ url: 'http://localhost/posts' }));
       });
 
       it('should return a Resource', function() {
@@ -85,23 +85,23 @@ describe('Form', function () {
       });
 
       it('should use the form method', function() {
-        expect(http).to.have.been.calledWith(sinon.match({ method: 'POST' }));
+        expect(http).to.have.been.calledWith(this.sinon.match({ method: 'POST' }));
       });
 
       it('should use the content type', function() {
-        expect(http).to.have.been.calledWith(sinon.match({ headers: { 'Content-Type': 'application/x-www-form-urlencoded' }}));
+        expect(http).to.have.been.calledWith(this.sinon.match({ headers: { 'Content-Type': 'application/x-www-form-urlencoded' }}));
       });
 
       it('should generate an Accept header based on registered extensions, prefering context content type', function() {
-        expect(http).to.have.been.calledWith(sinon.match({ headers: { 'Accept': 'application/vnd.siren+json;q=0.5,application/vnd.custom+json' }}));
+        expect(http).to.have.been.calledWith(this.sinon.match({ headers: { 'Accept': 'application/vnd.siren+json;q=0.5,application/vnd.custom+json' }}));
       });
 
       it('should send the field data', function() {
-        expect(http).to.have.been.calledWith(sinon.match({ data: { title: 'First Post!', parent: '123' } }));
+        expect(http).to.have.been.calledWith(this.sinon.match({ data: { title: 'First Post!', parent: '123' } }));
       });
 
       it('should include the protocol options', function() {
-        expect(http).to.have.been.calledWith(sinon.match({ headers: { 'Prefer': 'return=representation'}}));
+        expect(http).to.have.been.calledWith(this.sinon.match({ headers: { 'Prefer': 'return=representation'}}));
       });
     });
 
@@ -118,7 +118,7 @@ describe('Form', function () {
     var form, http, resp;
 
     beforeEach(function() {
-      http = sinon.stub();
+      http = this.sinon.stub();
       form = new Form({
         name: 'create-form',
         href: '/posts',
@@ -127,11 +127,11 @@ describe('Form', function () {
       }, new Context(http, [new Json()]));
 
       http
-        .withArgs(sinon.match({url: '/posts', method: 'POST'}))
+        .withArgs(this.sinon.match({url: '/posts', method: 'POST'}))
         .returns(Promise.resolve({data: {}, headers: {'location': '/posts/123' }, status: 201}));
 
       http
-        .withArgs(sinon.match({url: '/posts/123', method: 'GET'}))
+        .withArgs(this.sinon.match({url: '/posts/123', method: 'GET'}))
         .returns(Promise.resolve({data: { title: 'yay' }, headers: {'content-type': 'application/json' }, status: 200}));
       resp = form.submit();
 
@@ -139,7 +139,7 @@ describe('Form', function () {
     });
 
     it('makes a GET call on the created location', function() {
-      expect(http).to.be.calledWith(sinon.match({url: '/posts/123', method: 'GET'}));
+      expect(http).to.be.calledWith(this.sinon.match({url: '/posts/123', method: 'GET'}));
     });
 
     it('returns the response from the created location', function() {
@@ -153,7 +153,7 @@ describe('Form', function () {
     var form, http, resp;
 
     beforeEach(function() {
-      http = sinon.stub();
+      http = this.sinon.stub();
       form = new Form({
         name: 'create-form',
         href: '/posts',
@@ -162,7 +162,7 @@ describe('Form', function () {
       }, new Context(http, [new Json()]));
 
       http
-        .withArgs(sinon.match({url: '/posts', method: 'POST'}))
+        .withArgs(this.sinon.match({url: '/posts', method: 'POST'}))
         .returns(Promise.resolve({data: { title: 'yay'}, headers: { 'content-type': 'application/json'}, status: 201}));
 
       resp = form.submit();
@@ -180,7 +180,7 @@ describe('Form', function () {
     var form, http, data;
 
     beforeEach(function() {
-      http = sinon.stub();
+      http = this.sinon.stub();
 
       data = {
         name: 'create-form',
@@ -198,7 +198,7 @@ describe('Form', function () {
     it('sends field values as query parameters', function() {
       http.returns(Promise.resolve({data: {}, headers: {}, status: 200 }));
       form.submit();
-      expect(http).to.have.been.calledWith(sinon.match({ method: 'GET', params: { q: 'First Query!' } }));
+      expect(http).to.have.been.calledWith(this.sinon.match({ method: 'GET', params: { q: 'First Query!' } }));
     });
 
   });

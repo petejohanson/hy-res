@@ -1,6 +1,6 @@
 'use strict';
 
-var HyRes = require('../../');
+var HyRes = require('../../index');
 
 require('es6-promise').polyfill();
 
@@ -17,7 +17,7 @@ describe('Siren + axios to perform an action', function() {
   var root;
 
   beforeEach(function() {
-    var rootLink = new HyRes.Root('/api', axios, [new HyRes.SirenExtension(), new HyRes.JsonExtension()]);
+    var rootLink = new HyRes.Root(this.apiUrl, axios, [new HyRes.SirenExtension(), new HyRes.JsonExtension()]);
 
     root = rootLink.follow();
     return root.$promise;

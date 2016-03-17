@@ -40,7 +40,7 @@ function jsSourcePipe() {
 }
 
 gulp.task('karma:server-start', function(cb) {
-  testServer = gls.new('test/spec/server.js');
+  testServer = gls.new('test/server.js');
 
   testServer.start().then(function() {
     cb();

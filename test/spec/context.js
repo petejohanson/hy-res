@@ -11,7 +11,7 @@ describe('Context', function () {
   var context, defaultOpts, http, extensions;
   beforeEach(function() {
     defaultOpts = {};
-    http = sinon.spy();
+    http = this.sinon.spy();
     extensions = [{mediaTypes: ['application/json', 'application/vnd.collection+json']}];
   });
 
@@ -43,7 +43,7 @@ describe('Context', function () {
     var newExtensions;
     var originalContext;
     beforeEach(function() {
-      newExtensions = [sinon.spy()];
+      newExtensions = [this.sinon.spy()];
       originalContext = new Context(http, extensions, defaultOpts);
       context = originalContext.withExtensions(newExtensions);
     });

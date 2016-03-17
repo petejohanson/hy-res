@@ -63,7 +63,7 @@ describe('CollectionJsonExtension', function () {
   describe('embedded parser', function() {
     var http, embeds;
     beforeEach(function() {
-      http = sinon.stub();
+      http = this.sinon.stub();
       embeds = extension.embeddedParser({
         'collection' : {
           'version' : '1.0',
@@ -155,7 +155,7 @@ describe('CollectionJsonExtension', function () {
         });
 
         it('makes an HTTP PUT to the item URL with the field data', function() {
-          expect(http).to.have.been.calledWith(sinon.match(
+          expect(http).to.have.been.calledWith(this.sinon.match(
             {
               url: 'http://example.org/friends/jdoe',
               method: 'PUT',
