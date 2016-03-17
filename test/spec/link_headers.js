@@ -11,7 +11,7 @@ describe('LinkHeaderExtension', function () {
   var http;
 
   beforeEach(function() {
-    http = sinon.mock();
+    http = this.sinon.mock();
     ext = new LinkHeaderExtension();
   });
 
@@ -40,7 +40,7 @@ describe('LinkHeaderExtension', function () {
     describe('following a link', function() {
       it('should GET the expected URL', function() {
         http.once()
-            .withArgs(sinon.match({ url: '/posts?page=3' }))
+            .withArgs(this.sinon.match({ url: '/posts?page=3' }))
             .returns(Promise.resolve({data: {}, headers: {}}));
 
         links.next[0].follow();

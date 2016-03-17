@@ -56,7 +56,7 @@ describe('Resource', function () {
     };
 
     beforeEach(function() {
-      http = sinon.stub();
+      http = this.sinon.stub();
       promise = new Promise(function(res) {
         res({
           data: raw,
@@ -64,7 +64,11 @@ describe('Resource', function () {
           config: { url: 'http://api.bloggityblog.com/' }
         });
       });
-      http.withArgs(sinon.match({ url: 'http://api.bloggityblog.com/' })).returns(promise);
+
+      http
+        .withArgs(this.sinon.match({ url: 'http://api.bloggityblog.com/' }))
+        .returns(promise);
+
       resource = new HyRes.Root('http://api.bloggityblog.com/', http, extensions).follow();
 
       return promise;
@@ -160,7 +164,7 @@ describe('Resource', function () {
     };
 
     beforeEach(function() {
-      http = sinon.stub();
+      http = this.sinon.stub();
       promise = new Promise(function(res) {
         res({
           data: raw,
@@ -168,7 +172,11 @@ describe('Resource', function () {
           config: { url: 'http://api.co/' }
         });
       });
-      http.withArgs(sinon.match({ url: 'http://api.co/' })).returns(promise);
+
+      http
+        .withArgs(this.sinon.match({ url: 'http://api.co/' }))
+        .returns(promise);
+
       resource = new HyRes.Root('http://api.co/', http, extensions).follow();
 
       return promise;
@@ -248,12 +256,16 @@ describe('Resource', function () {
     };
 
     beforeEach(function() {
-      http = sinon.stub();
+      http = this.sinon.stub();
       ordersPromise = new Promise(function(res,rej) {
         ordersResolve = res;
         ordersReject = rej;
       });
-      http.withArgs(sinon.match({ url: '/orders/123' })).returns(ordersPromise);
+
+      http
+        .withArgs(this.sinon.match({ url: '/orders/123' }))
+        .returns(ordersPromise);
+
       resource = new HyRes.Root('/orders/123', http, extensions).follow();
     });
 
@@ -277,7 +289,9 @@ describe('Resource', function () {
       });
 
       it('makes an HTTP DELETE request to the self link relation once the resource resolves', function() {
-        expect(http).to.have.been.calledWith(sinon.match({method: 'DELETE', url: '/orders/123' }));
+        expect(http)
+          .to.have.been
+          .calledWith(this.sinon.match({method: 'DELETE', url: '/orders/123' }));
       });
     });
 
@@ -317,7 +331,9 @@ describe('Resource', function () {
         });
 
         it('makes an HTTP DELETE request to the self link relation', function() {
-          expect(http).to.have.been.calledWith(sinon.match({method: 'DELETE', url: '/orders/123' }));
+          expect(http)
+            .to.have.been
+            .calledWith(this.sinon.match({method: 'DELETE', url: '/orders/123' }));
         });
       });
 
@@ -505,7 +521,9 @@ describe('Resource', function () {
               customerResolve = res;
             });
 
-            http.withArgs(sinon.match({url: '/customers/321' })).returns(customerPromise);
+            http
+              .withArgs(this.sinon.match({url: '/customers/321' }))
+              .returns(customerPromise);
 
             customerResource = resource.$followOne('customer');
           });
@@ -547,7 +565,9 @@ describe('Resource', function () {
           beforeEach(function () {
             var customerPromise = new Promise(function () {});
 
-            http.withArgs(sinon.match({url: '/orders/123/new'})).returns(customerPromise);
+            http
+              .withArgs(this.sinon.match({url: '/orders/123/new'}))
+              .returns(customerPromise);
 
             customerResource = resource.$followOne('action', { linkFilter: { name: 'new' } });
           });
@@ -581,7 +601,7 @@ describe('Resource', function () {
           beforeEach(function () {
             var firstPromise = new Promise(function () {});
 
-            http.withArgs(sinon.match({url: '/orders/123/new'})).returns(firstPromise);
+            http.withArgs(this.sinon.match({url: '/orders/123/new'})).returns(firstPromise);
 
             actions = resource.$followAll('action', { linkFilter: { name: 'new' } });
           });
@@ -608,12 +628,12 @@ describe('Resource', function () {
               firstStoreResolved = res;
             });
 
-            http.withArgs(sinon.match({url: '/stores/123' })).returns(firstPromise);
+            http.withArgs(this.sinon.match({url: '/stores/123' })).returns(firstPromise);
             var secondPromise = new Promise(function(res) {
               secondStoreResolved = res;
             });
 
-            http.withArgs(sinon.match({url: '/stores/456' })).returns(secondPromise);
+            http.withArgs(this.sinon.match({url: '/stores/456' })).returns(secondPromise);
 
             stores = resource.$followAll('stores');
           });
@@ -658,14 +678,14 @@ describe('Resource', function () {
           beforeEach(function() {
             var firstPromise = new Promise(function() {});
 
-            http.withArgs(sinon.match({url: '/stores/123' })).returns(firstPromise);
+            http.withArgs(this.sinon.match({url: '/stores/123' })).returns(firstPromise);
             var secondPromise = Promise.reject({
               data: {},
               headers: {},
               status: 404
             });
 
-            http.withArgs(sinon.match({url: '/stores/456' })).returns(secondPromise);
+            http.withArgs(this.sinon.match({url: '/stores/456' })).returns(secondPromise);
 
             stores = resource.$followAll('stores');
           });
@@ -685,7 +705,7 @@ describe('Resource', function () {
             customerResolve = res;
           });
 
-          http.withArgs(sinon.match({url: '/customers/321' })).returns(customerPromise);
+          http.withArgs(this.sinon.match({url: '/customers/321' })).returns(customerPromise);
 
           var link = resource.$link('customer');
           customerResource = link.follow();
@@ -723,7 +743,7 @@ describe('Resource', function () {
         var customerResolve;
 
         beforeEach(function() {
-          http.withArgs(sinon.match({ url: '/customers/666' })).returns(new Promise(function(res) {
+          http.withArgs(this.sinon.match({ url: '/customers/666' })).returns(new Promise(function(res) {
             customerResolve = res;
           }));
 
@@ -764,11 +784,11 @@ describe('Resource', function () {
       var profileResolve, customerResolve;
 
       beforeEach(function() {
-        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
+        http.withArgs(this.sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
           customerResolve = res;
         }));
 
-        http.withArgs(sinon.match({ url: '/customers/321/profile' })).returns(new Promise(function(res) {
+        http.withArgs(this.sinon.match({ url: '/customers/321/profile' })).returns(new Promise(function(res) {
           profileResolve = res;
         }));
 
@@ -819,7 +839,7 @@ describe('Resource', function () {
       var profileResource;
 
       beforeEach(function() {
-        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
+        http.withArgs(this.sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
           customerResolve = res;
         }));
 
@@ -869,11 +889,11 @@ describe('Resource', function () {
       var profileResolve, customerResolve;
 
       beforeEach(function() {
-        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
+        http.withArgs(this.sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
           customerResolve = res;
         }));
 
-        http.withArgs(sinon.match({ url: '/customers/321/profile' })).returns(new Promise(function(res) {
+        http.withArgs(this.sinon.match({ url: '/customers/321/profile' })).returns(new Promise(function(res) {
           profileResolve = res;
         }));
 
@@ -933,7 +953,7 @@ describe('Resource', function () {
       var customerResolve;
 
       beforeEach(function() {
-        http.withArgs(sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
+        http.withArgs(this.sinon.match({ url: '/customers/321' })).returns(new Promise(function(res) {
           customerResolve = res;
         }));
 

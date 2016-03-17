@@ -15,14 +15,13 @@ var JsonExtension = require('../../src/json.js');
 var LinkHeaderExtension = require('../../src/link_header.js');
 
 describe('WebLink', function () {
-
   describe('creating a web link', function() {
     var link;
     var http;
     var defaultOptions;
 
     beforeEach(function() {
-      http = sinon.stub();
+      http = this.sinon.stub();
       defaultOptions = {};
       var extensions = [new HalExtension(), new JsonExtension(), new LinkHeaderExtension()];
 
@@ -57,7 +56,7 @@ describe('WebLink', function () {
           httpResolve = resolve;
         });
         http
-          .withArgs(sinon.match({ url: 'http://api.server.com/posts/123' }))
+          .withArgs(this.sinon.match({ url: 'http://api.server.com/posts/123' }))
           .returns(httpPromise);
 
         resource = link.follow();
@@ -68,7 +67,13 @@ describe('WebLink', function () {
       });
 
       it('passes an Accept header with extension content types, preferring the context content type', function() {
-        expect(http).to.be.calledWith(sinon.match.has('headers', { 'Accept': 'application/hal+json,application/vnd.hal+json;q=0.5,application/json;q=0.5' }));
+        var expectedHeaders = {
+          'Accept': 'application/hal+json,application/vnd.hal+json;q=0.5,application/json;q=0.5'
+        };
+
+        expect(http)
+          .to.be
+          .calledWith(this.sinon.match.has('headers', expectedHeaders));
       });
 
       describe('once the request completes', function() {
@@ -94,7 +99,7 @@ describe('WebLink', function () {
       beforeEach(function() {
         httpPromise = Promise.reject({data: {}, headers: {}, status: 404});
         http
-          .withArgs(sinon.match({ url: 'http://api.server.com/posts/123' }))
+          .withArgs(this.sinon.match({ url: 'http://api.server.com/posts/123' }))
           .returns(httpPromise);
 
         resource = link.follow();
@@ -118,7 +123,14 @@ describe('WebLink', function () {
       });
 
       it('invokes the http request with the merged options', function() {
-        expect(http).to.be.calledWith(sinon.match.has('headers', { 'Accept': 'text/plain', 'Prefer': 'return=representation' }));
+        var expectedHeaders = {
+          'Accept': 'text/plain',
+          'Prefer': 'return=representation'
+        };
+
+        expect(http)
+          .to.be
+          .calledWith(this.sinon.match.has('headers', expectedHeaders));
       });
     });
   });
@@ -157,7 +169,7 @@ describe('WebLink', function () {
     var http, httpPromise;
 
     beforeEach(function() {
-      http = sinon.stub();
+      http = this.sinon.stub();
       var extensions = [new HalExtension()];
 
       link = new WebLink({
@@ -173,7 +185,10 @@ describe('WebLink', function () {
     describe('following the link with no options provided', function() {
       it('sends the type in the Accept header', function() {
         httpPromise = new Promise(function() {});
-        http.withArgs(sinon.match.has('headers', { 'Accept': 'application/json' })).returns(httpPromise);
+
+        http
+          .withArgs(this.sinon.match.has('headers', { 'Accept': 'application/json' }))
+          .returns(httpPromise);
 
         var res = link.follow();
         expect(res).to.not.be.null;
@@ -183,10 +198,14 @@ describe('WebLink', function () {
     describe('following the link with explicit Accept header in options', function() {
       it('sends the provided Accept header', function() {
         httpPromise = new Promise(function() {});
-        http.withArgs(sinon.match.has('headers', { 'Accept': 'text/plain' })).returns(httpPromise);
+        http.withArgs(this.sinon.match.has('headers', { 'Accept': 'text/plain' })).returns(httpPromise);
 
         var res = link.follow({ protocol: { headers: { 'Accept': 'text/plain' } }});
-        expect(http).to.be.calledWith(sinon.match.has('headers', { 'Accept': 'text/plain' }));
+
+        expect(http)
+          .to.be
+          .calledWith(this.sinon.match.has('headers', { 'Accept': 'text/plain' }));
+
         expect(res).to.not.be.null;
       });
     });

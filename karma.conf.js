@@ -30,7 +30,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'es5-shim', 'sinon'],
+    frameworks: ['mocha', 'es5-shim'],
 
     proxies: {
       '/api': 'http://localhost:10000/api'
@@ -38,13 +38,13 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'test/spec/**/*.js'
+      'test/spec/**/*.js',
+      'test/integration/**/*.js'
     ],
 
 
     // list of files to exclude
     exclude: [
-      'test/spec/server.js'
     ],
 
     // Limit to 5 to match current SauceLabs account limit.
@@ -54,6 +54,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'test/spec/**/*.js': ['webpack', 'sourcemap'],
+      'test/integration/**/*.js': ['webpack', 'sourcemap'],
       'src/**/*.js': ['coverage']
     },
 
@@ -82,6 +83,7 @@ module.exports = function(config) {
     webpack: {
       devtool: 'inline-source-map',
       module: {
+        noParse: /sinon\.js$/,
         loaders: [
           {
             test: /\.js$/,
@@ -94,6 +96,11 @@ module.exports = function(config) {
           exclude: /(test|node_modules|bower_components)\//,
           loader: 'istanbul-instrumenter'
         } ]
+      },
+      resolve: {
+        alias: {
+          sinon: 'sinon/pkg/sinon.js'
+        }
       }
     },
 

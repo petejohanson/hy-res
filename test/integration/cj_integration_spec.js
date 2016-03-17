@@ -1,6 +1,6 @@
 'use strict';
 
-var HyRes = require('../../');
+var HyRes = require('../../index');
 var CJExtension = require('../../src/collection_json');
 
 require('es6-promise').polyfill();
@@ -18,7 +18,7 @@ describe('Collection+JSON + axios to perform an action', function() {
   var root;
 
   beforeEach(function() {
-    var rootLink = new HyRes.Root('/api', axios, [new CJExtension(), new HyRes.JsonExtension()]);
+    var rootLink = new HyRes.Root(this.apiUrl, axios, [new CJExtension(), new HyRes.JsonExtension()]);
 
     root = rootLink.follow();
     return root.$promise;

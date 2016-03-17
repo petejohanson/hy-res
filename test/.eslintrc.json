@@ -28,9 +28,9 @@
     },
     "globals": {
         "Promise": true,
-        "sinon": true,
         "describe": true,
         "beforeEach": true,
+        "afterEach": true,
         "before": true,
         "after": true,
         "it": true
