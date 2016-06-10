@@ -1,6 +1,6 @@
 /**
  * hy-res - Generic hypermedia client supporting several formats
- * @version v0.0.24 - 2016-06-10
+ * @version v0.0.25 - 2016-06-10
  * @link https://github.com/petejohanson/hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -62,9 +62,10 @@ var HyRes =
 	  LinkCollection: __webpack_require__(11),
 	  HalExtension: __webpack_require__(17),
 	  JsonExtension: __webpack_require__(19),
-	  LinkHeaderExtension: __webpack_require__(20),
-	  SirenExtension: __webpack_require__(22),
-	  CollectionJsonExtension: __webpack_require__(23)
+	  TextExtension: __webpack_require__(20),
+	  LinkHeaderExtension: __webpack_require__(21),
+	  SirenExtension: __webpack_require__(23),
+	  CollectionJsonExtension: __webpack_require__(24)
 	};
 
 
@@ -4916,7 +4917,77 @@ var HyRes =
 
 	'use strict';
 
-	var httpLink = __webpack_require__(21);
+	var _ = __webpack_require__(2);
+
+	/**
+	 * Create a new text extension.
+	 *
+	 * @constructor
+	 * @implements {Extension}
+	 * @arg {Boolean} [options.wildcard] Whether the extension should operate
+	 * in wildcard mode.
+	 * @arg {Array<String>} [options.subTypes] The additional `text` subtypes
+	 * that should be handled by the extension
+	 *
+	 * @classdesc
+	 * Extension for parsing text data from `text/` media type responses.
+	 * The text of the response will be available as the property `text` on
+	 * the {@link Resource}. By default, only `text/plain` content type is handled,
+	 * but other types can be included, or the extension can be used in
+	 * 'wildcard' mode and accept `text/*`.
+	 *
+	 */
+	var TextExtension = function(options) {
+	  options = options || {};
+
+	  var wildcard = options.wildcard;
+	  var mediaTypeSet = { 'text/plain': true };
+
+	  if (wildcard) {
+	    mediaTypeSet = { 'text/*': true };
+	  } else {
+	    var subTypes = options.subTypes || [];
+	    for (var i = 0; i < subTypes.length; i++) {
+	      mediaTypeSet['text/' + subTypes[i]] = true;
+	    }
+	  }
+
+	  this.mediaTypes = _.keys(mediaTypeSet);
+
+	  this.applies = function(data, headers) {
+	    var h = headers['content-type'];
+	    if (!h) {
+	      return false;
+	    }
+
+	    // Handle parameters, e.g. text/plain; charset=UTF-8
+	    var type = h.split(';')[0];
+
+	    return wildcard ? type.substr(0, 'text/'.length) === 'text/' : mediaTypeSet[type] !== undefined;
+	  };
+
+	  this.dataParser = function(data) {
+	    var ret = [];
+
+	    if (data) {
+	      ret.push({ name: 'text', value: data });
+	    }
+
+	    return ret;
+	  };
+
+	};
+
+	module.exports = TextExtension;
+
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var httpLink = __webpack_require__(22);
 
 	var _ = __webpack_require__(2);
 	var WebLink = __webpack_require__(9);
@@ -4960,7 +5031,7 @@ var HyRes =
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function() {
@@ -5133,7 +5204,7 @@ var HyRes =
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5299,7 +5370,7 @@ var HyRes =
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
