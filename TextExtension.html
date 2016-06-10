@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>LinkCollection - Documentation</title>
+    <title>TextExtension - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">LinkCollection</h1>
+    <h1 class="page-title">TextExtension</h1>
     
 
     
@@ -41,8 +41,14 @@
 <header>
     
         <h2>
-        LinkCollection
+        TextExtension
         </h2>
+        
+            <div class="class-description"><p>Extension for parsing text data from <code>text/</code> media type responses.
+The text of the response will be available as the property <code>text</code> on
+the <a href="Resource.html">Resource</a>. By default, only <code>text/plain</code> content type is handled,
+but other types can be included, or the extension can be used in
+'wildcard' mode and accept <code>text/*</code>.</p></div>
         
     
 </header>
@@ -53,15 +59,17 @@
         
 
     
+    <h2>Constructor</h2>
+    
 
-    <h4 class="name" id="LinkCollection"><span class="type-signature"></span>new LinkCollection<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="TextExtension"><span class="type-signature"></span>new TextExtension<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>A collection of <a href="WebLink.html">WebLink</a> instances.</p>
+    <p>Create a new text extension.</p>
 </div>
 
 
@@ -70,6 +78,102 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options.wildcard</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Whether the extension should operate
+in wildcard mode.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options.subTypes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;String></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The additional <code>text</code> subtypes
+that should be handled by the extension</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -89,6 +193,13 @@
     
 
     
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Extension.html">Extension</a></li>
+        
+    </ul></dd>
+    
 
     
 
@@ -105,7 +216,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="link_collection.js.html">link_collection.js</a>, <a href="link_collection.js.html#line10">line 10</a>
+        <a href="text.js.html">text.js</a>, <a href="text.js.html#line23">line 23</a>
     </li></ul></dd>
     
 
@@ -154,17 +265,15 @@
 
     
 
-    <h4 class="name" id="follow"><span class="type-signature"></span>follow<span class="signature">(options)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="applies"><span class="type-signature"></span>applies<span class="signature">(data, headers, context)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Returns an array of <a href="Resource.html">Resource</a> instances. In addition, the array has a
-<code>$promise</code> property that will resolve when all of the <a href="Resource.html">Resource</a>
-instances resolve, allowing you to perform some logic once everything has
-been fetched.</p>
+    <p>Determine whether this extension should be used to process
+a particular response</p>
 </div>
 
 
@@ -200,7 +309,7 @@ been fetched.</p>
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
@@ -216,7 +325,53 @@ been fetched.</p>
 
             
 
-            <td class="description last"><p>The options to pass to <a href="WebLink.html#follow">WebLink#follow</a> for each link.</p></td>
+            <td class="description last"><p>The body of the response, pre-parsed if some form of JSON.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>headers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;string, string></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The HTTP headers of the response</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Context.html">Context</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The context of the current resource/operation.</p></td>
         </tr>
 
     
@@ -241,6 +396,13 @@ been fetched.</p>
     
 
     
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Extension.html#applies">Extension#applies</a></li>
+        
+    </ul></dd>
+    
 
     
 
@@ -257,7 +419,7 @@ been fetched.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="link_collection.js.html">link_collection.js</a>, <a href="link_collection.js.html#line41">line 41</a>
+        <a href="extension.js.html">extension.js</a>, <a href="extension.js.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -284,7 +446,7 @@ been fetched.</p>
 
         
 <div class="param-desc">
-    <p>the resources that result from following the contained links.</p>
+    <p>True if the extension should be used to process the response.</p>
 </div>
 
 
@@ -295,7 +457,213 @@ been fetched.</p>
     </dt>
     <dd>
         
-<span class="param-type">Array</span>
+<span class="param-type">Boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="dataParser"><span class="type-signature"></span>dataParser<span class="signature">(data, headers, context)</span><span class="type-signature"> &rarr; {Array.&lt;{name: String, value: Object}>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Parse any field data that is part of the resource.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The body of the response, pre-parsed if some form of JSON.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>headers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;string, string></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The HTTP headers of the response</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Context.html">Context</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The context of the current resource/operation.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Extension.html#dataParser">Extension#dataParser</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="extension.js.html">extension.js</a>, <a href="extension.js.html#line39">line 39</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The fields, as an array of name/value pairs.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;{name: String, value: Object}></span>
 
 
     </dd>

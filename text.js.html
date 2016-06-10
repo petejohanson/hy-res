@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>link_header.js - Documentation</title>
+    <title>text.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">link_header.js</h1>
+    <h1 class="page-title">text.js</h1>
     
 
     
@@ -40,47 +40,68 @@
         <article>
             <pre class="prettyprint source linenums"><code>'use strict';
 
-var httpLink = require('http-link');
-
 var _ = require('lodash');
-var WebLink = require('./web_link');
 
 /**
- * Create a new link header extension.
+ * Create a new text extension.
  *
  * @constructor
  * @implements {Extension}
+ * @arg {Boolean} [options.wildcard] Whether the extension should operate
+ * in wildcard mode.
+ * @arg {Array&lt;String>} [options.subTypes] The additional `text` subtypes
+ * that should be handled by the extension
  *
  * @classdesc
- * Extension for parsing [HTTP Link Headers](http://tools.ietf.org/html/rfc5988#section-5)
- * in responses
+ * Extension for parsing text data from `text/` media type responses.
+ * The text of the response will be available as the property `text` on
+ * the {@link Resource}. By default, only `text/plain` content type is handled,
+ * but other types can be included, or the extension can be used in
+ * 'wildcard' mode and accept `text/*`.
  *
  */
-var LinkHeaderExtension = function() {
+var TextExtension = function(options) {
+  options = options || {};
+
+  var wildcard = options.wildcard;
+  var mediaTypeSet = { 'text/plain': true };
+
+  if (wildcard) {
+    mediaTypeSet = { 'text/*': true };
+  } else {
+    var subTypes = options.subTypes || [];
+    for (var i = 0; i &lt; subTypes.length; i++) {
+      mediaTypeSet['text/' + subTypes[i]] = true;
+    }
+  }
+
+  this.mediaTypes = _.keys(mediaTypeSet);
+
   this.applies = function(data, headers) {
-    return _.isString(headers.link);
+    var h = headers['content-type'];
+    if (!h) {
+      return false;
+    }
+
+    // Handle parameters, e.g. text/plain; charset=UTF-8
+    var type = h.split(';')[0];
+
+    return wildcard ? type.substr(0, 'text/'.length) === 'text/' : mediaTypeSet[type] !== undefined;
   };
 
-  this.linkParser = function(data, headers, context) {
-    var links = httpLink.parse(headers.link);
+  this.dataParser = function(data) {
+    var ret = [];
 
-    var ret = {};
-    for(var i = 0; i &lt; links.length; i++) {
-      var l = links[i];
-      var wl = new WebLink(l, context);
-      if (!_.isUndefined(ret[l.rel])) {
-        ret[l.rel].push(wl);
-      } else {
-        ret[l.rel] = [wl];
-      }
-
-      delete l.rel;
+    if (data) {
+      ret.push({ name: 'text', value: data });
     }
+
     return ret;
   };
+
 };
 
-module.exports = LinkHeaderExtension;
+module.exports = TextExtension;
 </code></pre>
         </article>
     </section>
