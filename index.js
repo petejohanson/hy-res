@@ -8,6 +8,7 @@ module.exports = {
   LinkCollection: require('./src/link_collection'),
   HalExtension: require('./src/hal'),
   JsonExtension: require('./src/json'),
+  TextExtension: require('./src/text'),
   LinkHeaderExtension: require('./src/link_header'),
   SirenExtension: require('./src/siren'),
   CollectionJsonExtension: require('./src/collection_json')
