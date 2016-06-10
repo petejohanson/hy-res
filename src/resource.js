@@ -296,12 +296,23 @@ var Resource = function() {
  */
 Resource.prototype.$expandCurie = function(curie) {
   var pieces = curie.split(':', 2);
+  return this.$curiePrefix(pieces[0]).expand(pieces[1]);
+};
 
+/**
+ * Locate a media-type specific registered CURIE (compact URI)
+ * prefix ({@link CuriePrefix}).
+ * @param {String} curiePrefix The CURIE prefix for look up.
+ * @returns {CuriePrefix} The media-type specific CURIE prefix.
+ * @throws {Error} Raises an error when looking for an unknown
+ * CURIE prefix.
+ */
+Resource.prototype.$curiePrefix = function(curiePrefix) {
   var res = this;
   var prefix = null;
 
   while (!prefix && res) {
-    prefix = res.$$curiePrefixes[pieces[0]];
+    prefix = res.$$curiePrefixes[curiePrefix];
     res = res.$parent;
   }
 
@@ -309,7 +320,23 @@ Resource.prototype.$expandCurie = function(curie) {
     throw new Error('Unknown CURIE prefix');
   }
 
-  return prefix.expand(pieces[1]);
+  return prefix;
+};
+
+/**
+ * Expand a CURIE (compact URI) by looking up a prefix binding
+ * and processing it according to the media type specific CURIE
+ * processing rules, and then follow the final URI.
+ * @param {String} curie The compact URI to follow
+ * @param {Object} options The options to pass when following
+ * the expanded URI.
+ * @returns {Resource} The resource from following the expanded URI.
+ * @throws {Error} Raises an error when looking for an unknown
+ * CURIE prefix.
+ */
+Resource.prototype.$followCurie = function(curie, options) {
+  var pieces = curie.split(':', 2);
+  return this.$curiePrefix(pieces[0]).follow(pieces[1], options);
 };
 
 /**

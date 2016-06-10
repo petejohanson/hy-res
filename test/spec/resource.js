@@ -182,6 +182,45 @@ describe('Resource', function () {
       return promise;
     });
 
+    describe('$followCurie', function() {
+      describe('for a known prefix', function() {
+        // var ownerDocResolve;
+        var ownerDocResource;
+
+        beforeEach(function () {
+          var ownerDocPromise = new Promise(function(/*res*/) {
+            // ownerDocResolve = res;
+          });
+
+          http
+            .withArgs(this.sinon.match({url: 'http://api.co/rels/owner' }))
+            .returns(ownerDocPromise);
+
+          ownerDocResource = resource.$followCurie('ea:owner');
+        });
+
+        it('is an unresolved resource', function() {
+          expect(ownerDocResource).to.be.an.unresolved.resource;
+        });
+
+        it('calls the correct CURIE URL', function() {
+          expect(http).to.be.calledWithMatch({ url: 'http://api.co/rels/owner' });
+        });
+      });
+
+      describe('for an unknown prefix', function() {
+        it('should raise an exception', function() {
+          expect(function() { resource.$followCurie('foo:bar'); }).to.throw(Error, 'Unknown CURIE prefix');
+        });
+      });
+
+      describe('from sub-resources', function() {
+        it('uses parent scope', function() {
+          // expect(resource.$sub('item').$expandCurie('ea:owner')).to.eql('http://api.co/rels/owner');
+        });
+      });
+    });
+
     describe('$expandCurie', function() {
       describe('for a known prefix', function() {
         it('returns the expanded URI', function() {

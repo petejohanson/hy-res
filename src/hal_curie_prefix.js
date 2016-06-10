@@ -1,5 +1,7 @@
 'use strict';
 
+var _ = require('lodash');
+
 /**
  *
  * @constructor
@@ -19,6 +21,10 @@ var HalCuriePrefix = function(link) {
 
 HalCuriePrefix.prototype.expand = function(reference) {
   return this.$$link.resolvedUrl({rel: reference});
+};
+
+HalCuriePrefix.prototype.follow = function(reference, options) {
+  return this.$$link.follow(_.merge(options || {}, { data: { rel: reference }}));
 };
 
 module.exports = HalCuriePrefix;
