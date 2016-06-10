@@ -1,6 +1,6 @@
 /**
  * hy-res - Generic hypermedia client supporting several formats
- * @version v0.0.23 - 2016-03-05
+ * @version v0.0.24 - 2016-06-10
  * @link https://github.com/petejohanson/hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -3416,7 +3416,7 @@ var HyRes =
 	/**
 	 * A predicate to inspect a given {@link Resource} to decide to include or not.
 	 * @callback Resource~resourcePredicate
-	 * @param {Resouce} resource The candidate resource
+	 * @param {Resource} resource The candidate resource
 	 * @returns {boolean} Whether to include the resource in the response(s) or not.
 	 */
 
@@ -3699,12 +3699,23 @@ var HyRes =
 	 */
 	Resource.prototype.$expandCurie = function(curie) {
 	  var pieces = curie.split(':', 2);
+	  return this.$curiePrefix(pieces[0]).expand(pieces[1]);
+	};
 
+	/**
+	 * Locate a media-type specific registered CURIE (compact URI)
+	 * prefix ({@link CuriePrefix}).
+	 * @param {String} curiePrefix The CURIE prefix for look up.
+	 * @returns {CuriePrefix} The media-type specific CURIE prefix.
+	 * @throws {Error} Raises an error when looking for an unknown
+	 * CURIE prefix.
+	 */
+	Resource.prototype.$curiePrefix = function(curiePrefix) {
 	  var res = this;
 	  var prefix = null;
 
 	  while (!prefix && res) {
-	    prefix = res.$$curiePrefixes[pieces[0]];
+	    prefix = res.$$curiePrefixes[curiePrefix];
 	    res = res.$parent;
 	  }
 
@@ -3712,7 +3723,23 @@ var HyRes =
 	    throw new Error('Unknown CURIE prefix');
 	  }
 
-	  return prefix.expand(pieces[1]);
+	  return prefix;
+	};
+
+	/**
+	 * Expand a CURIE (compact URI) by looking up a prefix binding
+	 * and processing it according to the media type specific CURIE
+	 * processing rules, and then follow the final URI.
+	 * @param {String} curie The compact URI to follow
+	 * @param {Object} options The options to pass when following
+	 * the expanded URI.
+	 * @returns {Resource} The resource from following the expanded URI.
+	 * @throws {Error} Raises an error when looking for an unknown
+	 * CURIE prefix.
+	 */
+	Resource.prototype.$followCurie = function(curie, options) {
+	  var pieces = curie.split(':', 2);
+	  return this.$curiePrefix(pieces[0]).follow(pieces[1], options);
 	};
 
 	/**
@@ -4451,7 +4478,7 @@ var HyRes =
 
 	var _ = __webpack_require__(2);
 	var FormUrlEncoded = __webpack_require__(14);
-	var Resouce = __webpack_require__(10);
+	var Resource = __webpack_require__(10);
 
 	/**
 	 * Forms should not be created on their own, they are normally
@@ -4565,7 +4592,7 @@ var HyRes =
 	    ctx = ctx.forResource({url: config.url});
 	    return ctx.http({method: 'GET', url: ctx.resolveUrl(loc), headers: config.headers });
 	  });
-	  return Resouce.fromRequest(resp, ctx);
+	  return Resource.fromRequest(resp, ctx);
 	};
 
 	/**
@@ -4811,9 +4838,11 @@ var HyRes =
 
 /***/ },
 /* 18 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var _ = __webpack_require__(2);
 
 	/**
 	 *
@@ -4834,6 +4863,10 @@ var HyRes =
 
 	HalCuriePrefix.prototype.expand = function(reference) {
 	  return this.$$link.resolvedUrl({rel: reference});
+	};
+
+	HalCuriePrefix.prototype.follow = function(reference, options) {
+	  return this.$$link.follow(_.merge(options || {}, { data: { rel: reference }}));
 	};
 
 	module.exports = HalCuriePrefix;
