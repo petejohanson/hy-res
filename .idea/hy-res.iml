@@ -11,8 +11,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="hy-res node_modules" level="project" />
-    <orderEntry type="library" name="angular-hy-res node_modules" level="project" />
-    <orderEntry type="library" name="hy-res node_modules" level="project" />
   </component>
 </module>
