@@ -16,7 +16,7 @@ describe('Resource', function () {
   var extensions;
 
   beforeEach(function() {
-    extensions = [new HyRes.HalExtension(), new HyRes.SirenExtension()];
+    extensions = [new HyRes.HalExtension(), new HyRes.SirenExtension(), new HyRes.LinkHeaderExtension()];
   });
 
   describe('forms', function() {
@@ -553,11 +553,12 @@ describe('Resource', function () {
         describe('with a single link relation', function () {
 
           var customerResource;
-          var customerResolve;
+          var customerResolve, customerReject;
 
           beforeEach(function () {
-            var customerPromise = new Promise(function(res) {
+            var customerPromise = new Promise(function(res, rej) {
               customerResolve = res;
+              customerReject = rej;
             });
 
             http
@@ -594,6 +595,21 @@ describe('Resource', function () {
             it('should have the raw properties', function () {
               expect(customerResource.name).to.eql('John Wayne');
             });
+          });
+
+          describe('and the request has an error', function() {
+            beforeEach(function() {
+              customerReject({ status: 409, headers: { 'link': '</errors/123>; rel="next"' }, data: {}});
+            });
+
+            it('is rejected', function() {
+              return expect(customerResource.$promise).to.eventually.be.rejected;
+            });
+
+            it('still parses the relevant response information', function() {
+              return expect(customerResource.$promise).to.eventually.be.rejected.and.eventually.have.link('next').property('href').eql('/errors/123');
+            });
+
           });
         });
 
@@ -978,12 +994,13 @@ describe('Resource', function () {
 
       describe('when the request has an error', function() {
         beforeEach(function() {
-          ordersReject('oh no!');
+          ordersReject({ status: 400, headers: {}, data: {}});
         });
 
         it('is rejected', function() {
           return expect(profileResources.$promise).to.eventually.be.rejected;
         });
+
       });
     });
 

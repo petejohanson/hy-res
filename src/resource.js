@@ -454,9 +454,9 @@ Resource.prototype.$$resolve = function(response, context) {
   this.$resolved = true;
 };
 
-Resource.prototype.$$reject = function(error) {
+Resource.prototype.$$reject = function(error, response, context) {
   this.$error = error;
-  this.$resolved = true;
+  this.$$resolve(response, context);
 };
 
 Resource.embedded = function(raw, headers, context, parent) {
@@ -490,7 +490,7 @@ Resource.fromRequest = function(request, context) {
       res.$$resolve(response, context);
       return res;
     }, function(response) {
-      res.$$reject({message: 'HTTP request to load resource failed', inner: response });
+      res.$$reject({message: 'HTTP request to load resource failed', inner: response }, response, context);
       throw res;
     });
 
