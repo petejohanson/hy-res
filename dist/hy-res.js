@@ -1,6 +1,6 @@
 /**
  * hy-res - Generic hypermedia client supporting several formats
- * @version v0.0.25 - 2016-06-10
+ * @version v0.0.26 - 2016-09-13
  * @link https://github.com/petejohanson/hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -3858,9 +3858,9 @@ var HyRes =
 	  this.$resolved = true;
 	};
 
-	Resource.prototype.$$reject = function(error) {
+	Resource.prototype.$$reject = function(error, response, context) {
 	  this.$error = error;
-	  this.$resolved = true;
+	  this.$$resolve(response, context);
 	};
 
 	Resource.embedded = function(raw, headers, context, parent) {
@@ -3894,7 +3894,7 @@ var HyRes =
 	      res.$$resolve(response, context);
 	      return res;
 	    }, function(response) {
-	      res.$$reject({message: 'HTTP request to load resource failed', inner: response });
+	      res.$$reject({message: 'HTTP request to load resource failed', inner: response }, response, context);
 	      throw res;
 	    });
 
