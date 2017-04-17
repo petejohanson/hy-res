@@ -35,22 +35,33 @@ var WebLink = function(data, context) {
  * final URI.
  * @tutorial uri-templates
  */
-WebLink.prototype.follow = function(options) {
+WebLink.prototype.follow = function (options) {
   options = this.$$context.withDefaults(options);
-  var opts = _.get(options, 'protocol', {});
-  opts.headers = (opts.headers || {});
+  var requestOptions = {};
+  var onetimeOptionDefaults = {
+    "protocol":{},
+    "cache":false,
+    "headers": {}
+  };
+  var allowedOnetimeOptionsKeys = Object.keys(onetimeOptionDefaults);
 
-  if(!opts.headers.Accept) {
+  // map/filter onetime options top request options
+  allowedOnetimeOptionsKeys.forEach(function(optionKey) {
+    requestOptions[optionKey] = _.get(options, optionKey, onetimeOptionDefaults[optionKey]);
+  });
+
+  if (!requestOptions.headers.Accept) {
     if (this.type) {
-      opts.headers.Accept = this.type;
+      requestOptions.headers.Accept = this.type;
     } else {
-      opts.headers.Accept = this.$$context.acceptHeader();
+      requestOptions.headers.Accept = this.$$context.acceptHeader();
     }
   }
 
-  var requestOptions = _.extend(opts, { url: this.resolvedUrl(_.get(options, 'data')) });
+  requestOptions = _.extend(requestOptions, { url: this.resolvedUrl(_.get(options, "data")) });
   return Resource.fromRequest(this.$$context.http(requestOptions), this.$$context);
 };
+
 
 /**
  * The `resolvedUrl` function of a `HyRes.WebLink` can be used to see what the final resolved URL will be for the link once processing:
